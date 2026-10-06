@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Staff Dashboard · Portal V3</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="app-page" data-page="staff">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand"><div class="brand-mark small">SP</div><div><strong>Staff Portal</strong><span>Version 3</span></div></div>
+      <nav class="side-nav" aria-label="Staff navigation">
+        <button class="nav-item active" data-section="overview">Overview</button>
+        <button class="nav-item" data-section="attendance">Attendance</button>
+        <button class="nav-item" data-section="schedule">Schedule</button>
+        <button class="nav-item" data-section="performance">Performance</button>
+        <button class="nav-item" data-section="leave">Annual Leave</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="nav-item danger" id="logoutBtn">Sign out</button>
+      </div>
+    </aside>
 
+    <main class="app-main">
+      <header class="topbar">
+        <button class="icon-btn mobile-only" id="menuBtn" type="button" aria-label="Open menu">☰</button>
+        <div><p class="eyebrow">Staff Dashboard</p><h1 id="pageTitle">Overview</h1></div>
+        <div class="user-chip"><div class="avatar" id="avatar">S</div><div><strong id="displayName">Staff Member</strong><span id="displayId">Starter account</span></div></div>
+      </header>
+
+      <section class="content-section active" id="overview">
+        <div class="welcome-card card"><div><p class="eyebrow">Welcome back</p><h2 id="welcomeName">Staff Member</h2><p>Here is your current staff operations snapshot.</p></div><div class="status-badge online">Ready</div></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Today's Shift</span><strong>09:00 – 18:00</strong><small>Sample schedule</small></article>
+          <article class="stat-card"><span>Attendance</span><strong>On time</strong><small>Starter data</small></article>
+          <article class="stat-card"><span>KPI Score</span><strong>92%</strong><small>Sample score</small></article>
+          <article class="stat-card"><span>Leave Balance</span><strong>12 days</strong><small>Sample balance</small></article>
+        </div>
+        <div class="two-col">
+          <article class="card"><div class="section-head"><div><p class="eyebrow">Today</p><h3>Attendance actions</h3></div><span id="attendanceStatus" class="status-badge">Not checked in</span></div><div class="action-row"><button class="primary-btn compact" id="checkInBtn">Check in</button><button class="secondary-btn compact" id="breakBtn">Start break</button><button class="secondary-btn compact" id="checkOutBtn">Check out</button></div><p class="muted" id="attendanceNote">This is demo frontend behavior only.</p></article>
+          <article class="card"><div class="section-head"><div><p class="eyebrow">Next up</p><h3>Upcoming shifts</h3></div></div><div class="list"><div><strong>Tomorrow</strong><span>09:00 – 18:00</span></div><div><strong>Wednesday</strong><span>10:00 – 19:00</span></div><div><strong>Thursday</strong><span>09:00 – 18:00</span></div></div></article>
+        </div>
+      </section>
+
+      <section class="content-section" id="attendance"><div class="section-head"><div><p class="eyebrow">Attendance</p><h2>Attendance history</h2></div></div><div class="card table-card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Check in</th><th>Break</th><th>Check out</th><th>Status</th></tr></thead><tbody><tr><td>Today</td><td>09:00</td><td>12:30 – 13:00</td><td>18:00</td><td><span class="status-badge online">On time</span></td></tr><tr><td>Yesterday</td><td>09:05</td><td>12:45 – 13:15</td><td>18:02</td><td><span class="status-badge">Complete</span></td></tr></tbody></table></div></div></section>
+
+      <section class="content-section" id="schedule"><div class="section-head"><div><p class="eyebrow">Schedule</p><h2>My roster</h2></div></div><div class="schedule-grid"><article class="schedule-day card"><span>Mon</span><strong>09:00 – 18:00</strong><small>Office</small></article><article class="schedule-day card"><span>Tue</span><strong>09:00 – 18:00</strong><small>Office</small></article><article class="schedule-day card"><span>Wed</span><strong>10:00 – 19:00</strong><small>Office</small></article><article class="schedule-day card"><span>Thu</span><strong>09:00 – 18:00</strong><small>Office</small></article><article class="schedule-day card"><span>Fri</span><strong>09:00 – 18:00</strong><small>Office</small></article></div></section>
+
+      <section class="content-section" id="performance"><div class="section-head"><div><p class="eyebrow">Performance</p><h2>KPI summary</h2></div></div><div class="stats-grid"><article class="stat-card"><span>Overall</span><strong>92%</strong><small>Current month</small></article><article class="stat-card"><span>Quality</span><strong>95%</strong><small>Sample metric</small></article><article class="stat-card"><span>Attendance</span><strong>90%</strong><small>Sample metric</small></article><article class="stat-card"><span>Productivity</span><strong>91%</strong><small>Sample metric</small></article></div><div class="card"><h3>Performance notes</h3><p class="muted">The live KPI breakdown will be connected to the Version 3 backend later.</p></div></section>
+
+      <section class="content-section" id="leave"><div class="section-head"><div><p class="eyebrow">Annual Leave</p><h2>Leave overview</h2></div><button class="primary-btn compact">Request leave</button></div><div class="stats-grid"><article class="stat-card"><span>Allowance</span><strong>20 days</strong><small>Sample</small></article><article class="stat-card"><span>Used</span><strong>8 days</strong><small>Sample</small></article><article class="stat-card"><span>Remaining</span><strong>12 days</strong><small>Sample</small></article><article class="stat-card"><span>Pending</span><strong>0</strong><small>Sample</small></article></div></section>
+    </main>
+  </div>
+  <script src="js/staff.js"></script>
+</body>
+</html>

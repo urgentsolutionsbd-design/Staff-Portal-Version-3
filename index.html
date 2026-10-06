@@ -2,178 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#08111f"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
   <title>Staff Performance Portal V3</title>
-
-  <link
-    rel="stylesheet"
-    href="css/style.css"
-  >
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body class="login-page">
-
-  <main class="login-container">
-
-    <section class="login-brand">
-
-      <div class="brand-icon">
-        SP
+  <main class="login-shell">
+    <section class="brand-panel">
+      <div class="brand-mark">SP</div>
+      <p class="eyebrow">Staff Operations</p>
+      <h1>Staff Performance Portal</h1>
+      <p class="version-pill">Version 3</p>
+      <p class="lead">A cleaner, faster portal for attendance, schedules, performance, KPI tracking and staff operations.</p>
+      <div class="feature-grid">
+        <article><strong>Attendance</strong><span>Check-in, breaks and daily status</span></article>
+        <article><strong>Schedule</strong><span>Team roster and shift visibility</span></article>
+        <article><strong>Performance</strong><span>KPI, scores and trends</span></article>
+        <article><strong>Admin</strong><span>Management tools and oversight</span></article>
       </div>
-
-      <p class="eyebrow">
-        Operations Portal
-      </p>
-
-      <h1>
-        Staff Performance Portal
-      </h1>
-
-      <p class="version">
-        Version 3
-      </p>
-
-      <p class="brand-description">
-        Attendance, schedules, performance,
-        KPI tracking and staff operations
-        in one secure portal.
-      </p>
-
     </section>
 
-
-    <section class="login-card">
-
-      <div class="login-tabs">
-
-        <button
-          id="staffTab"
-          class="login-tab active"
-          type="button"
-        >
-          Staff
-        </button>
-
-        <button
-          id="adminTab"
-          class="login-tab"
-          type="button"
-        >
-          Admin
-        </button>
-
+    <section class="login-card" aria-label="Portal sign in">
+      <div class="mode-switch" role="tablist" aria-label="Login type">
+        <button id="staffTab" class="mode-btn active" type="button" role="tab" aria-selected="true">Staff</button>
+        <button id="adminTab" class="mode-btn" type="button" role="tab" aria-selected="false">Admin</button>
       </div>
 
-
-      <div class="login-heading">
-
-        <p class="eyebrow">
-          Secure Access
-        </p>
-
-        <h2 id="loginTitle">
-          Staff Login
-        </h2>
-
-        <p id="loginDescription">
-          Enter your Staff ID or email to continue.
-        </p>
-
+      <div class="login-copy">
+        <p class="eyebrow">Secure Access</p>
+        <h2 id="loginTitle">Staff Login</h2>
+        <p id="loginDescription">Enter your Staff ID or email to continue.</p>
       </div>
 
-
-      <form id="loginForm">
-
-        <label class="form-field">
-
-          <span>
-            Staff ID or Email
-          </span>
-
-          <input
-            id="identity"
-            name="identity"
-            type="text"
-            placeholder="Enter Staff ID or email"
-            autocomplete="username"
-            required
-          >
-
+      <form id="loginForm" novalidate>
+        <label class="field">
+          <span id="identityLabel">Staff ID or Email</span>
+          <input id="identity" name="identity" type="text" placeholder="e.g. ST-001 or name@company.com" autocomplete="username" required>
         </label>
 
-
-        <label
-          id="passwordField"
-          class="form-field hidden"
-        >
-
-          <span>
-            Password
-          </span>
-
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Enter password"
-            autocomplete="current-password"
-          >
-
+        <label id="passwordField" class="field hidden">
+          <span>Password</span>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password">
+            <button id="togglePassword" class="text-btn" type="button" aria-label="Show password">Show</button>
+          </div>
         </label>
-
 
         <label class="remember-row">
-
-          <input
-            id="rememberMe"
-            type="checkbox"
-          >
-
-          <span>
-            Remember me
-          </span>
-
+          <input id="rememberMe" type="checkbox">
+          <span>Remember me on this device</span>
         </label>
 
-
-        <button
-          id="loginButton"
-          class="login-button"
-          type="submit"
-        >
-          Sign In
-        </button>
-
-
-        <div
-          id="loginMessage"
-          class="login-message"
-          hidden
-        ></div>
-
+        <button id="loginButton" class="primary-btn" type="submit">Continue as Staff</button>
+        <p class="demo-note">Starter mode only: no real authentication is connected yet.</p>
+        <div id="loginMessage" class="alert" hidden></div>
       </form>
-
     </section>
-
   </main>
 
-
-  <footer class="login-footer">
-    Staff Performance Portal V3
-  </footer>
-
-
+  <footer class="page-footer">Staff Performance Portal V3 · Frontend starter</footer>
   <script src="js/app.js"></script>
-
 </body>
 </html>
