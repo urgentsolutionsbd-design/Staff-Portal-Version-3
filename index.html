@@ -1868,6 +1868,9 @@
 
   <script>
 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxPcYgFwx7OdSSfrGDJooj23znWjyLJwb-qY4fnRsQrLTdeE8ixPNDVbM2Ut6ITdO1v/exec";
+    const SESSION_KEY = "staffPortalSession";
+
     /* =========================================================
        ELEMENTS
     ========================================================= */
@@ -2008,37 +2011,83 @@
 
 
     /* =========================================================
-       DEMO LOGIN
-       Real authentication comes later.
+       LIVE USER MAPPING LOGIN
+       Password authentication will be connected later.
     ========================================================= */
+
+    async function lookupUser(username) {
+      const response = await fetch(
+        API_URL +
+        "?action=user&username=" +
+        encodeURIComponent(username),
+        {
+          method: "GET",
+          cache: "no-store"
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Login service could not be reached."
+        );
+      }
+
+      return response.json();
+    }
+
+    function savePortalSession(user) {
+      const session = {
+        username: user.username,
+        staffName: user.staffName,
+        role: user.role,
+        status: user.status,
+        loginAt: new Date().toISOString()
+      };
+
+      sessionStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify(session)
+      );
+
+      if (
+        document
+          .getElementById("rememberMe")
+          .checked
+      ) {
+        localStorage.setItem(
+          SESSION_KEY,
+          JSON.stringify(session)
+        );
+      } else {
+        localStorage.removeItem(
+          SESSION_KEY
+        );
+      }
+    }
 
     loginForm.addEventListener(
       "submit",
-      function (event) {
+      async function (event) {
 
         event.preventDefault();
 
+        loginMessage.classList.remove(
+          "show"
+        );
 
         const username =
           document
-            .getElementById(
-              "username"
-            )
+            .getElementById("username")
             .value
             .trim();
-
 
         const passwordValue =
-          password
-            .value
-            .trim();
-
+          password.value.trim();
 
         if (
           !username ||
           !passwordValue
         ) {
-
           loginMessage.textContent =
             "Please enter your username and password.";
 
@@ -2047,32 +2096,92 @@
           );
 
           return;
-
         }
 
+        signInButton.disabled = true;
+        signInButton.textContent =
+          "Checking account...";
 
-        /*
-          Temporary frontend routing.
+        try {
+          const data =
+            await lookupUser(username);
 
-          We will replace this with
-          secure backend authentication
-          later.
-        */
+          if (
+            !data.ok ||
+            !data.user
+          ) {
+            throw new Error(
+              data.error ||
+              "User not found."
+            );
+          }
 
+          const user =
+            data.user;
 
-        if (
-          loginRole ===
-          "staff"
-        ) {
+          const role =
+            String(
+              user.role || ""
+            ).toLowerCase();
+
+          const status =
+            String(
+              user.status || ""
+            ).toLowerCase();
+
+          if (
+            status !== "active"
+          ) {
+            throw new Error(
+              "This account is not active."
+            );
+          }
+
+          if (
+            role !== loginRole
+          ) {
+            throw new Error(
+              "This account is registered as " +
+              (role || "another role") +
+              ". Please choose the correct login type."
+            );
+          }
+
+          if (!user.staffName) {
+            throw new Error(
+              "This account has no Staff Name mapping."
+            );
+          }
+
+          savePortalSession(user);
+
+          const destination =
+            role === "admin"
+              ? "admin.html"
+              : "staff.html";
 
           window.location.href =
-            "staff.html";
+            destination +
+            "?user=" +
+            encodeURIComponent(
+              user.username
+            );
 
-        } else {
+        } catch (error) {
+          loginMessage.textContent =
+            error.message ||
+            "Unable to sign in.";
 
-          window.location.href =
-            "admin.html";
+          loginMessage.classList.add(
+            "show"
+          );
 
+          signInButton.disabled = false;
+
+          signInButton.textContent =
+            loginRole === "staff"
+              ? "Sign In as Staff"
+              : "Sign In as Admin";
         }
 
       }
