@@ -1,131 +1,1796 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#030706">
-<title>Staff Dashboard | Portal V3</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#030706;--surface:#080d0c;--surface2:#0b1211;--border:#22312f;--text:#f4f7f6;--muted:#8f9c9a;--green:#27f0b5;--warning:#f2ba55;--danger:#ff6674;--blue:#66a8ff;--sidebar:245px}
-body{min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 80% 0%,rgba(16,130,95,.08),transparent 28%),var(--bg);overflow-x:hidden}
-button,input{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}
-.sidebar{position:sticky;top:0;height:100vh;padding:24px 18px;display:flex;flex-direction:column;border-right:1px solid var(--border);background:linear-gradient(180deg,#080e0d,#030706)}
-.brand{display:flex;align-items:center;gap:11px;padding:0 8px 25px;border-bottom:1px solid var(--border)}.brand-mark{width:35px;height:35px;display:grid;place-items:center;border-radius:10px;background:white;color:#07100e;font-weight:900;transform:rotate(-7deg)}.brand-copy strong{display:block;font-size:14px;line-height:1.15}.brand-copy span{display:block;margin-top:3px;color:var(--muted);font-size:10px}
-.nav-label{margin:24px 10px 10px;color:#667573;font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.nav{display:grid;gap:5px}.nav-link{width:100%;min-height:46px;display:flex;align-items:center;gap:12px;padding:0 13px;border:1px solid transparent;border-radius:12px;color:#9ca8a6;background:transparent;font-size:13px;font-weight:650;transition:.2s}.nav-link svg{width:19px;height:19px}.nav-link:hover{color:white;background:rgba(255,255,255,.03)}.nav-link.active{color:#06110e;background:white;border-color:white}
-.sidebar-bottom{margin-top:auto;padding-top:20px}.staff-mini{padding:13px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.018)}.avatar{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;color:#05100d;background:linear-gradient(135deg,white,#c9fff0);font-size:13px;font-weight:900}.staff-mini strong{display:block;font-size:12px}.staff-mini span{display:block;margin-top:2px;color:var(--muted);font-size:10px}.logout{width:100%;margin-top:9px;padding:10px 12px;border:1px solid var(--border);border-radius:11px;color:#aeb9b7;background:transparent;font-size:12px}
-.main{min-width:0}.topbar{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px clamp(22px,3vw,42px);border-bottom:1px solid var(--border);background:rgba(3,7,6,.88);backdrop-filter:blur(14px);position:sticky;top:0;z-index:30}.page-heading p{margin-bottom:3px;color:var(--muted);font-size:11px}.page-heading h1{font-size:clamp(20px,2vw,28px);letter-spacing:-.035em}.top-actions{display:flex;align-items:center;gap:10px}.status-chip{min-height:38px;display:flex;align-items:center;gap:8px;padding:0 13px;border:1px solid var(--border);border-radius:999px;color:#c0cac8;background:var(--surface);font-size:11px}.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(39,240,181,.7)}.icon-button{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--border);border-radius:11px;background:var(--surface);color:#c5cfcd}.menu-button{display:none}
-.content{width:100%;padding:clamp(20px,2.5vw,36px) clamp(20px,3vw,42px) 42px}.view{display:none}.view.active{display:block}.section-eyebrow{color:var(--green);font-size:9px;font-weight:850;letter-spacing:.16em;text-transform:uppercase}
-.panel{border:1px solid var(--border);border-radius:18px;background:linear-gradient(145deg,var(--surface2),#060a09);overflow:hidden}.panel-head{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border)}.panel-title p{color:#697774;font-size:9px;text-transform:uppercase;letter-spacing:.14em;font-weight:800}.panel-title h3{margin-top:3px;font-size:15px}.panel-link{border:0;background:none;color:var(--green);font-size:10px}
-.welcome{position:relative;min-height:178px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:30px;padding:clamp(24px,3vw,38px);overflow:hidden;border:1px solid var(--border);border-radius:22px;background:radial-gradient(circle at 92% 20%,rgba(30,223,165,.14),transparent 28%),linear-gradient(135deg,#0a1110,#060a09)}.welcome h2{font-size:clamp(27px,3vw,44px);line-height:1;letter-spacing:-.045em}.welcome-copy{margin-top:13px;color:var(--muted);font-size:13px}.welcome-label{margin-bottom:8px;color:var(--green);font-size:10px;font-weight:850;letter-spacing:.17em;text-transform:uppercase}.shift-box{min-width:185px;padding:17px;border:1px solid rgba(39,240,181,.18);border-radius:16px;background:rgba(3,10,8,.65)}.shift-box span{display:block;color:#83918e;font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.shift-box strong{display:block;margin-top:6px;font-size:21px}.shift-box small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:15px}.stat-card{padding:18px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,var(--surface2),#060a09)}.stat-top{display:flex;justify-content:space-between}.stat-title{color:var(--muted);font-size:11px}.stat-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;color:var(--green);background:rgba(39,240,181,.06)}.stat-value{margin-top:16px;font-size:clamp(24px,2.3vw,34px);font-weight:800}.stat-note{margin-top:4px;color:#667573;font-size:10px}
-.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.75fr);gap:15px;margin-top:15px}.attendance-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.75fr);gap:18px;padding:20px}.current-status{display:inline-flex;align-items:center;gap:7px;width:max-content;padding:7px 10px;border:1px solid rgba(39,240,181,.15);border-radius:999px;color:#bdf8e7;background:rgba(39,240,181,.055);font-size:10px}.attendance-time{margin-top:13px;font-size:clamp(29px,3vw,44px);font-weight:800}.attendance-date{margin-top:6px;color:var(--muted);font-size:11px}.attendance-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}.primary-button,.secondary-button{min-height:43px;border-radius:11px;font-size:11px;font-weight:800}.primary-button{border:0;color:#05100d;background:white}.secondary-button{border:1px solid var(--border);color:#c5cfcd;background:transparent}.attendance-details{display:grid;gap:8px}.detail-row{min-height:47px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border:1px solid var(--border);border-radius:11px}.detail-row span{color:var(--muted);font-size:10px}.detail-row strong{font-size:11px}
-.schedule-body{padding:10px 18px 18px}.schedule-item{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(34,49,47,.75)}.schedule-item:last-child{border-bottom:0}.day-box{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;color:var(--green);background:rgba(39,240,181,.055);font-size:10px;font-weight:800}.schedule-copy strong{display:block;font-size:11px}.schedule-copy span{display:block;margin-top:3px;color:var(--muted);font-size:9px}.schedule-time{font-size:10px;font-weight:750}
-.attendance-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:15px}.attendance-live,.shift-card{padding:24px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(145deg,var(--surface2),#060a09)}.attendance-live{background:radial-gradient(circle at 90% 0%,rgba(39,240,181,.12),transparent 34%),linear-gradient(145deg,var(--surface2),#060a09)}.attendance-live-top{display:flex;justify-content:space-between;gap:20px}.attendance-live h2{margin-top:7px;font-size:clamp(26px,2.7vw,40px)}.live-clock-big{margin-top:22px;font-size:clamp(36px,4vw,58px);font-weight:850}.live-date-big{margin-top:8px;color:var(--muted);font-size:12px}.attendance-action-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:25px}.attendance-action{min-height:48px;border-radius:12px;font-size:11px;font-weight:800}.attendance-action.primary{border:0;color:#04100d;background:white}.attendance-action.secondary{border:1px solid var(--border);color:#c7d0ce;background:transparent}.attendance-action.danger{border:1px solid rgba(255,102,116,.25);color:#ffabb3;background:rgba(255,102,116,.04)}.attendance-action:disabled{opacity:.38;cursor:not-allowed}.shift-card h3{margin-top:7px;font-size:22px}.shift-list{display:grid;gap:9px;margin-top:22px}.shift-row{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;border:1px solid var(--border);border-radius:11px}.shift-row span{color:var(--muted);font-size:10px}.shift-row strong{font-size:11px}
-.attendance-summary{margin-top:15px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.summary-card{padding:18px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(145deg,var(--surface2),#060a09)}.summary-card span{color:var(--muted);font-size:10px}.summary-card strong{display:block;margin-top:10px;font-size:28px}.present strong{color:var(--green)}.late strong{color:var(--warning)}.absent strong{color:var(--danger)}.leave strong{color:var(--blue)}
-.attendance-history{margin-top:15px}.history-wrap{overflow-x:auto}.history-table{width:100%;border-collapse:collapse}.history-table th,.history-table td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}.history-table th{color:#667573;font-size:9px;text-transform:uppercase}.history-table td{font-size:11px}.status-badge{display:inline-flex;padding:6px 9px;border-radius:999px;font-size:9px;font-weight:750}.status-badge.present{color:#baf8e5;background:rgba(39,240,181,.06);border:1px solid rgba(39,240,181,.14)}.status-badge.late{color:#ffd794;background:rgba(242,186,85,.06);border:1px solid rgba(242,186,85,.16)}.status-badge.leave{color:#b8d5ff;background:rgba(102,168,255,.06);border:1px solid rgba(102,168,255,.16)}
-.schedule-page-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 24px;border:1px solid var(--border);border-radius:20px;background:radial-gradient(circle at 85% 0%,rgba(39,240,181,.10),transparent 32%),linear-gradient(145deg,var(--surface2),#060a09)}.schedule-page-head h2{margin-top:5px;font-size:clamp(25px,2.8vw,40px)}.schedule-page-head p:last-child{margin-top:8px;color:var(--muted);font-size:12px}.month-switcher{display:flex;align-items:center;gap:8px}.month-button{width:38px;height:38px;border:1px solid var(--border);border-radius:11px;color:#c8d1cf;background:rgba(255,255,255,.02);font-size:18px}.month-label{min-width:155px;padding:10px 14px;border:1px solid var(--border);border-radius:11px;text-align:center;background:#07100e;font-size:12px;font-weight:800}
-.schedule-main-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.75fr);gap:15px;margin-top:15px}.legend{display:flex;flex-wrap:wrap;gap:7px;padding:12px 18px;border-bottom:1px solid var(--border)}.legend-item{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid var(--border);border-radius:999px;color:#aab5b2;font-size:9px}.legend-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}.legend-dot.am1{background:var(--warning)}.legend-dot.pm{background:var(--blue)}.legend-dot.pm1{background:#548df5}.legend-dot.off{background:#6d7775}.legend-dot.al{background:var(--danger)}
-.calendar-wrap{overflow-x:auto;padding:14px}.calendar{min-width:700px;display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.calendar-weekday{padding:8px 4px;text-align:center;color:#667573;font-size:9px;font-weight:800;text-transform:uppercase}.calendar-day{min-height:104px;padding:10px;border:1px solid var(--border);border-radius:13px;background:rgba(255,255,255,.012)}.calendar-day.muted{opacity:.28}.calendar-day.today{border-color:rgba(39,240,181,.48);box-shadow:0 0 26px rgba(39,240,181,.05)}.calendar-date{display:flex;justify-content:space-between;color:#c4cfcc;font-size:10px;font-weight:750}.today-tag{color:var(--green);font-size:8px;font-weight:900;text-transform:uppercase}.shift-pill{margin-top:15px;display:inline-flex;min-width:52px;justify-content:center;padding:7px 10px;border-radius:10px;font-size:10px;font-weight:900;border:1px solid rgba(39,240,181,.15);color:#c9ffef;background:rgba(39,240,181,.055)}.shift-pill.am1{color:#ffe0a4;background:rgba(242,186,85,.06);border-color:rgba(242,186,85,.18)}.shift-pill.pm{color:#bfd8ff;background:rgba(102,168,255,.06);border-color:rgba(102,168,255,.18)}.shift-pill.pm1{color:#b9d0ff;background:rgba(84,141,245,.08);border-color:rgba(84,141,245,.2)}.shift-pill.off{color:#aeb8b6;background:rgba(125,139,135,.05);border-color:rgba(125,139,135,.15)}.shift-pill.al{color:#ffb8bf;background:rgba(255,102,116,.06);border-color:rgba(255,102,116,.18)}.shift-time-small{display:block;margin-top:6px;color:#657471;font-size:8px}
-.schedule-side{display:grid;gap:15px;align-content:start}.today-shift-card{padding:21px;border:1px solid rgba(39,240,181,.18);border-radius:18px;background:radial-gradient(circle at 90% 0%,rgba(39,240,181,.11),transparent 36%),linear-gradient(145deg,var(--surface2),#060a09)}.today-shift-code{margin-top:16px;font-size:42px;font-weight:900}.today-shift-time{margin-top:3px;color:var(--green);font-size:13px;font-weight:750}.today-shift-note{margin-top:12px;color:var(--muted);font-size:10px}.upcoming-list{padding:8px 18px 16px}.upcoming-item{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}.upcoming-date{width:44px;height:44px;display:grid;place-items:center;border-radius:10px;background:rgba(39,240,181,.05);color:var(--green);font-size:9px;font-weight:900;text-align:center}.upcoming-copy strong{display:block;font-size:11px}.upcoming-copy span{display:block;margin-top:3px;color:var(--muted);font-size:9px}.upcoming-code{font-size:11px;font-weight:900}
-.placeholder{min-height:420px;display:grid;place-items:center;padding:40px;border:1px solid var(--border);border-radius:20px;background:linear-gradient(145deg,var(--surface2),#060a09);text-align:center}.placeholder h2{font-size:26px}.placeholder p{max-width:470px;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.6}
-@media(max-width:1100px){:root{--sidebar:215px}.stats-grid,.attendance-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-grid,.attendance-hero,.schedule-main-grid{grid-template-columns:1fr}.schedule-side{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:800px){.app{display:block}.sidebar{position:fixed;z-index:100;left:0;top:0;width:250px;transform:translateX(-100%);transition:.25s}.sidebar.open{transform:translateX(0)}.menu-button{display:grid}.topbar{padding:12px 17px}.content{padding:16px 14px 30px}.welcome{grid-template-columns:1fr}.attendance-body{grid-template-columns:1fr}.schedule-page-head{align-items:flex-start;flex-direction:column}.month-switcher{width:100%}.month-label{flex:1;min-width:0}.schedule-side{grid-template-columns:1fr}}
-@media(max-width:600px){.stats-grid,.attendance-summary{grid-template-columns:1fr}.attendance-action-row{grid-template-columns:1fr}.top-actions .status-chip{display:none}.calendar-wrap{padding:10px 4px 14px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#030706">
+  <title>Staff Dashboard | Portal V3</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #030706;
+      --surface: #080d0c;
+      --surface-2: #0b1211;
+      --border: #22312f;
+      --border-hover: #35504b;
+      --text: #f4f7f6;
+      --muted: #8f9c9a;
+      --green: #27f0b5;
+      --warning: #f2ba55;
+      --danger: #ff6674;
+      --blue: #66a8ff;
+      --sidebar: 245px;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 80% 0%, rgba(16,130,95,.08), transparent 28%),
+        var(--bg);
+      overflow-x: hidden;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0,1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: linear-gradient(180deg,#080e0d,#030706);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 8px 25px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: white;
+      color: #07100e;
+      font-weight: 900;
+      transform: rotate(-7deg);
+    }
+
+    .brand-copy strong { display: block; font-size: 14px; line-height: 1.15; }
+    .brand-copy span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+    .nav-label {
+      margin: 24px 10px 10px;
+      color: #667573;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .nav { display: grid; gap: 5px; }
+
+    .nav-link {
+      width: 100%;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 13px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      color: #9ca8a6;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 650;
+      transition: .2s;
+    }
+
+    .nav-link svg { width: 19px; height: 19px; }
+    .nav-link:hover { color: white; background: rgba(255,255,255,.03); }
+    .nav-link.active { color: #06110e; background: white; border-color: white; }
+
+    .sidebar-bottom { margin-top: auto; padding-top: 20px; }
+
+    .staff-mini {
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.018);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #05100d;
+      background: linear-gradient(135deg,white,#c9fff0);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .staff-mini strong { display: block; font-size: 12px; }
+    .staff-mini span { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+
+    .logout {
+      width: 100%;
+      margin-top: 9px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: #aeb9b7;
+      background: transparent;
+      font-size: 12px;
+    }
+
+    .main { min-width: 0; }
+
+    .topbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px clamp(22px,3vw,42px);
+      border-bottom: 1px solid var(--border);
+      background: rgba(3,7,6,.88);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .page-heading p { margin-bottom: 3px; color: var(--muted); font-size: 11px; }
+    .page-heading h1 { font-size: clamp(20px,2vw,28px); letter-spacing: -.035em; }
+
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+
+    .status-chip {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: #c0cac8;
+      background: var(--surface);
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px rgba(39,240,181,.7);
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface);
+      color: #c5cfcd;
+    }
+
+    .menu-button { display: none; }
+
+    .content {
+      width: 100%;
+      padding: clamp(20px,2.5vw,36px) clamp(20px,3vw,42px) 42px;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(145deg,var(--surface-2),#060a09);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title p {
+      color: #697774;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-weight: 800;
+    }
+
+    .panel-title h3 { margin-top: 3px; font-size: 15px; }
+
+    .panel-link {
+      border: 0;
+      background: none;
+      color: var(--green);
+      font-size: 10px;
+    }
+
+    .section-eyebrow {
+      color: var(--green);
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .welcome {
+      min-height: 178px;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      align-items: center;
+      gap: 30px;
+      padding: clamp(24px,3vw,38px);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 92% 20%, rgba(30,223,165,.14), transparent 28%),
+        linear-gradient(135deg,#0a1110,#060a09);
+    }
+
+    .welcome-label {
+      margin-bottom: 8px;
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    .welcome h2 {
+      font-size: clamp(27px,3vw,44px);
+      line-height: 1;
+      letter-spacing: -.045em;
+    }
+
+    .welcome-copy {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .shift-box {
+      min-width: 185px;
+      padding: 17px;
+      border: 1px solid rgba(39,240,181,.18);
+      border-radius: 16px;
+      background: rgba(3,10,8,.65);
+    }
+
+    .shift-box span {
+      display: block;
+      color: #83918e;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .shift-box strong { display: block; margin-top: 6px; font-size: 21px; }
+    .shift-box small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 14px;
+      margin-top: 15px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(145deg,var(--surface-2),#060a09);
+    }
+
+    .stat-top { display: flex; justify-content: space-between; }
+    .stat-title { color: var(--muted); font-size: 11px; }
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--green);
+      background: rgba(39,240,181,.06);
+    }
+
+    .stat-value { margin-top: 16px; font-size: clamp(24px,2.3vw,34px); font-weight: 800; }
+    .stat-note { margin-top: 4px; color: #667573; font-size: 10px; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.45fr) minmax(280px,.75fr);
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .attendance-body {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(220px,.75fr);
+      gap: 18px;
+      padding: 20px;
+    }
+
+    .current-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      width: max-content;
+      padding: 7px 10px;
+      border: 1px solid rgba(39,240,181,.15);
+      border-radius: 999px;
+      color: #bdf8e7;
+      background: rgba(39,240,181,.055);
+      font-size: 10px;
+    }
+
+    .attendance-time {
+      margin-top: 13px;
+      font-size: clamp(29px,3vw,44px);
+      font-weight: 800;
+    }
+
+    .attendance-date { margin-top: 6px; color: var(--muted); font-size: 11px; }
+
+    .attendance-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    .primary-button, .secondary-button {
+      min-height: 43px;
+      border-radius: 11px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .primary-button { border: 0; color: #05100d; background: white; }
+    .secondary-button { border: 1px solid var(--border); color: #c5cfcd; background: transparent; }
+
+    .attendance-details { display: grid; gap: 8px; }
+
+    .detail-row {
+      min-height: 47px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+
+    .detail-row span { color: var(--muted); font-size: 10px; }
+    .detail-row strong { font-size: 11px; }
+
+    .schedule-body { padding: 10px 18px 18px; }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 48px minmax(0,1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(34,49,47,.75);
+    }
+
+    .schedule-item:last-child { border-bottom: 0; }
+
+    .day-box {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--green);
+      background: rgba(39,240,181,.055);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .schedule-copy strong { display: block; font-size: 11px; }
+    .schedule-copy span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .schedule-time { font-size: 10px; font-weight: 750; }
+
+    .attendance-hero {
+      display: grid;
+      grid-template-columns: minmax(0,1.2fr) minmax(260px,.8fr);
+      gap: 15px;
+    }
+
+    .attendance-live, .shift-card {
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(145deg,var(--surface-2),#060a09);
+    }
+
+    .attendance-live {
+      background:
+        radial-gradient(circle at 90% 0%, rgba(39,240,181,.12), transparent 34%),
+        linear-gradient(145deg,var(--surface-2),#060a09);
+    }
+
+    .attendance-live-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .attendance-live h2 { margin-top: 7px; font-size: clamp(26px,2.7vw,40px); }
+    .live-clock-big { margin-top: 22px; font-size: clamp(36px,4vw,58px); font-weight: 850; }
+    .live-date-big { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+    .attendance-action-row {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .attendance-action {
+      min-height: 48px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .attendance-action.primary { border: 0; color: #04100d; background: white; }
+    .attendance-action.secondary { border: 1px solid var(--border); color: #c7d0ce; background: transparent; }
+    .attendance-action.danger { border: 1px solid rgba(255,102,116,.25); color: #ffabb3; background: rgba(255,102,116,.04); }
+    .attendance-action:disabled { opacity: .38; cursor: not-allowed; }
+
+    .shift-card h3 { margin-top: 7px; font-size: 22px; }
+    .shift-list { display: grid; gap: 9px; margin-top: 22px; }
+
+    .shift-row {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+
+    .shift-row span { color: var(--muted); font-size: 10px; }
+    .shift-row strong { font-size: 11px; }
+
+    .attendance-summary {
+      margin-top: 15px;
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .summary-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(145deg,var(--surface-2),#060a09);
+    }
+
+    .summary-card span { color: var(--muted); font-size: 10px; }
+    .summary-card strong { display: block; margin-top: 10px; font-size: 28px; }
+    .present strong { color: var(--green); }
+    .late strong { color: var(--warning); }
+    .absent strong { color: var(--danger); }
+    .leave strong { color: var(--blue); }
+
+    .attendance-history { margin-top: 15px; }
+    .history-wrap { overflow-x: auto; }
+    .history-table { width: 100%; border-collapse: collapse; }
+    .history-table th, .history-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .history-table th { color: #667573; font-size: 9px; text-transform: uppercase; }
+    .history-table td { font-size: 11px; }
+
+    .status-badge {
+      display: inline-flex;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 9px;
+      font-weight: 750;
+    }
+
+    .status-badge.present { color:#baf8e5;background:rgba(39,240,181,.06);border:1px solid rgba(39,240,181,.14); }
+    .status-badge.late { color:#ffd794;background:rgba(242,186,85,.06);border:1px solid rgba(242,186,85,.16); }
+    .status-badge.leave { color:#b8d5ff;background:rgba(102,168,255,.06);border:1px solid rgba(102,168,255,.16); }
+
+    .schedule-page-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 24px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 85% 0%, rgba(39,240,181,.10), transparent 32%),
+        linear-gradient(145deg,var(--surface-2),#060a09);
+    }
+
+    .schedule-page-head h2 { margin-top: 5px; font-size: clamp(25px,2.8vw,40px); }
+    .schedule-page-head p:last-child { margin-top: 8px; color: var(--muted); font-size: 12px; }
+
+    .month-switcher { display: flex; align-items: center; gap: 8px; }
+
+    .month-button {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: #c8d1cf;
+      background: rgba(255,255,255,.02);
+      font-size: 18px;
+    }
+
+    .month-label {
+      min-width: 155px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      text-align: center;
+      background: #07100e;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .schedule-main-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.55fr) minmax(290px,.75fr);
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .schedule-status {
+      margin-top: 15px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.015);
+      font-size: 11px;
+    }
+
+    .schedule-status.ok {
+      color: #baf8e5;
+      border-color: rgba(39,240,181,.18);
+      background: rgba(39,240,181,.04);
+    }
+
+    .schedule-status.error {
+      color: #ffb8bf;
+      border-color: rgba(255,102,116,.20);
+      background: rgba(255,102,116,.04);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: #aab5b2;
+      font-size: 9px;
+    }
+
+    .legend-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .legend-dot.am1 { background: var(--warning); }
+    .legend-dot.pm { background: var(--blue); }
+    .legend-dot.pm1 { background: #548df5; }
+    .legend-dot.off { background: #6d7775; }
+    .legend-dot.al { background: var(--danger); }
+
+    .calendar-wrap { overflow-x: auto; padding: 14px; }
+
+    .calendar {
+      min-width: 700px;
+      display: grid;
+      grid-template-columns: repeat(7,1fr);
+      gap: 8px;
+    }
+
+    .calendar-weekday {
+      padding: 8px 4px;
+      text-align: center;
+      color: #667573;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .calendar-day {
+      min-height: 104px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: rgba(255,255,255,.012);
+    }
+
+    .calendar-day.muted { opacity: .28; }
+    .calendar-day.today { border-color: rgba(39,240,181,.48); box-shadow: 0 0 26px rgba(39,240,181,.05); }
+
+    .calendar-date {
+      display: flex;
+      justify-content: space-between;
+      color: #c4cfcc;
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    .today-tag {
+      color: var(--green);
+      font-size: 8px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .shift-pill {
+      margin-top: 15px;
+      display: inline-flex;
+      min-width: 52px;
+      justify-content: center;
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 900;
+      border: 1px solid rgba(39,240,181,.15);
+      color: #c9ffef;
+      background: rgba(39,240,181,.055);
+    }
+
+    .shift-pill.am1 { color:#ffe0a4;background:rgba(242,186,85,.06);border-color:rgba(242,186,85,.18); }
+    .shift-pill.pm { color:#bfd8ff;background:rgba(102,168,255,.06);border-color:rgba(102,168,255,.18); }
+    .shift-pill.pm1 { color:#b9d0ff;background:rgba(84,141,245,.08);border-color:rgba(84,141,245,.2); }
+    .shift-pill.off { color:#aeb8b6;background:rgba(125,139,135,.05);border-color:rgba(125,139,135,.15); }
+    .shift-pill.al { color:#ffb8bf;background:rgba(255,102,116,.06);border-color:rgba(255,102,116,.18); }
+
+    .shift-time-small {
+      display: block;
+      margin-top: 6px;
+      color: #657471;
+      font-size: 8px;
+    }
+
+    .schedule-side { display: grid; gap: 15px; align-content: start; }
+
+    .today-shift-card {
+      padding: 21px;
+      border: 1px solid rgba(39,240,181,.18);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(39,240,181,.11), transparent 36%),
+        linear-gradient(145deg,var(--surface-2),#060a09);
+    }
+
+    .today-shift-code { margin-top: 16px; font-size: 42px; font-weight: 900; }
+    .today-shift-time { margin-top: 3px; color: var(--green); font-size: 13px; font-weight: 750; }
+    .today-shift-note { margin-top: 12px; color: var(--muted); font-size: 10px; }
+
+    .upcoming-list { padding: 8px 18px 16px; }
+
+    .upcoming-item {
+      display: grid;
+      grid-template-columns: 48px minmax(0,1fr) auto;
+      gap: 11px;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .upcoming-date {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(39,240,181,.05);
+      color: var(--green);
+      font-size: 9px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .upcoming-copy strong { display: block; font-size: 11px; }
+    .upcoming-copy span { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; }
+    .upcoming-code { font-size: 11px; font-weight: 900; }
+
+    .placeholder {
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      padding: 40px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(145deg,var(--surface-2),#060a09);
+      text-align: center;
+    }
+
+    .placeholder h2 { font-size: 26px; }
+    .placeholder p { max-width: 470px; margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    @media (max-width:1100px) {
+      :root { --sidebar: 215px; }
+      .stats-grid, .attendance-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .dashboard-grid, .attendance-hero, .schedule-main-grid { grid-template-columns: 1fr; }
+      .schedule-side { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    }
+
+    @media (max-width:800px) {
+      .app { display:block; }
+      .sidebar {
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 250px;
+        transform: translateX(-100%);
+        transition: .25s;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .menu-button { display:grid; }
+      .topbar { padding: 12px 17px; }
+      .content { padding: 16px 14px 30px; }
+      .welcome { grid-template-columns: 1fr; }
+      .attendance-body { grid-template-columns: 1fr; }
+      .schedule-page-head { align-items:flex-start; flex-direction:column; }
+      .month-switcher { width:100%; }
+      .month-label { flex:1; min-width:0; }
+      .schedule-side { grid-template-columns:1fr; }
+    }
+
+    @media (max-width:600px) {
+      .stats-grid, .attendance-summary { grid-template-columns:1fr; }
+      .attendance-action-row { grid-template-columns:1fr; }
+      .top-actions .status-chip { display:none; }
+      .calendar-wrap { padding:10px 4px 14px; }
+    }
+  </style>
 </head>
+
 <body>
 <div class="app">
-<aside class="sidebar" id="sidebar">
-  <div class="brand"><div class="brand-mark">S</div><div class="brand-copy"><strong>Staff Performance Portal</strong><span>Version V3</span></div></div>
-  <p class="nav-label">Workspace</p>
-  <nav class="nav">
-    <button class="nav-link active" data-view="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</button>
-    <button class="nav-link" data-view="attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Attendance</button>
-    <button class="nav-link" data-view="schedule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>Schedule</button>
-    <button class="nav-link" data-view="performance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Performance</button>
-    <button class="nav-link" data-view="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19c5-7 9-12 16-14-1 7-6 12-13 14H4Z"/><path d="M8 16c3-2 6-5 9-8"/></svg>Annual Leave</button>
-    <button class="nav-link" data-view="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3-7 8-7s8 3 8 7"/></svg>My Profile</button>
-  </nav>
-  <div class="sidebar-bottom"><div class="staff-mini"><div class="avatar">SU</div><div><strong>Staff User</strong><span>Active</span></div></div><button class="logout" id="logoutButton">Sign Out</button></div>
-</aside>
 
-<main class="main">
-<header class="topbar">
-  <div style="display:flex;align-items:center;gap:12px"><button class="icon-button menu-button" id="menuButton">☰</button><div class="page-heading"><p>Staff Workspace</p><h1 id="pageTitle">Overview</h1></div></div>
-  <div class="top-actions"><div class="status-chip"><span class="status-dot"></span>Portal Online</div><button class="icon-button">♢</button></div>
-</header>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-copy">
+        <strong>Staff Performance Portal</strong>
+        <span>Version V3</span>
+      </div>
+    </div>
 
-<section class="content">
+    <p class="nav-label">Workspace</p>
 
-<div class="view active" id="overview">
-  <section class="welcome"><div><p class="welcome-label">Staff Dashboard</p><h2>Welcome back, Staff User.</h2><p class="welcome-copy">Here’s your current attendance, schedule and performance overview.</p></div><div class="shift-box"><span>Today's Shift</span><strong id="overviewTodayShift">AM</strong><small id="overviewTodayShiftTime">6:30 AM – 3:30 PM</small></div></section>
-  <section class="stats-grid">
-    <article class="stat-card"><div class="stat-top"><span class="stat-title">Attendance</span><div class="stat-icon">✓</div></div><div class="stat-value">96%</div><div class="stat-note">Current month</div></article>
-    <article class="stat-card"><div class="stat-top"><span class="stat-title">Performance</span><div class="stat-icon">↗</div></div><div class="stat-value">92</div><div class="stat-note">Overall score</div></article>
-    <article class="stat-card"><div class="stat-top"><span class="stat-title">Leave Balance</span><div class="stat-icon">◇</div></div><div class="stat-value">12</div><div class="stat-note">Days remaining</div></article>
-    <article class="stat-card"><div class="stat-top"><span class="stat-title">Shift Status</span><div class="stat-icon">●</div></div><div class="stat-value" id="overviewShiftStatus">Ready</div><div class="stat-note" id="overviewShiftNote">Not checked in</div></article>
-  </section>
-  <section class="dashboard-grid">
-    <article class="panel"><div class="panel-head"><div class="panel-title"><p>Today</p><h3>Attendance</h3></div><button class="panel-link" data-open="attendance">View details</button></div><div class="attendance-body"><div><div class="current-status" id="overviewAttendanceStatus"><span class="status-dot"></span>Not checked in</div><div class="attendance-time" id="overviewClock">--:--:--</div><div class="attendance-date" id="overviewDate">Loading...</div><div class="attendance-actions"><button class="primary-button" id="overviewCheckButton">Check In</button><button class="secondary-button" id="overviewBreakButton">Start Break</button></div></div><div class="attendance-details"><div class="detail-row"><span>Check In</span><strong id="overviewCheckIn">—</strong></div><div class="detail-row"><span>Break</span><strong id="overviewBreakStatus">—</strong></div><div class="detail-row"><span>Worked</span><strong id="overviewWorked">00h 00m</strong></div><div class="detail-row"><span>Shift</span><strong id="overviewShiftCode">AM</strong></div></div></div></article>
-    <article class="panel"><div class="panel-head"><div class="panel-title"><p>Upcoming</p><h3>Schedule</h3></div><button class="panel-link" data-open="schedule">Full schedule</button></div><div class="schedule-body" id="overviewScheduleList"></div></article>
-  </section>
-</div>
+    <nav class="nav">
+      <button class="nav-link active" data-view="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Overview
+      </button>
 
-<div class="view" id="attendance">
-  <section class="attendance-hero">
-    <article class="attendance-live"><div class="attendance-live-top"><div><p class="section-eyebrow">Today's Attendance</p><h2>Shift Control</h2></div><div class="current-status" id="fullAttendanceStatus"><span class="status-dot"></span>Not checked in</div></div><div class="live-clock-big" id="fullClock">--:--:--</div><div class="live-date-big" id="fullDate">Loading...</div><div class="attendance-action-row"><button class="attendance-action primary" id="fullCheckButton">Check In</button><button class="attendance-action secondary" id="fullBreakButton" disabled>Start Break</button><button class="attendance-action danger" id="fullCheckoutButton" disabled>Check Out</button></div></article>
-    <article class="shift-card"><p class="section-eyebrow">Current Shift</p><h3 id="fullShiftTime">6:30 AM – 3:30 PM</h3><div class="shift-list"><div class="shift-row"><span>Shift Code</span><strong id="fullShiftCode">AM</strong></div><div class="shift-row"><span>Check In</span><strong id="fullCheckIn">—</strong></div><div class="shift-row"><span>Break</span><strong id="fullBreakStatus">—</strong></div><div class="shift-row"><span>Worked</span><strong id="fullWorked">00h 00m</strong></div></div></article>
-  </section>
-  <section class="attendance-summary"><article class="summary-card present"><span>Present</span><strong>18</strong></article><article class="summary-card late"><span>Late</span><strong>2</strong></article><article class="summary-card absent"><span>Absent</span><strong>1</strong></article><article class="summary-card leave"><span>Leave</span><strong>1</strong></article></section>
-  <article class="panel attendance-history"><div class="panel-head"><div class="panel-title"><p>Current Month</p><h3>Attendance History</h3></div></div><div class="history-wrap"><table class="history-table"><thead><tr><th>Date</th><th>Shift</th><th>Check In</th><th>Check Out</th><th>Worked</th><th>Status</th></tr></thead><tbody><tr><td>Oct 05, 2026</td><td>AM</td><td>06:27</td><td>15:33</td><td>8h 06m</td><td><span class="status-badge present">Present</span></td></tr><tr><td>Oct 04, 2026</td><td>OFF</td><td>—</td><td>—</td><td>—</td><td><span class="status-badge leave">Off</span></td></tr><tr><td>Oct 03, 2026</td><td>AM</td><td>06:35</td><td>15:30</td><td>7h 55m</td><td><span class="status-badge late">Late</span></td></tr></tbody></table></div></article>
-</div>
+      <button class="nav-link" data-view="attendance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 7v5l3 2"/>
+        </svg>
+        Attendance
+      </button>
 
-<div class="view" id="schedule">
-  <section class="schedule-page-head"><div><p class="section-eyebrow">My Schedule</p><h2>Monthly Roster</h2><p>Read-only staff view for now. Later this will load directly from your Google Sheet roster.</p></div><div class="month-switcher"><button class="month-button" id="prevMonth">‹</button><div class="month-label" id="monthLabel">October 2026</div><button class="month-button" id="nextMonth">›</button></div></section>
-  <section class="schedule-main-grid">
-    <article class="panel"><div class="panel-head"><div class="panel-title"><p>Calendar</p><h3 id="calendarTitle">October 2026</h3></div><span style="color:var(--muted);font-size:10px">Read only</span></div><div class="legend"><span class="legend-item"><span class="legend-dot"></span>AM</span><span class="legend-item"><span class="legend-dot am1"></span>AM1</span><span class="legend-item"><span class="legend-dot pm"></span>PM</span><span class="legend-item"><span class="legend-dot pm1"></span>PM1</span><span class="legend-item"><span class="legend-dot off"></span>OFF</span><span class="legend-item"><span class="legend-dot al"></span>AL</span></div><div class="calendar-wrap"><div class="calendar" id="calendar"></div></div></article>
-    <aside class="schedule-side"><article class="today-shift-card"><p class="section-eyebrow">Today's Shift</p><div class="today-shift-code" id="todayShiftCode">AM</div><div class="today-shift-time" id="todayShiftTime">6:30 AM – 3:30 PM</div><p class="today-shift-note">Your assigned roster shift for today.</p></article><article class="panel"><div class="panel-head"><div class="panel-title"><p>Next 7 Days</p><h3>Upcoming Shifts</h3></div></div><div class="upcoming-list" id="upcomingList"></div></article></aside>
-  </section>
-</div>
+      <button class="nav-link" data-view="schedule">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <rect x="3" y="5" width="18" height="16" rx="2"/>
+          <path d="M7 3v4M17 3v4M3 10h18"/>
+        </svg>
+        Schedule
+      </button>
 
-<div class="view" id="performance"><div class="placeholder"><div><h2>Performance</h2><p>KPI scores, monthly results, deductions and performance history will be added here.</p></div></div></div>
-<div class="view" id="leave"><div class="placeholder"><div><h2>Annual Leave</h2><p>Leave balance, request history and mobile leave management will be connected to your Google Sheet later.</p></div></div></div>
-<div class="view" id="profile"><div class="placeholder"><div><h2>My Profile</h2><p>Staff information and account details will be added here.</p></div></div></div>
+      <button class="nav-link" data-view="performance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>
+        </svg>
+        Performance
+      </button>
 
-</section>
-</main>
+      <button class="nav-link" data-view="leave">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M4 19c5-7 9-12 16-14-1 7-6 12-13 14H4Z"/>
+          <path d="M8 16c3-2 6-5 9-8"/>
+        </svg>
+        Annual Leave
+      </button>
+
+      <button class="nav-link" data-view="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 21c0-4 3-7 8-7s8 3 8 7"/>
+        </svg>
+        My Profile
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="staff-mini">
+        <div class="avatar">SU</div>
+        <div>
+          <strong id="sidebarStaffName">Staff User</strong>
+          <span>Active</span>
+        </div>
+      </div>
+
+      <button class="logout" id="logoutButton">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="icon-button menu-button" id="menuButton">☰</button>
+        <div class="page-heading">
+          <p>Staff Workspace</p>
+          <h1 id="pageTitle">Overview</h1>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="status-chip">
+          <span class="status-dot"></span>
+          Portal Online
+        </div>
+        <button class="icon-button">♢</button>
+      </div>
+    </header>
+
+    <section class="content">
+
+      <div class="view active" id="overview">
+        <section class="welcome">
+          <div>
+            <p class="welcome-label">Staff Dashboard</p>
+            <h2>Welcome back, <span id="welcomeName">Staff User</span>.</h2>
+            <p class="welcome-copy">Here’s your current attendance, schedule and performance overview.</p>
+          </div>
+
+          <div class="shift-box">
+            <span>Today's Shift</span>
+            <strong id="overviewTodayShift">—</strong>
+            <small id="overviewTodayShiftTime">Loading schedule...</small>
+          </div>
+        </section>
+
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-title">Attendance</span><div class="stat-icon">✓</div></div>
+            <div class="stat-value">96%</div>
+            <div class="stat-note">Current month</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-title">Performance</span><div class="stat-icon">↗</div></div>
+            <div class="stat-value">92</div>
+            <div class="stat-note">Overall score</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-title">Leave Balance</span><div class="stat-icon">◇</div></div>
+            <div class="stat-value">12</div>
+            <div class="stat-note">Days remaining</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top"><span class="stat-title">Shift Status</span><div class="stat-icon">●</div></div>
+            <div class="stat-value" id="overviewShiftStatus">Ready</div>
+            <div class="stat-note" id="overviewShiftNote">Not checked in</div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div class="panel-title"><p>Today</p><h3>Attendance</h3></div>
+              <button class="panel-link" data-open="attendance">View details</button>
+            </div>
+
+            <div class="attendance-body">
+              <div>
+                <div class="current-status" id="overviewAttendanceStatus"><span class="status-dot"></span>Not checked in</div>
+                <div class="attendance-time" id="overviewClock">--:--:--</div>
+                <div class="attendance-date" id="overviewDate">Loading...</div>
+
+                <div class="attendance-actions">
+                  <button class="primary-button" id="overviewCheckButton">Check In</button>
+                  <button class="secondary-button" id="overviewBreakButton">Start Break</button>
+                </div>
+              </div>
+
+              <div class="attendance-details">
+                <div class="detail-row"><span>Check In</span><strong id="overviewCheckIn">—</strong></div>
+                <div class="detail-row"><span>Break</span><strong id="overviewBreakStatus">—</strong></div>
+                <div class="detail-row"><span>Worked</span><strong id="overviewWorked">00h 00m</strong></div>
+                <div class="detail-row"><span>Shift</span><strong id="overviewShiftCode">—</strong></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div class="panel-title"><p>Upcoming</p><h3>Schedule</h3></div>
+              <button class="panel-link" data-open="schedule">Full schedule</button>
+            </div>
+            <div class="schedule-body" id="overviewScheduleList"></div>
+          </article>
+        </section>
+      </div>
+
+      <div class="view" id="attendance">
+        <section class="attendance-hero">
+          <article class="attendance-live">
+            <div class="attendance-live-top">
+              <div><p class="section-eyebrow">Today's Attendance</p><h2>Shift Control</h2></div>
+              <div class="current-status" id="fullAttendanceStatus"><span class="status-dot"></span>Not checked in</div>
+            </div>
+
+            <div class="live-clock-big" id="fullClock">--:--:--</div>
+            <div class="live-date-big" id="fullDate">Loading...</div>
+
+            <div class="attendance-action-row">
+              <button class="attendance-action primary" id="fullCheckButton">Check In</button>
+              <button class="attendance-action secondary" id="fullBreakButton" disabled>Start Break</button>
+              <button class="attendance-action danger" id="fullCheckoutButton" disabled>Check Out</button>
+            </div>
+          </article>
+
+          <article class="shift-card">
+            <p class="section-eyebrow">Current Shift</p>
+            <h3 id="fullShiftTime">Loading...</h3>
+
+            <div class="shift-list">
+              <div class="shift-row"><span>Shift Code</span><strong id="fullShiftCode">—</strong></div>
+              <div class="shift-row"><span>Check In</span><strong id="fullCheckIn">—</strong></div>
+              <div class="shift-row"><span>Break</span><strong id="fullBreakStatus">—</strong></div>
+              <div class="shift-row"><span>Worked</span><strong id="fullWorked">00h 00m</strong></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="attendance-summary">
+          <article class="summary-card present"><span>Present</span><strong>18</strong></article>
+          <article class="summary-card late"><span>Late</span><strong>2</strong></article>
+          <article class="summary-card absent"><span>Absent</span><strong>1</strong></article>
+          <article class="summary-card leave"><span>Leave</span><strong>1</strong></article>
+        </section>
+
+        <article class="panel attendance-history">
+          <div class="panel-head"><div class="panel-title"><p>Current Month</p><h3>Attendance History</h3></div></div>
+          <div class="history-wrap">
+            <table class="history-table">
+              <thead>
+                <tr><th>Date</th><th>Shift</th><th>Check In</th><th>Check Out</th><th>Worked</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Oct 05, 2026</td><td>AM</td><td>06:27</td><td>15:33</td><td>8h 06m</td><td><span class="status-badge present">Present</span></td></tr>
+                <tr><td>Oct 04, 2026</td><td>OFF</td><td>—</td><td>—</td><td>—</td><td><span class="status-badge leave">Off</span></td></tr>
+                <tr><td>Oct 03, 2026</td><td>AM</td><td>06:35</td><td>15:30</td><td>7h 55m</td><td><span class="status-badge late">Late</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+
+      <div class="view" id="schedule">
+        <section class="schedule-page-head">
+          <div>
+            <p class="section-eyebrow">My Schedule</p>
+            <h2>Monthly Roster</h2>
+            <p>Live schedule from the Staff Portal V3 TEST roster.</p>
+          </div>
+
+          <div class="month-switcher">
+            <button class="month-button" id="prevMonth">‹</button>
+            <div class="month-label" id="monthLabel">October 2026</div>
+            <button class="month-button" id="nextMonth">›</button>
+          </div>
+        </section>
+
+        <div class="schedule-status" id="scheduleStatus">Loading live schedule...</div>
+
+        <section class="schedule-main-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div class="panel-title"><p>Calendar</p><h3 id="calendarTitle">October 2026</h3></div>
+              <span style="color:var(--muted);font-size:10px">Read only</span>
+            </div>
+
+            <div class="legend">
+              <span class="legend-item"><span class="legend-dot"></span>AM</span>
+              <span class="legend-item"><span class="legend-dot am1"></span>AM1</span>
+              <span class="legend-item"><span class="legend-dot pm"></span>PM</span>
+              <span class="legend-item"><span class="legend-dot pm1"></span>PM1</span>
+              <span class="legend-item"><span class="legend-dot off"></span>OFF</span>
+              <span class="legend-item"><span class="legend-dot al"></span>AL</span>
+            </div>
+
+            <div class="calendar-wrap">
+              <div class="calendar" id="calendar"></div>
+            </div>
+          </article>
+
+          <aside class="schedule-side">
+            <article class="today-shift-card">
+              <p class="section-eyebrow">Today's Shift</p>
+              <div class="today-shift-code" id="todayShiftCode">—</div>
+              <div class="today-shift-time" id="todayShiftTime">Loading...</div>
+              <p class="today-shift-note">Your assigned roster shift for today.</p>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head"><div class="panel-title"><p>Next 7 Days</p><h3>Upcoming Shifts</h3></div></div>
+              <div class="upcoming-list" id="upcomingList"></div>
+            </article>
+          </aside>
+        </section>
+      </div>
+
+      <div class="view" id="performance">
+        <div class="placeholder"><div><h2>Performance</h2><p>KPI scores, monthly results, deductions and performance history will be added here.</p></div></div>
+      </div>
+
+      <div class="view" id="leave">
+        <div class="placeholder"><div><h2>Annual Leave</h2><p>Leave balance, request history and mobile leave management will be connected to your Google Sheet later.</p></div></div>
+      </div>
+
+      <div class="view" id="profile">
+        <div class="placeholder"><div><h2>My Profile</h2><p>Staff information and account details will be added here.</p></div></div>
+      </div>
+
+    </section>
+  </main>
 </div>
 
 <script>
-const SHIFT_TIMES={AM:"6:30 AM – 3:30 PM",AM1:"9:30 AM – 6:30 PM",PM1:"12:30 PM – 9:30 PM",PM:"2:30 PM – 11:30 PM",OFF:"Off Day",AL:"Annual Leave",OT:"Overtime","ON CALL":"On Call"};
-const DEMO_SCHEDULE={"2026-10-01":"AM","2026-10-02":"AM","2026-10-03":"OFF","2026-10-04":"OFF","2026-10-05":"AM","2026-10-06":"AM","2026-10-07":"AM","2026-10-08":"AM","2026-10-09":"AM","2026-10-10":"OFF","2026-10-11":"OFF","2026-10-12":"AM","2026-10-13":"AM","2026-10-14":"AM","2026-10-15":"AM","2026-10-16":"AM","2026-10-17":"OFF","2026-10-18":"OFF","2026-10-19":"AM","2026-10-20":"AM","2026-10-21":"AM","2026-10-22":"AM","2026-10-23":"AM","2026-10-24":"OFF","2026-10-25":"OFF","2026-10-26":"AM1","2026-10-27":"AM1","2026-10-28":"AM1","2026-10-29":"AL","2026-10-30":"AL","2026-10-31":"OFF"};
+  const API_URL = "https://script.google.com/macros/s/AKfycbxPcYgFwx7OdSSfrGDJooj23znWjyLJwb-qY4fnRsQrLTdeE8ixPNDVbM2Ut6ITdO1v/exec";
 
-const navLinks=document.querySelectorAll(".nav-link"),views=document.querySelectorAll(".view"),pageTitle=document.getElementById("pageTitle"),sidebar=document.getElementById("sidebar");
-function openView(name){views.forEach(v=>v.classList.remove("active"));navLinks.forEach(l=>l.classList.remove("active"));document.getElementById(name)?.classList.add("active");document.querySelector(`[data-view="${name}"]`)?.classList.add("active");pageTitle.textContent={overview:"Overview",attendance:"Attendance",schedule:"Schedule",performance:"Performance",leave:"Annual Leave",profile:"My Profile"}[name]||"Staff Portal";if(name==="schedule")renderSchedule();if(innerWidth<=800)sidebar.classList.remove("open")}
-navLinks.forEach(l=>l.addEventListener("click",()=>openView(l.dataset.view)));document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openView(b.dataset.open)));document.getElementById("menuButton").addEventListener("click",()=>sidebar.classList.toggle("open"));document.getElementById("logoutButton").addEventListener("click",()=>location.href="index.html");
+  // For now this is fixed while we test the live schedule.
+  // Later this will come from the logged-in user's account mapping.
+  const STAFF_NAME = "Suhin Ahmad Rubel";
 
-let checkedIn=false,onBreak=false,checkInTimestamp=null,breakStartedAt=null,totalBreakMs=0;
-const oc=document.getElementById("overviewClock"),od=document.getElementById("overviewDate"),fc=document.getElementById("fullClock"),fd=document.getElementById("fullDate"),oas=document.getElementById("overviewAttendanceStatus"),fas=document.getElementById("fullAttendanceStatus"),ocb=document.getElementById("overviewCheckButton"),fcb=document.getElementById("fullCheckButton"),fco=document.getElementById("fullCheckoutButton"),obb=document.getElementById("overviewBreakButton"),fbb=document.getElementById("fullBreakButton"),oci=document.getElementById("overviewCheckIn"),fci=document.getElementById("fullCheckIn"),obs=document.getElementById("overviewBreakStatus"),fbs=document.getElementById("fullBreakStatus"),ow=document.getElementById("overviewWorked"),fw=document.getElementById("fullWorked"),oss=document.getElementById("overviewShiftStatus"),osn=document.getElementById("overviewShiftNote");
+  const navLinks = document.querySelectorAll(".nav-link");
+  const views = document.querySelectorAll(".view");
+  const pageTitle = document.getElementById("pageTitle");
+  const sidebar = document.getElementById("sidebar");
 
-function updateClock(){const n=new Date(),t=n.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"}),d=n.toLocaleDateString([],{weekday:"long",year:"numeric",month:"long",day:"numeric"});oc.textContent=fc.textContent=t;od.textContent=fd.textContent=d;updateWorked()}
-function updateWorked(){if(!checkedIn||!checkInTimestamp){ow.textContent=fw.textContent="00h 00m";return}let e=Date.now()-checkInTimestamp-totalBreakMs;if(onBreak&&breakStartedAt)e-=Date.now()-breakStartedAt;if(e<0)e=0;const m=Math.floor(e/60000),h=Math.floor(m/60),mm=m%60;ow.textContent=fw.textContent=`${String(h).padStart(2,"0")}h ${String(mm).padStart(2,"0")}m`}
-function syncAttendance(){fbb.disabled=fco.disabled=!checkedIn;if(!checkedIn){oas.innerHTML=fas.innerHTML='<span class="status-dot"></span>Not checked in';ocb.textContent=fcb.textContent="Check In";oss.textContent="Ready";osn.textContent="Not checked in";obb.textContent=fbb.textContent="Start Break";return}if(onBreak){oas.innerHTML=fas.innerHTML='<span class="status-dot"></span>On break';obb.textContent=fbb.textContent="End Break";oss.textContent="Break";osn.textContent="Break in progress"}else{oas.innerHTML=fas.innerHTML='<span class="status-dot"></span>Checked in';obb.textContent=fbb.textContent="Start Break";oss.textContent="Active";osn.textContent="Currently working"}ocb.textContent="Check Out";fcb.textContent="Checked In"}
-function checkIn(){if(checkedIn){checkOut();return}checkedIn=true;onBreak=false;checkInTimestamp=Date.now();totalBreakMs=0;const t=new Date(checkInTimestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});oci.textContent=fci.textContent=t;obs.textContent=fbs.textContent="—";syncAttendance()}
-function toggleBreak(){if(!checkedIn)return;if(!onBreak){onBreak=true;breakStartedAt=Date.now();obs.textContent=fbs.textContent="On break"}else{onBreak=false;if(breakStartedAt)totalBreakMs+=Date.now()-breakStartedAt;breakStartedAt=null;obs.textContent=fbs.textContent="Completed"}syncAttendance()}
-function checkOut(){if(!checkedIn)return;if(onBreak&&breakStartedAt)totalBreakMs+=Date.now()-breakStartedAt;checkedIn=false;onBreak=false;breakStartedAt=null;oas.innerHTML=fas.innerHTML='<span class="status-dot"></span>Shift complete';oss.textContent="Complete";osn.textContent="Checked out";syncAttendance()}
-ocb.addEventListener("click",checkIn);fcb.addEventListener("click",()=>{if(!checkedIn)checkIn()});fco.addEventListener("click",checkOut);obb.addEventListener("click",toggleBreak);fbb.addEventListener("click",toggleBreak);
+  const scheduleStatus = document.getElementById("scheduleStatus");
+  const monthLabel = document.getElementById("monthLabel");
+  const calendarTitle = document.getElementById("calendarTitle");
+  const calendar = document.getElementById("calendar");
+  const upcomingList = document.getElementById("upcomingList");
 
-function key(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
-function shift(d){return DEMO_SCHEDULE[key(d)]||"OFF"}function cls(c){return c.toLowerCase().replace(/\s+/g,"")}
-let cursor=new Date(2026,9,1);
-function buildDays(y,m){const first=new Date(y,m,1),last=new Date(y,m+1,0),off=first.getDay(),arr=[],prev=new Date(y,m,0).getDate();for(let i=off-1;i>=0;i--)arr.push({date:new Date(y,m-1,prev-i),muted:true});for(let d=1;d<=last.getDate();d++)arr.push({date:new Date(y,m,d),muted:false});while(arr.length%7)arr.push({date:new Date(y,m+1,arr.length-(off+last.getDate())+1),muted:true});return arr}
-function renderSchedule(){const y=cursor.getFullYear(),m=cursor.getMonth(),label=cursor.toLocaleDateString([],{month:"long",year:"numeric"});document.getElementById("monthLabel").textContent=document.getElementById("calendarTitle").textContent=label;const cal=document.getElementById("calendar");cal.innerHTML="";["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(x=>{const e=document.createElement("div");e.className="calendar-weekday";e.textContent=x;cal.appendChild(e)});const todayKey="2026-10-06";buildDays(y,m).forEach(it=>{const k=key(it.date),code=DEMO_SCHEDULE[k]||(it.muted?"":"OFF"),e=document.createElement("div");e.className="calendar-day"+(it.muted?" muted":"")+(k===todayKey?" today":"");e.innerHTML=`<div class="calendar-date"><span>${it.date.getDate()}</span>${k===todayKey?'<span class="today-tag">Today</span>':""}</div>${code?`<span class="shift-pill ${cls(code)}">${code}</span><span class="shift-time-small">${SHIFT_TIMES[code]||""}</span>`:""}`;cal.appendChild(e)});renderUpcoming();syncShiftCards()}
-function renderUpcoming(){const box=document.getElementById("upcomingList");box.innerHTML="";const start=new Date(2026,9,6);for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);const c=shift(d),e=document.createElement("div");e.className="upcoming-item";e.innerHTML=`<div class="upcoming-date">${d.toLocaleDateString([],{weekday:"short"}).toUpperCase()}<br>${d.getDate()}</div><div class="upcoming-copy"><strong>${SHIFT_TIMES[c]||c}</strong><span>${d.toLocaleDateString([],{month:"short",day:"numeric"})}</span></div><div class="upcoming-code">${c}</div>`;box.appendChild(e)}}
-function syncShiftCards(){const d=new Date(2026,9,6),c=shift(d),t=SHIFT_TIMES[c]||c;document.getElementById("todayShiftCode").textContent=c;document.getElementById("todayShiftTime").textContent=t;document.getElementById("overviewTodayShift").textContent=c;document.getElementById("overviewTodayShiftTime").textContent=t;document.getElementById("overviewShiftCode").textContent=c;document.getElementById("fullShiftCode").textContent=c;document.getElementById("fullShiftTime").textContent=t}
-document.getElementById("prevMonth").addEventListener("click",()=>{cursor=new Date(cursor.getFullYear(),cursor.getMonth()-1,1);renderSchedule()});document.getElementById("nextMonth").addEventListener("click",()=>{cursor=new Date(cursor.getFullYear(),cursor.getMonth()+1,1);renderSchedule()});
-function renderOverviewSchedule(){const box=document.getElementById("overviewScheduleList");box.innerHTML="";const start=new Date(2026,9,6);for(let i=0;i<4;i++){const d=new Date(start);d.setDate(start.getDate()+i);const c=shift(d),row=document.createElement("div");row.className="schedule-item";row.innerHTML=`<div class="day-box">${i===0?"TODAY":d.toLocaleDateString([],{weekday:"short"}).toUpperCase()}</div><div class="schedule-copy"><strong>${c}</strong><span>${SHIFT_TIMES[c]||""}</span></div><div class="schedule-time">${c}</div>`;box.appendChild(row)}}
-updateClock();syncAttendance();renderSchedule();renderOverviewSchedule();setInterval(updateClock,1000);
+  let checkedIn = false;
+  let onBreak = false;
+  let checkInTimestamp = null;
+  let breakStartedAt = null;
+  let totalBreakMs = 0;
+
+  let scheduleCursor = new Date(2026, 9, 1);
+  let liveSchedule = [];
+
+  document.getElementById("sidebarStaffName").textContent = STAFF_NAME;
+  document.getElementById("welcomeName").textContent = STAFF_NAME;
+
+  function openView(name) {
+    views.forEach(v => v.classList.remove("active"));
+    navLinks.forEach(l => l.classList.remove("active"));
+
+    document.getElementById(name)?.classList.add("active");
+    document.querySelector(`[data-view="${name}"]`)?.classList.add("active");
+
+    pageTitle.textContent = {
+      overview: "Overview",
+      attendance: "Attendance",
+      schedule: "Schedule",
+      performance: "Performance",
+      leave: "Annual Leave",
+      profile: "My Profile"
+    }[name] || "Staff Portal";
+
+    if (name === "schedule") {
+      loadScheduleForCursor();
+    }
+
+    if (window.innerWidth <= 800) {
+      sidebar.classList.remove("open");
+    }
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => openView(link.dataset.view));
+  });
+
+  document.querySelectorAll("[data-open]").forEach(button => {
+    button.addEventListener("click", () => openView(button.dataset.open));
+  });
+
+  document.getElementById("menuButton").addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+  });
+
+  document.getElementById("logoutButton").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+
+  function formatDateKey(date) {
+    return [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function shiftClass(code) {
+    return String(code || "").toLowerCase().replace(/\s+/g, "");
+  }
+
+  function scheduleMap() {
+    const map = {};
+    liveSchedule.forEach(item => {
+      map[item.date] = item;
+    });
+    return map;
+  }
+
+  async function fetchSchedule(year, month) {
+    const url =
+      API_URL +
+      "?action=schedule" +
+      "&agent=" + encodeURIComponent(STAFF_NAME) +
+      "&year=" + encodeURIComponent(year) +
+      "&month=" + encodeURIComponent(month);
+
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("Schedule API request failed.");
+    }
+
+    const data = await response.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || "Schedule API returned an error.");
+    }
+
+    return data.schedule || [];
+  }
+
+  async function loadScheduleForCursor() {
+    const year = scheduleCursor.getFullYear();
+    const month = scheduleCursor.getMonth() + 1;
+
+    scheduleStatus.className = "schedule-status";
+    scheduleStatus.textContent = "Loading live schedule...";
+
+    try {
+      liveSchedule = await fetchSchedule(year, month);
+
+      scheduleStatus.className = "schedule-status ok";
+
+      if (liveSchedule.length) {
+        scheduleStatus.textContent =
+          "Live schedule loaded from Staff Portal V3 - TEST.";
+      } else {
+        scheduleStatus.textContent =
+          "No schedule found for " + STAFF_NAME + " in this month.";
+      }
+
+      renderSchedule();
+
+      const now = new Date();
+      if (
+        year === now.getFullYear() &&
+        month === now.getMonth() + 1
+      ) {
+        syncTodayShiftCards(now);
+      }
+
+    } catch (error) {
+      liveSchedule = [];
+      scheduleStatus.className = "schedule-status error";
+      scheduleStatus.textContent =
+        "Could not load live schedule: " + error.message;
+
+      renderSchedule();
+    }
+  }
+
+  function buildCalendarDays(year, monthIndex) {
+    const first = new Date(year, monthIndex, 1);
+    const last = new Date(year, monthIndex + 1, 0);
+    const startOffset = first.getDay();
+    const days = [];
+    const previousMonthLastDay =
+      new Date(year, monthIndex, 0).getDate();
+
+    for (let i = startOffset - 1; i >= 0; i--) {
+      days.push({
+        date: new Date(year, monthIndex - 1, previousMonthLastDay - i),
+        muted: true
+      });
+    }
+
+    for (let day = 1; day <= last.getDate(); day++) {
+      days.push({
+        date: new Date(year, monthIndex, day),
+        muted: false
+      });
+    }
+
+    while (days.length % 7 !== 0) {
+      const nextDay =
+        days.length - (startOffset + last.getDate()) + 1;
+
+      days.push({
+        date: new Date(year, monthIndex + 1, nextDay),
+        muted: true
+      });
+    }
+
+    return days;
+  }
+
+  function renderSchedule() {
+    const year = scheduleCursor.getFullYear();
+    const monthIndex = scheduleCursor.getMonth();
+    const label = scheduleCursor.toLocaleDateString([], {
+      month: "long",
+      year: "numeric"
+    });
+
+    monthLabel.textContent = label;
+    calendarTitle.textContent = label;
+    calendar.innerHTML = "";
+
+    ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(day => {
+      const el = document.createElement("div");
+      el.className = "calendar-weekday";
+      el.textContent = day;
+      calendar.appendChild(el);
+    });
+
+    const map = scheduleMap();
+    const todayKey = formatDateKey(new Date());
+
+    buildCalendarDays(year, monthIndex).forEach(item => {
+      const key = formatDateKey(item.date);
+      const scheduleItem = map[key];
+
+      const cell = document.createElement("div");
+
+      cell.className =
+        "calendar-day" +
+        (item.muted ? " muted" : "") +
+        (key === todayKey ? " today" : "");
+
+      let shiftMarkup = "";
+
+      if (scheduleItem) {
+        shiftMarkup = `
+          <span class="shift-pill ${shiftClass(scheduleItem.shift)}">
+            ${scheduleItem.shift || "—"}
+          </span>
+          <span class="shift-time-small">
+            ${scheduleItem.shiftTime || ""}
+          </span>
+        `;
+      }
+
+      cell.innerHTML = `
+        <div class="calendar-date">
+          <span>${item.date.getDate()}</span>
+          ${key === todayKey ? '<span class="today-tag">Today</span>' : ""}
+        </div>
+        ${shiftMarkup}
+      `;
+
+      calendar.appendChild(cell);
+    });
+
+    renderUpcoming();
+  }
+
+  function renderUpcoming() {
+    upcomingList.innerHTML = "";
+
+    const map = scheduleMap();
+    const start = new Date();
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + i);
+
+      const item = map[formatDateKey(date)];
+
+      const row = document.createElement("div");
+      row.className = "upcoming-item";
+
+      if (item) {
+        row.innerHTML = `
+          <div class="upcoming-date">
+            ${date.toLocaleDateString([], { weekday: "short" }).toUpperCase()}<br>
+            ${date.getDate()}
+          </div>
+
+          <div class="upcoming-copy">
+            <strong>${item.shiftTime || item.shift || "—"}</strong>
+            <span>${date.toLocaleDateString([], { month: "short", day: "numeric" })}</span>
+          </div>
+
+          <div class="upcoming-code">${item.shift || "—"}</div>
+        `;
+      } else {
+        row.innerHTML = `
+          <div class="upcoming-date">
+            ${date.toLocaleDateString([], { weekday: "short" }).toUpperCase()}<br>
+            ${date.getDate()}
+          </div>
+
+          <div class="upcoming-copy">
+            <strong>No roster entry</strong>
+            <span>${date.toLocaleDateString([], { month: "short", day: "numeric" })}</span>
+          </div>
+
+          <div class="upcoming-code">—</div>
+        `;
+      }
+
+      upcomingList.appendChild(row);
+    }
+  }
+
+  function syncTodayShiftCards(date) {
+    const map = scheduleMap();
+    const item = map[formatDateKey(date)];
+
+    const code = item?.shift || "—";
+    const time = item?.shiftTime || "No roster entry";
+
+    document.getElementById("todayShiftCode").textContent = code;
+    document.getElementById("todayShiftTime").textContent = time;
+    document.getElementById("overviewTodayShift").textContent = code;
+    document.getElementById("overviewTodayShiftTime").textContent = time;
+    document.getElementById("overviewShiftCode").textContent = code;
+    document.getElementById("fullShiftCode").textContent = code;
+    document.getElementById("fullShiftTime").textContent = time;
+  }
+
+  async function loadCurrentMonthOverview() {
+    const now = new Date();
+    scheduleCursor = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    try {
+      liveSchedule = await fetchSchedule(
+        now.getFullYear(),
+        now.getMonth() + 1
+      );
+
+      renderOverviewSchedule(now);
+      syncTodayShiftCards(now);
+
+    } catch (error) {
+      document.getElementById("overviewScheduleList").innerHTML =
+        '<div style="padding:18px;color:#8f9c9a;font-size:11px;">Could not load live schedule.</div>';
+
+      syncTodayShiftCards(now);
+    }
+  }
+
+  function renderOverviewSchedule(startDate) {
+    const container =
+      document.getElementById("overviewScheduleList");
+
+    container.innerHTML = "";
+
+    const map = scheduleMap();
+
+    for (let i = 0; i < 4; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+
+      const item = map[formatDateKey(date)];
+
+      const row = document.createElement("div");
+      row.className = "schedule-item";
+
+      row.innerHTML = `
+        <div class="day-box">
+          ${i === 0
+            ? "TODAY"
+            : date.toLocaleDateString([], { weekday: "short" }).toUpperCase()}
+        </div>
+
+        <div class="schedule-copy">
+          <strong>${item?.shift || "—"}</strong>
+          <span>${item?.shiftTime || "No roster entry"}</span>
+        </div>
+
+        <div class="schedule-time">${item?.shift || "—"}</div>
+      `;
+
+      container.appendChild(row);
+    }
+  }
+
+  document.getElementById("prevMonth").addEventListener("click", () => {
+    scheduleCursor =
+      new Date(
+        scheduleCursor.getFullYear(),
+        scheduleCursor.getMonth() - 1,
+        1
+      );
+
+    loadScheduleForCursor();
+  });
+
+  document.getElementById("nextMonth").addEventListener("click", () => {
+    scheduleCursor =
+      new Date(
+        scheduleCursor.getFullYear(),
+        scheduleCursor.getMonth() + 1,
+        1
+      );
+
+    loadScheduleForCursor();
+  });
+
+  const overviewClock = document.getElementById("overviewClock");
+  const overviewDate = document.getElementById("overviewDate");
+  const fullClock = document.getElementById("fullClock");
+  const fullDate = document.getElementById("fullDate");
+
+  const overviewAttendanceStatus =
+    document.getElementById("overviewAttendanceStatus");
+
+  const fullAttendanceStatus =
+    document.getElementById("fullAttendanceStatus");
+
+  const overviewCheckButton =
+    document.getElementById("overviewCheckButton");
+
+  const fullCheckButton =
+    document.getElementById("fullCheckButton");
+
+  const fullCheckoutButton =
+    document.getElementById("fullCheckoutButton");
+
+  const overviewBreakButton =
+    document.getElementById("overviewBreakButton");
+
+  const fullBreakButton =
+    document.getElementById("fullBreakButton");
+
+  const overviewCheckIn =
+    document.getElementById("overviewCheckIn");
+
+  const fullCheckIn =
+    document.getElementById("fullCheckIn");
+
+  const overviewBreakStatus =
+    document.getElementById("overviewBreakStatus");
+
+  const fullBreakStatus =
+    document.getElementById("fullBreakStatus");
+
+  const overviewWorked =
+    document.getElementById("overviewWorked");
+
+  const fullWorked =
+    document.getElementById("fullWorked");
+
+  const overviewShiftStatus =
+    document.getElementById("overviewShiftStatus");
+
+  const overviewShiftNote =
+    document.getElementById("overviewShiftNote");
+
+  function updateClock() {
+    const now = new Date();
+
+    const time = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
+
+    const date = now.toLocaleDateString([], {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+
+    overviewClock.textContent = time;
+    fullClock.textContent = time;
+    overviewDate.textContent = date;
+    fullDate.textContent = date;
+
+    updateWorked();
+  }
+
+  function updateWorked() {
+    if (!checkedIn || !checkInTimestamp) {
+      overviewWorked.textContent = "00h 00m";
+      fullWorked.textContent = "00h 00m";
+      return;
+    }
+
+    let elapsed =
+      Date.now() -
+      checkInTimestamp -
+      totalBreakMs;
+
+    if (onBreak && breakStartedAt) {
+      elapsed -= Date.now() - breakStartedAt;
+    }
+
+    if (elapsed < 0) elapsed = 0;
+
+    const totalMinutes =
+      Math.floor(elapsed / 60000);
+
+    const hours =
+      Math.floor(totalMinutes / 60);
+
+    const minutes =
+      totalMinutes % 60;
+
+    const display =
+      String(hours).padStart(2,"0") +
+      "h " +
+      String(minutes).padStart(2,"0") +
+      "m";
+
+    overviewWorked.textContent = display;
+    fullWorked.textContent = display;
+  }
+
+  function syncAttendance() {
+    fullBreakButton.disabled =
+      !checkedIn;
+
+    fullCheckoutButton.disabled =
+      !checkedIn;
+
+    if (!checkedIn) {
+      overviewAttendanceStatus.innerHTML =
+        '<span class="status-dot"></span>Not checked in';
+
+      fullAttendanceStatus.innerHTML =
+        '<span class="status-dot"></span>Not checked in';
+
+      overviewCheckButton.textContent =
+        "Check In";
+
+      fullCheckButton.textContent =
+        "Check In";
+
+      overviewShiftStatus.textContent =
+        "Ready";
+
+      overviewShiftNote.textContent =
+        "Not checked in";
+
+      overviewBreakButton.textContent =
+        "Start Break";
+
+      fullBreakButton.textContent =
+        "Start Break";
+
+      return;
+    }
+
+    if (onBreak) {
+      overviewAttendanceStatus.innerHTML =
+        '<span class="status-dot"></span>On break';
+
+      fullAttendanceStatus.innerHTML =
+        '<span class="status-dot"></span>On break';
+
+      overviewBreakButton.textContent =
+        "End Break";
+
+      fullBreakButton.textContent =
+        "End Break";
+
+      overviewShiftStatus.textContent =
+        "Break";
+
+      overviewShiftNote.textContent =
+        "Break in progress";
+
+    } else {
+      overviewAttendanceStatus.innerHTML =
+        '<span class="status-dot"></span>Checked in';
+
+      fullAttendanceStatus.innerHTML =
+        '<span class="status-dot"></span>Checked in';
+
+      overviewBreakButton.textContent =
+        "Start Break";
+
+      fullBreakButton.textContent =
+        "Start Break";
+
+      overviewShiftStatus.textContent =
+        "Active";
+
+      overviewShiftNote.textContent =
+        "Currently working";
+    }
+
+    overviewCheckButton.textContent =
+      "Check Out";
+
+    fullCheckButton.textContent =
+      "Checked In";
+  }
+
+  function checkIn() {
+    if (checkedIn) {
+      checkOut();
+      return;
+    }
+
+    checkedIn = true;
+    onBreak = false;
+    checkInTimestamp = Date.now();
+    totalBreakMs = 0;
+
+    const time =
+      new Date(checkInTimestamp)
+        .toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+    overviewCheckIn.textContent = time;
+    fullCheckIn.textContent = time;
+
+    overviewBreakStatus.textContent = "—";
+    fullBreakStatus.textContent = "—";
+
+    syncAttendance();
+  }
+
+  function toggleBreak() {
+    if (!checkedIn) return;
+
+    if (!onBreak) {
+      onBreak = true;
+      breakStartedAt = Date.now();
+      overviewBreakStatus.textContent = "On break";
+      fullBreakStatus.textContent = "On break";
+
+    } else {
+      onBreak = false;
+
+      if (breakStartedAt) {
+        totalBreakMs +=
+          Date.now() -
+          breakStartedAt;
+      }
+
+      breakStartedAt = null;
+
+      overviewBreakStatus.textContent = "Completed";
+      fullBreakStatus.textContent = "Completed";
+    }
+
+    syncAttendance();
+  }
+
+  function checkOut() {
+    if (!checkedIn) return;
+
+    if (onBreak && breakStartedAt) {
+      totalBreakMs +=
+        Date.now() -
+        breakStartedAt;
+    }
+
+    checkedIn = false;
+    onBreak = false;
+    breakStartedAt = null;
+
+    overviewAttendanceStatus.innerHTML =
+      '<span class="status-dot"></span>Shift complete';
+
+    fullAttendanceStatus.innerHTML =
+      '<span class="status-dot"></span>Shift complete';
+
+    overviewShiftStatus.textContent =
+      "Complete";
+
+    overviewShiftNote.textContent =
+      "Checked out";
+
+    syncAttendance();
+  }
+
+  overviewCheckButton.addEventListener("click", checkIn);
+  fullCheckButton.addEventListener("click", () => {
+    if (!checkedIn) checkIn();
+  });
+
+  fullCheckoutButton.addEventListener("click", checkOut);
+  overviewBreakButton.addEventListener("click", toggleBreak);
+  fullBreakButton.addEventListener("click", toggleBreak);
+
+  updateClock();
+  syncAttendance();
+  loadCurrentMonthOverview();
+
+  setInterval(updateClock, 1000);
 </script>
 </body>
 </html>
