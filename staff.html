@@ -2,57 +2,2930 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b1220">
-  <title>Staff Dashboard · Portal V3</title>
-  <link rel="stylesheet" href="css/style.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta name="theme-color" content="#030706">
+
+  <title>Staff Dashboard | Performance Portal V3</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #030706;
+      --bg-soft: #07100e;
+
+      --surface: #080d0c;
+      --surface-2: #0b1211;
+      --surface-3: #0e1715;
+
+      --border: #22312f;
+      --border-hover: #35504b;
+
+      --text: #f4f7f6;
+      --muted: #8f9c9a;
+      --muted-light: #b4bfbd;
+
+      --green: #27f0b5;
+      --green-soft: #17c894;
+      --green-dark: #075b45;
+
+      --danger: #ff626e;
+      --warning: #f2ba55;
+
+      --sidebar-width: 245px;
+      --header-height: 76px;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(
+          circle at 82% 0%,
+          rgba(14, 128, 93, 0.09),
+          transparent 28%
+        ),
+        var(--bg);
+
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+
+      grid-template-columns:
+        var(--sidebar-width)
+        minmax(0, 1fr);
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+
+      height: 100vh;
+
+      padding:
+        24px
+        18px;
+
+      display: flex;
+      flex-direction: column;
+
+      border-right:
+        1px solid var(--border);
+
+      background:
+        linear-gradient(
+          180deg,
+          #080e0d 0%,
+          #030706 100%
+        );
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      padding:
+        0
+        8px
+        25px;
+
+      border-bottom:
+        1px solid var(--border);
+    }
+
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background: white;
+      color: #07100e;
+
+      font-weight: 900;
+
+      transform: rotate(-7deg);
+    }
+
+    .brand-copy strong {
+      display: block;
+
+      font-size: 14px;
+      line-height: 1.15;
+    }
+
+    .brand-copy span {
+      display: block;
+
+      margin-top: 3px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    .nav-label {
+      margin:
+        24px
+        10px
+        10px;
+
+      color: #667573;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      letter-spacing: 0.18em;
+
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-link {
+      width: 100%;
+      min-height: 46px;
+
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      padding:
+        0
+        13px;
+
+      border:
+        1px solid transparent;
+
+      border-radius: 12px;
+
+      color: #9ca8a6;
+
+      background: transparent;
+
+      font-size: 13px;
+      font-weight: 650;
+
+      transition: 0.2s ease;
+    }
+
+    .nav-link svg {
+      width: 19px;
+      height: 19px;
+
+      flex-shrink: 0;
+    }
+
+    .nav-link:hover {
+      color: white;
+
+      background:
+        rgba(255, 255, 255, 0.03);
+
+      border-color:
+        rgba(255, 255, 255, 0.035);
+    }
+
+    .nav-link.active {
+      color: #06110e;
+
+      background: white;
+
+      border-color: white;
+
+      box-shadow:
+        0 8px 25px
+        rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+
+      padding-top: 20px;
+    }
+
+    .staff-mini {
+      padding: 13px;
+
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 14px;
+
+      background:
+        rgba(255, 255, 255, 0.018);
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      flex-shrink: 0;
+
+      border-radius: 50%;
+
+      color: #05100d;
+
+      background:
+        linear-gradient(
+          135deg,
+          white,
+          #c9fff0
+        );
+
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .staff-mini strong {
+      display: block;
+
+      font-size: 12px;
+    }
+
+    .staff-mini span {
+      display: block;
+
+      margin-top: 2px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    .logout {
+      width: 100%;
+
+      margin-top: 9px;
+
+      padding: 10px 12px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 11px;
+
+      color: #aeb9b7;
+
+      background: transparent;
+
+      font-size: 12px;
+
+      transition: 0.2s ease;
+    }
+
+    .logout:hover {
+      color: white;
+
+      border-color:
+        #445754;
+
+      background:
+        rgba(255, 255, 255, 0.025);
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      min-width: 0;
+    }
+
+    /* =========================
+       TOPBAR
+    ========================= */
+
+    .topbar {
+      min-height:
+        var(--header-height);
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 20px;
+
+      padding:
+        14px
+        clamp(22px, 3vw, 42px);
+
+      border-bottom:
+        1px solid var(--border);
+
+      background:
+        rgba(3, 7, 6, 0.86);
+
+      backdrop-filter:
+        blur(14px);
+
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .page-heading p {
+      margin-bottom: 3px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+    .page-heading h1 {
+      font-size:
+        clamp(20px, 2vw, 28px);
+
+      letter-spacing: -0.035em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-chip {
+      min-height: 38px;
+
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      padding:
+        0
+        13px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 999px;
+
+      color: #c0cac8;
+
+      background: var(--surface);
+
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      box-shadow:
+        0 0 12px
+        rgba(39, 240, 181, 0.7);
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+
+      display: grid;
+      place-items: center;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 11px;
+
+      background: var(--surface);
+      color: #c5cfcd;
+    }
+
+    .icon-button:hover {
+      border-color:
+        var(--border-hover);
+
+      color: white;
+    }
+
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* =========================
+       CONTENT
+    ========================= */
+
+    .content {
+      width: 100%;
+
+      padding:
+        clamp(20px, 2.5vw, 36px)
+        clamp(20px, 3vw, 42px)
+        42px;
+    }
+
+    /* =========================
+       WELCOME
+    ========================= */
+
+    .welcome {
+      position: relative;
+
+      min-height: 178px;
+
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+
+      gap: 30px;
+
+      padding:
+        clamp(24px, 3vw, 38px);
+
+      overflow: hidden;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 22px;
+
+      background:
+        radial-gradient(
+          circle at 92% 20%,
+          rgba(30, 223, 165, 0.14),
+          transparent 28%
+        ),
+        linear-gradient(
+          135deg,
+          #0a1110,
+          #060a09
+        );
+    }
+
+    .welcome::after {
+      content: "";
+
+      position: absolute;
+
+      width: 320px;
+      height: 320px;
+
+      right: -140px;
+      top: -120px;
+
+      border-radius: 50%;
+
+      border:
+        1px solid
+        rgba(39, 240, 181, 0.25);
+
+      box-shadow:
+        0 0 50px
+        rgba(39, 240, 181, 0.05);
+
+      animation:
+        welcomeGlow
+        5s ease-in-out
+        infinite alternate;
+    }
+
+    .welcome-label {
+      position: relative;
+      z-index: 2;
+
+      margin-bottom: 8px;
+
+      color: var(--green);
+
+      font-size: 10px;
+      font-weight: 850;
+
+      letter-spacing: 0.17em;
+
+      text-transform: uppercase;
+    }
+
+    .welcome h2 {
+      position: relative;
+      z-index: 2;
+
+      max-width: 650px;
+
+      font-size:
+        clamp(27px, 3vw, 44px);
+
+      line-height: 1;
+
+      letter-spacing: -0.045em;
+    }
+
+    .welcome-copy {
+      position: relative;
+      z-index: 2;
+
+      max-width: 640px;
+
+      margin-top: 13px;
+
+      color: var(--muted);
+
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .shift-box {
+      position: relative;
+      z-index: 3;
+
+      min-width: 185px;
+
+      padding: 17px;
+
+      border:
+        1px solid
+        rgba(39, 240, 181, 0.18);
+
+      border-radius: 16px;
+
+      background:
+        rgba(3, 10, 8, 0.65);
+
+      backdrop-filter:
+        blur(10px);
+    }
+
+    .shift-box span {
+      display: block;
+
+      color: #83918e;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      letter-spacing: 0.15em;
+
+      text-transform: uppercase;
+    }
+
+    .shift-box strong {
+      display: block;
+
+      margin-top: 6px;
+
+      font-size: 21px;
+    }
+
+    .shift-box small {
+      display: block;
+
+      margin-top: 4px;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+      gap: 14px;
+
+      margin-top: 15px;
+    }
+
+    .stat-card {
+      padding: 18px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 16px;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--surface-2),
+          #060a09
+        );
+
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform:
+        translateY(-2px);
+
+      border-color:
+        var(--border-hover);
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 10px;
+    }
+
+    .stat-title {
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .stat-icon {
+      width: 30px;
+      height: 30px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 9px;
+
+      color: var(--green);
+
+      background:
+        rgba(39, 240, 181, 0.06);
+    }
+
+    .stat-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .stat-value {
+      margin-top: 16px;
+
+      font-size:
+        clamp(24px, 2.3vw, 34px);
+
+      font-weight: 800;
+
+      letter-spacing: -0.04em;
+    }
+
+    .stat-note {
+      margin-top: 4px;
+
+      color: #667573;
+
+      font-size: 10px;
+    }
+
+    /* =========================
+       LOWER GRID
+    ========================= */
+
+    .dashboard-grid {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.45fr)
+        minmax(280px, 0.75fr);
+
+      gap: 15px;
+
+      margin-top: 15px;
+    }
+
+    .panel {
+      border:
+        1px solid var(--border);
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--surface-2),
+          #060a09
+        );
+
+      overflow: hidden;
+    }
+
+    .panel-head {
+      min-height: 58px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 14px;
+
+      padding:
+        14px
+        18px;
+
+      border-bottom:
+        1px solid var(--border);
+    }
+
+    .panel-title p {
+      color: #697774;
+
+      font-size: 9px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.14em;
+
+      font-weight: 800;
+    }
+
+    .panel-title h3 {
+      margin-top: 3px;
+
+      font-size: 15px;
+    }
+
+    .panel-link {
+      color: var(--green);
+
+      font-size: 10px;
+    }
+
+    /* =========================
+       ATTENDANCE
+    ========================= */
+
+    .attendance-body {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr)
+        minmax(220px, 0.75fr);
+
+      gap: 18px;
+
+      padding: 20px;
+    }
+
+    .attendance-main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .current-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      width: max-content;
+
+      padding:
+        7px
+        10px;
+
+      border:
+        1px solid
+        rgba(39, 240, 181, 0.15);
+
+      border-radius: 999px;
+
+      color: #bdf8e7;
+
+      background:
+        rgba(39, 240, 181, 0.055);
+
+      font-size: 10px;
+    }
+
+    .attendance-time {
+      margin-top: 13px;
+
+      font-size:
+        clamp(29px, 3vw, 44px);
+
+      line-height: 1;
+
+      font-weight: 800;
+
+      letter-spacing: -0.045em;
+    }
+
+    .attendance-date {
+      margin-top: 6px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+    .attendance-actions {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 9px;
+
+      margin-top: 20px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      min-height: 43px;
+
+      border-radius: 11px;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .primary-button {
+      border: 0;
+
+      color: #05100d;
+
+      background: white;
+    }
+
+    .primary-button:hover {
+      background: #eafff9;
+
+      box-shadow:
+        0 0 24px
+        rgba(39, 240, 181, 0.1);
+    }
+
+    .secondary-button {
+      border:
+        1px solid var(--border);
+
+      color: #c5cfcd;
+
+      background: transparent;
+    }
+
+    .secondary-button:hover {
+      border-color:
+        var(--border-hover);
+
+      background:
+        rgba(255, 255, 255, 0.02);
+    }
+
+    .attendance-details {
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-row {
+      min-height: 47px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 10px;
+
+      padding:
+        0
+        12px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 11px;
+
+      background:
+        rgba(255, 255, 255, 0.015);
+    }
+
+    .detail-row span {
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    .detail-row strong {
+      font-size: 11px;
+    }
+
+    /* =========================
+       SCHEDULE
+    ========================= */
+
+    .schedule-body {
+      padding:
+        10px
+        18px
+        18px;
+    }
+
+    .schedule-item {
+      display: grid;
+
+      grid-template-columns:
+        48px
+        minmax(0, 1fr)
+        auto;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding:
+        12px 0;
+
+      border-bottom:
+        1px solid
+        rgba(34, 49, 47, 0.75);
+    }
+
+    .schedule-item:last-child {
+      border-bottom: 0;
+    }
+
+    .day-box {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      color: var(--green);
+
+      background:
+        rgba(39, 240, 181, 0.055);
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .schedule-copy strong {
+      display: block;
+
+      font-size: 11px;
+    }
+
+    .schedule-copy span {
+      display: block;
+
+      margin-top: 3px;
+
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+    .schedule-time {
+      color: #c6cfce;
+
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    /* =========================
+       PERFORMANCE
+    ========================= */
+
+    .performance {
+      margin-top: 15px;
+    }
+
+    .performance-body {
+      display: grid;
+
+      grid-template-columns:
+        180px
+        minmax(0, 1fr);
+
+      gap: 24px;
+
+      padding: 20px;
+    }
+
+    .score-ring {
+      width: 150px;
+      height: 150px;
+
+      display: grid;
+      place-items: center;
+
+      margin: auto;
+
+      border-radius: 50%;
+
+      background:
+        conic-gradient(
+          var(--green)
+          0deg
+          331deg,
+
+          #13201d
+          331deg
+          360deg
+        );
+
+      position: relative;
+
+      box-shadow:
+        0 0 35px
+        rgba(39, 240, 181, 0.07);
+    }
+
+    .score-ring::before {
+      content: "";
+
+      position: absolute;
+
+      inset: 11px;
+
+      border-radius: 50%;
+
+      background:
+        #070d0c;
+    }
+
+    .score-content {
+      position: relative;
+      z-index: 2;
+
+      text-align: center;
+    }
+
+    .score-content strong {
+      display: block;
+
+      font-size: 31px;
+
+      letter-spacing: -0.04em;
+    }
+
+    .score-content span {
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 13px;
+
+      align-content: center;
+    }
+
+    .metric-head {
+      display: flex;
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 6px;
+
+      font-size: 10px;
+    }
+
+    .metric-head span:first-child {
+      color: #b8c2c0;
+    }
+
+    .metric-head span:last-child {
+      color: var(--muted);
+    }
+
+    .progress {
+      height: 6px;
+
+      overflow: hidden;
+
+      border-radius: 999px;
+
+      background: #16211f;
+    }
+
+    .progress span {
+      display: block;
+
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--green-soft),
+          var(--green)
+        );
+
+      box-shadow:
+        0 0 14px
+        rgba(39, 240, 181, 0.22);
+    }
+
+    /* =========================
+       HIDDEN SECTIONS
+    ========================= */
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .placeholder {
+      min-height: 420px;
+
+      display: grid;
+      place-items: center;
+
+      padding: 40px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 20px;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--surface-2),
+          #060a09
+        );
+
+      text-align: center;
+    }
+
+    .placeholder h2 {
+      font-size: 26px;
+    }
+
+    .placeholder p {
+      max-width: 470px;
+
+      margin-top: 8px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    /* =========================
+       ANIMATIONS
+    ========================= */
+
+    @keyframes welcomeGlow {
+      from {
+        transform:
+          scale(0.94);
+
+        opacity: 0.55;
+      }
+
+      to {
+        transform:
+          scale(1.04);
+
+        opacity: 1;
+      }
+    }
+
+    /* =========================
+       LAPTOP HEIGHT
+    ========================= */
+
+    @media (max-height: 760px) and (min-width: 901px) {
+      :root {
+        --sidebar-width: 220px;
+        --header-height: 65px;
+      }
+
+      .sidebar {
+        padding:
+          16px
+          14px;
+      }
+
+      .brand {
+        padding-bottom: 16px;
+      }
+
+      .nav-label {
+        margin-top: 16px;
+      }
+
+      .nav-link {
+        min-height: 39px;
+      }
+
+      .content {
+        padding-top: 18px;
+      }
+
+      .welcome {
+        min-height: 145px;
+        padding: 24px;
+      }
+
+      .stat-card {
+        padding: 14px;
+      }
+
+      .stat-value {
+        margin-top: 11px;
+      }
+
+      .attendance-body,
+      .performance-body {
+        padding: 16px;
+      }
+
+      .score-ring {
+        width: 130px;
+        height: 130px;
+      }
+    }
+
+    /* =========================
+       TABLET
+    ========================= */
+
+    @media (max-width: 1100px) {
+      :root {
+        --sidebar-width: 215px;
+      }
+
+      .stats-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .performance-body {
+        grid-template-columns:
+          160px
+          minmax(0, 1fr);
+      }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 800px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+
+        z-index: 100;
+
+        left: 0;
+        top: 0;
+
+        width: 250px;
+
+        transform:
+          translateX(-100%);
+
+        transition:
+          transform 0.25s ease;
+
+        box-shadow:
+          20px 0 60px
+          rgba(0, 0, 0, 0.35);
+      }
+
+      .sidebar.open {
+        transform:
+          translateX(0);
+      }
+
+      .menu-button {
+        display: grid !important;
+      }
+
+      .topbar {
+        padding:
+          12px
+          17px;
+      }
+
+      .content {
+        padding:
+          16px
+          14px
+          30px;
+      }
+
+      .welcome {
+        grid-template-columns: 1fr;
+      }
+
+      .shift-box {
+        width: 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .attendance-body {
+        grid-template-columns: 1fr;
+      }
+
+      .performance-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .top-actions .status-chip {
+        display: none;
+      }
+
+      .page-heading h1 {
+        font-size: 18px;
+      }
+
+      .attendance-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .performance-body {
+        padding: 16px;
+      }
+    }
+
+    .menu-button {
+      display: none;
+    }
+
+    @media (
+      prefers-reduced-motion: reduce
+    ) {
+      *,
+      *::before,
+      *::after {
+        animation-duration:
+          0.01ms !important;
+
+        animation-iteration-count:
+          1 !important;
+      }
+    }
+  </style>
 </head>
-<body class="app-page" data-page="staff">
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><div class="brand-mark small">SP</div><div><strong>Staff Portal</strong><span>Version 3</span></div></div>
-      <nav class="side-nav" aria-label="Staff navigation">
-        <button class="nav-item active" data-section="overview">Overview</button>
-        <button class="nav-item" data-section="attendance">Attendance</button>
-        <button class="nav-item" data-section="schedule">Schedule</button>
-        <button class="nav-item" data-section="performance">Performance</button>
-        <button class="nav-item" data-section="leave">Annual Leave</button>
-      </nav>
-      <div class="sidebar-footer">
-        <button class="nav-item danger" id="logoutBtn">Sign out</button>
+
+<body>
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside
+      class="sidebar"
+      id="sidebar"
+    >
+
+      <div class="brand">
+
+        <div class="brand-mark">
+          S
+        </div>
+
+        <div class="brand-copy">
+          <strong>
+            Staff Portal
+          </strong>
+
+          <span>
+            Performance V3
+          </span>
+        </div>
+
       </div>
+
+
+      <p class="nav-label">
+        Workspace
+      </p>
+
+
+      <nav class="nav">
+
+        <button
+          class="nav-link active"
+          data-view="overview"
+          type="button"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <rect
+              x="3"
+              y="3"
+              width="7"
+              height="7"
+              rx="1"
+            ></rect>
+
+            <rect
+              x="14"
+              y="3"
+              width="7"
+              height="7"
+              rx="1"
+            ></rect>
+
+            <rect
+              x="3"
+              y="14"
+              width="7"
+              height="7"
+              rx="1"
+            ></rect>
+
+            <rect
+              x="14"
+              y="14"
+              width="7"
+              height="7"
+              rx="1"
+            ></rect>
+          </svg>
+
+          Overview
+
+        </button>
+
+
+        <button
+          class="nav-link"
+          data-view="attendance"
+          type="button"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+            ></circle>
+
+            <path
+              d="M12 7v5l3 2"
+            ></path>
+          </svg>
+
+          Attendance
+
+        </button>
+
+
+        <button
+          class="nav-link"
+          data-view="schedule"
+          type="button"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="16"
+              rx="2"
+            ></rect>
+
+            <path
+              d="M7 3v4M17 3v4M3 10h18"
+            ></path>
+          </svg>
+
+          Schedule
+
+        </button>
+
+
+        <button
+          class="nav-link"
+          data-view="performance"
+          type="button"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path
+              d="M4 19V9M10 19V5M16 19v-7M22 19H2"
+            ></path>
+          </svg>
+
+          Performance
+
+        </button>
+
+
+        <button
+          class="nav-link"
+          data-view="leave"
+          type="button"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <path
+              d="M4 19c5-7 9-12 16-14-1 7-6 12-13 14H4Z"
+            ></path>
+
+            <path
+              d="M8 16c3-2 6-5 9-8"
+            ></path>
+          </svg>
+
+          Annual Leave
+
+        </button>
+
+
+        <button
+          class="nav-link"
+          data-view="profile"
+          type="button"
+        >
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+          >
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+            ></circle>
+
+            <path
+              d="M4 21c0-4 3-7 8-7s8 3 8 7"
+            ></path>
+          </svg>
+
+          My Profile
+
+        </button>
+
+      </nav>
+
+
+      <div class="sidebar-bottom">
+
+        <div class="staff-mini">
+
+          <div class="avatar">
+            SU
+          </div>
+
+          <div>
+            <strong>
+              Staff User
+            </strong>
+
+            <span>
+              Active
+            </span>
+          </div>
+
+        </div>
+
+
+        <button
+          class="logout"
+          id="logoutButton"
+          type="button"
+        >
+          Sign Out
+        </button>
+
+      </div>
+
     </aside>
 
-    <main class="app-main">
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+      <!-- TOPBAR -->
+
       <header class="topbar">
-        <button class="icon-btn mobile-only" id="menuBtn" type="button" aria-label="Open menu">☰</button>
-        <div><p class="eyebrow">Staff Dashboard</p><h1 id="pageTitle">Overview</h1></div>
-        <div class="user-chip"><div class="avatar" id="avatar">S</div><div><strong id="displayName">Staff Member</strong><span id="displayId">Starter account</span></div></div>
+
+        <div
+          style="
+            display:flex;
+            align-items:center;
+            gap:12px;
+          "
+        >
+
+          <button
+            class="icon-button menu-button"
+            id="menuButton"
+            type="button"
+            aria-label="Open menu"
+          >
+            ☰
+          </button>
+
+
+          <div class="page-heading">
+
+            <p id="pageEyebrow">
+              Staff Workspace
+            </p>
+
+            <h1 id="pageTitle">
+              Overview
+            </h1>
+
+          </div>
+
+        </div>
+
+
+        <div class="top-actions">
+
+          <div class="status-chip">
+
+            <span class="status-dot"></span>
+
+            Portal Online
+
+          </div>
+
+
+          <button
+            class="icon-button"
+            type="button"
+            aria-label="Notifications"
+          >
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path
+                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+              ></path>
+
+              <path
+                d="M10 21h4"
+              ></path>
+            </svg>
+
+          </button>
+
+        </div>
+
       </header>
 
-      <section class="content-section active" id="overview">
-        <div class="welcome-card card"><div><p class="eyebrow">Welcome back</p><h2 id="welcomeName">Staff Member</h2><p>Here is your current staff operations snapshot.</p></div><div class="status-badge online">Ready</div></div>
-        <div class="stats-grid">
-          <article class="stat-card"><span>Today's Shift</span><strong>09:00 – 18:00</strong><small>Sample schedule</small></article>
-          <article class="stat-card"><span>Attendance</span><strong>On time</strong><small>Starter data</small></article>
-          <article class="stat-card"><span>KPI Score</span><strong>92%</strong><small>Sample score</small></article>
-          <article class="stat-card"><span>Leave Balance</span><strong>12 days</strong><small>Sample balance</small></article>
+
+
+      <section class="content">
+
+        <!-- OVERVIEW -->
+
+        <div
+          class="view active"
+          id="overview"
+        >
+
+          <section class="welcome">
+
+            <div>
+
+              <p class="welcome-label">
+                Staff Dashboard
+              </p>
+
+              <h2>
+                Welcome back,
+                <span id="displayName">
+                  Staff User
+                </span>.
+              </h2>
+
+              <p class="welcome-copy">
+                Here’s your current attendance,
+                schedule and performance overview.
+              </p>
+
+            </div>
+
+
+            <div class="shift-box">
+
+              <span>
+                Today's Shift
+              </span>
+
+              <strong>
+                10:00 – 19:00
+              </strong>
+
+              <small>
+                Main Operations
+              </small>
+
+            </div>
+
+          </section>
+
+
+
+          <section class="stats-grid">
+
+            <article class="stat-card">
+
+              <div class="stat-top">
+
+                <span class="stat-title">
+                  Attendance
+                </span>
+
+                <div class="stat-icon">
+                  ✓
+                </div>
+
+              </div>
+
+              <div class="stat-value">
+                96%
+              </div>
+
+              <div class="stat-note">
+                Current month
+              </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+              <div class="stat-top">
+
+                <span class="stat-title">
+                  Performance
+                </span>
+
+                <div class="stat-icon">
+                  ↗
+                </div>
+
+              </div>
+
+              <div class="stat-value">
+                92
+              </div>
+
+              <div class="stat-note">
+                Overall score
+              </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+              <div class="stat-top">
+
+                <span class="stat-title">
+                  Leave Balance
+                </span>
+
+                <div class="stat-icon">
+                  ◇
+                </div>
+
+              </div>
+
+              <div class="stat-value">
+                12
+              </div>
+
+              <div class="stat-note">
+                Days remaining
+              </div>
+
+            </article>
+
+
+            <article class="stat-card">
+
+              <div class="stat-top">
+
+                <span class="stat-title">
+                  Shift Status
+                </span>
+
+                <div class="stat-icon">
+                  ●
+                </div>
+
+              </div>
+
+              <div class="stat-value">
+                Ready
+              </div>
+
+              <div class="stat-note">
+                Not checked in
+              </div>
+
+            </article>
+
+          </section>
+
+
+
+          <section class="dashboard-grid">
+
+            <!-- ATTENDANCE CARD -->
+
+            <article class="panel">
+
+              <div class="panel-head">
+
+                <div class="panel-title">
+
+                  <p>
+                    Today
+                  </p>
+
+                  <h3>
+                    Attendance
+                  </h3>
+
+                </div>
+
+
+                <button
+                  class="panel-link"
+                  data-open="attendance"
+                  type="button"
+                  style="
+                    border:0;
+                    background:none;
+                  "
+                >
+                  View details
+                </button>
+
+              </div>
+
+
+              <div class="attendance-body">
+
+                <div class="attendance-main">
+
+                  <div
+                    class="current-status"
+                    id="attendanceStatus"
+                  >
+                    <span class="status-dot"></span>
+
+                    Not checked in
+                  </div>
+
+
+                  <div
+                    class="attendance-time"
+                    id="liveClock"
+                  >
+                    --:--:--
+                  </div>
+
+
+                  <div
+                    class="attendance-date"
+                    id="liveDate"
+                  >
+                    Loading date...
+                  </div>
+
+
+                  <div class="attendance-actions">
+
+                    <button
+                      class="primary-button"
+                      id="checkInButton"
+                      type="button"
+                    >
+                      Check In
+                    </button>
+
+
+                    <button
+                      class="secondary-button"
+                      id="breakButton"
+                      type="button"
+                    >
+                      Start Break
+                    </button>
+
+                  </div>
+
+                </div>
+
+
+                <div class="attendance-details">
+
+                  <div class="detail-row">
+
+                    <span>
+                      Check In
+                    </span>
+
+                    <strong id="checkInTime">
+                      —
+                    </strong>
+
+                  </div>
+
+
+                  <div class="detail-row">
+
+                    <span>
+                      Break
+                    </span>
+
+                    <strong id="breakStatus">
+                      —
+                    </strong>
+
+                  </div>
+
+
+                  <div class="detail-row">
+
+                    <span>
+                      Worked
+                    </span>
+
+                    <strong>
+                      00h 00m
+                    </strong>
+
+                  </div>
+
+
+                  <div class="detail-row">
+
+                    <span>
+                      Shift
+                    </span>
+
+                    <strong>
+                      10:00–19:00
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </article>
+
+
+
+            <!-- SCHEDULE -->
+
+            <article class="panel">
+
+              <div class="panel-head">
+
+                <div class="panel-title">
+
+                  <p>
+                    Upcoming
+                  </p>
+
+                  <h3>
+                    Schedule
+                  </h3>
+
+                </div>
+
+
+                <button
+                  class="panel-link"
+                  data-open="schedule"
+                  type="button"
+                  style="
+                    border:0;
+                    background:none;
+                  "
+                >
+                  Full schedule
+                </button>
+
+              </div>
+
+
+              <div class="schedule-body">
+
+                <div class="schedule-item">
+
+                  <div class="day-box">
+                    TODAY
+                  </div>
+
+                  <div class="schedule-copy">
+
+                    <strong>
+                      Main Operations
+                    </strong>
+
+                    <span>
+                      Regular Shift
+                    </span>
+
+                  </div>
+
+                  <div class="schedule-time">
+                    10:00–19:00
+                  </div>
+
+                </div>
+
+
+                <div class="schedule-item">
+
+                  <div class="day-box">
+                    WED
+                  </div>
+
+                  <div class="schedule-copy">
+
+                    <strong>
+                      Main Operations
+                    </strong>
+
+                    <span>
+                      Regular Shift
+                    </span>
+
+                  </div>
+
+                  <div class="schedule-time">
+                    10:00–19:00
+                  </div>
+
+                </div>
+
+
+                <div class="schedule-item">
+
+                  <div class="day-box">
+                    THU
+                  </div>
+
+                  <div class="schedule-copy">
+
+                    <strong>
+                      Main Operations
+                    </strong>
+
+                    <span>
+                      Regular Shift
+                    </span>
+
+                  </div>
+
+                  <div class="schedule-time">
+                    10:00–19:00
+                  </div>
+
+                </div>
+
+
+                <div class="schedule-item">
+
+                  <div class="day-box">
+                    FRI
+                  </div>
+
+                  <div class="schedule-copy">
+
+                    <strong>
+                      Weekly Off
+                    </strong>
+
+                    <span>
+                      Rest day
+                    </span>
+
+                  </div>
+
+                  <div class="schedule-time">
+                    OFF
+                  </div>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          </section>
+
+
+
+          <!-- PERFORMANCE -->
+
+          <article class="panel performance">
+
+            <div class="panel-head">
+
+              <div class="panel-title">
+
+                <p>
+                  Current Period
+                </p>
+
+                <h3>
+                  Performance Snapshot
+                </h3>
+
+              </div>
+
+
+              <button
+                class="panel-link"
+                data-open="performance"
+                type="button"
+                style="
+                  border:0;
+                  background:none;
+                "
+              >
+                View performance
+              </button>
+
+            </div>
+
+
+            <div class="performance-body">
+
+              <div class="score-ring">
+
+                <div class="score-content">
+
+                  <strong>
+                    92
+                  </strong>
+
+                  <span>
+                    Overall Score
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="metric-list">
+
+                <div>
+
+                  <div class="metric-head">
+
+                    <span>
+                      Attendance
+                    </span>
+
+                    <span>
+                      96%
+                    </span>
+
+                  </div>
+
+                  <div class="progress">
+                    <span style="width:96%"></span>
+                  </div>
+
+                </div>
+
+
+                <div>
+
+                  <div class="metric-head">
+
+                    <span>
+                      Productivity
+                    </span>
+
+                    <span>
+                      91%
+                    </span>
+
+                  </div>
+
+                  <div class="progress">
+                    <span style="width:91%"></span>
+                  </div>
+
+                </div>
+
+
+                <div>
+
+                  <div class="metric-head">
+
+                    <span>
+                      Quality
+                    </span>
+
+                    <span>
+                      94%
+                    </span>
+
+                  </div>
+
+                  <div class="progress">
+                    <span style="width:94%"></span>
+                  </div>
+
+                </div>
+
+
+                <div>
+
+                  <div class="metric-head">
+
+                    <span>
+                      Compliance
+                    </span>
+
+                    <span>
+                      88%
+                    </span>
+
+                  </div>
+
+                  <div class="progress">
+                    <span style="width:88%"></span>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </article>
+
         </div>
-        <div class="two-col">
-          <article class="card"><div class="section-head"><div><p class="eyebrow">Today</p><h3>Attendance actions</h3></div><span id="attendanceStatus" class="status-badge">Not checked in</span></div><div class="action-row"><button class="primary-btn compact" id="checkInBtn">Check in</button><button class="secondary-btn compact" id="breakBtn">Start break</button><button class="secondary-btn compact" id="checkOutBtn">Check out</button></div><p class="muted" id="attendanceNote">This is demo frontend behavior only.</p></article>
-          <article class="card"><div class="section-head"><div><p class="eyebrow">Next up</p><h3>Upcoming shifts</h3></div></div><div class="list"><div><strong>Tomorrow</strong><span>09:00 – 18:00</span></div><div><strong>Wednesday</strong><span>10:00 – 19:00</span></div><div><strong>Thursday</strong><span>09:00 – 18:00</span></div></div></article>
+
+
+
+        <!-- ATTENDANCE PAGE -->
+
+        <div
+          class="view"
+          id="attendance"
+        >
+
+          <div class="placeholder">
+
+            <div>
+
+              <h2>
+                Attendance
+              </h2>
+
+              <p>
+                This section will contain the full
+                attendance history, check-in and
+                check-out records, breaks, working
+                hours and monthly attendance summary.
+              </p>
+
+            </div>
+
+          </div>
+
         </div>
+
+
+
+        <!-- SCHEDULE PAGE -->
+
+        <div
+          class="view"
+          id="schedule"
+        >
+
+          <div class="placeholder">
+
+            <div>
+
+              <h2>
+                Team Schedule
+              </h2>
+
+              <p>
+                This section will show the staff
+                schedule by day and month, including
+                shift times, off days and schedule
+                changes.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- PERFORMANCE PAGE -->
+
+        <div
+          class="view"
+          id="performance"
+        >
+
+          <div class="placeholder">
+
+            <div>
+
+              <h2>
+                Performance
+              </h2>
+
+              <p>
+                This section will show KPI scores,
+                monthly performance history,
+                deductions, achievements and other
+                performance information.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- LEAVE PAGE -->
+
+        <div
+          class="view"
+          id="leave"
+        >
+
+          <div class="placeholder">
+
+            <div>
+
+              <h2>
+                Annual Leave
+              </h2>
+
+              <p>
+                This section will contain leave
+                balances, previous leave records and
+                future leave-request functionality.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- PROFILE PAGE -->
+
+        <div
+          class="view"
+          id="profile"
+        >
+
+          <div class="placeholder">
+
+            <div>
+
+              <h2>
+                My Profile
+              </h2>
+
+              <p>
+                Staff information, contact details,
+                role, department and account-related
+                settings will appear here.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
       </section>
 
-      <section class="content-section" id="attendance"><div class="section-head"><div><p class="eyebrow">Attendance</p><h2>Attendance history</h2></div></div><div class="card table-card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Check in</th><th>Break</th><th>Check out</th><th>Status</th></tr></thead><tbody><tr><td>Today</td><td>09:00</td><td>12:30 – 13:00</td><td>18:00</td><td><span class="status-badge online">On time</span></td></tr><tr><td>Yesterday</td><td>09:05</td><td>12:45 – 13:15</td><td>18:02</td><td><span class="status-badge">Complete</span></td></tr></tbody></table></div></div></section>
-
-      <section class="content-section" id="schedule"><div class="section-head"><div><p class="eyebrow">Schedule</p><h2>My roster</h2></div></div><div class="schedule-grid"><article class="schedule-day card"><span>Mon</span><strong>09:00 – 18:00</strong><small>Office</small></article><article class="schedule-day card"><span>Tue</span><strong>09:00 – 18:00</strong><small>Office</small></article><article class="schedule-day card"><span>Wed</span><strong>10:00 – 19:00</strong><small>Office</small></article><article class="schedule-day card"><span>Thu</span><strong>09:00 – 18:00</strong><small>Office</small></article><article class="schedule-day card"><span>Fri</span><strong>09:00 – 18:00</strong><small>Office</small></article></div></section>
-
-      <section class="content-section" id="performance"><div class="section-head"><div><p class="eyebrow">Performance</p><h2>KPI summary</h2></div></div><div class="stats-grid"><article class="stat-card"><span>Overall</span><strong>92%</strong><small>Current month</small></article><article class="stat-card"><span>Quality</span><strong>95%</strong><small>Sample metric</small></article><article class="stat-card"><span>Attendance</span><strong>90%</strong><small>Sample metric</small></article><article class="stat-card"><span>Productivity</span><strong>91%</strong><small>Sample metric</small></article></div><div class="card"><h3>Performance notes</h3><p class="muted">The live KPI breakdown will be connected to the Version 3 backend later.</p></div></section>
-
-      <section class="content-section" id="leave"><div class="section-head"><div><p class="eyebrow">Annual Leave</p><h2>Leave overview</h2></div><button class="primary-btn compact">Request leave</button></div><div class="stats-grid"><article class="stat-card"><span>Allowance</span><strong>20 days</strong><small>Sample</small></article><article class="stat-card"><span>Used</span><strong>8 days</strong><small>Sample</small></article><article class="stat-card"><span>Remaining</span><strong>12 days</strong><small>Sample</small></article><article class="stat-card"><span>Pending</span><strong>0</strong><small>Sample</small></article></div></section>
     </main>
+
   </div>
-  <script src="js/staff.js"></script>
+
+
+
+  <script>
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const navLinks =
+      document.querySelectorAll(
+        ".nav-link"
+      );
+
+    const views =
+      document.querySelectorAll(
+        ".view"
+      );
+
+    const pageTitle =
+      document.getElementById(
+        "pageTitle"
+      );
+
+    const sidebar =
+      document.getElementById(
+        "sidebar"
+      );
+
+    const menuButton =
+      document.getElementById(
+        "menuButton"
+      );
+
+    const logoutButton =
+      document.getElementById(
+        "logoutButton"
+      );
+
+    const checkInButton =
+      document.getElementById(
+        "checkInButton"
+      );
+
+    const breakButton =
+      document.getElementById(
+        "breakButton"
+      );
+
+    const attendanceStatus =
+      document.getElementById(
+        "attendanceStatus"
+      );
+
+    const checkInTime =
+      document.getElementById(
+        "checkInTime"
+      );
+
+    const breakStatus =
+      document.getElementById(
+        "breakStatus"
+      );
+
+    const liveClock =
+      document.getElementById(
+        "liveClock"
+      );
+
+    const liveDate =
+      document.getElementById(
+        "liveDate"
+      );
+
+
+    let checkedIn = false;
+    let onBreak = false;
+
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    function openView(viewName) {
+
+      views.forEach(
+        function (view) {
+
+          view.classList.remove(
+            "active"
+          );
+
+        }
+      );
+
+
+      navLinks.forEach(
+        function (link) {
+
+          link.classList.remove(
+            "active"
+          );
+
+        }
+      );
+
+
+      const selectedView =
+        document.getElementById(
+          viewName
+        );
+
+
+      const selectedLink =
+        document.querySelector(
+          '[data-view="' +
+          viewName +
+          '"]'
+        );
+
+
+      if (selectedView) {
+        selectedView.classList.add(
+          "active"
+        );
+      }
+
+
+      if (selectedLink) {
+        selectedLink.classList.add(
+          "active"
+        );
+      }
+
+
+      const titles = {
+        overview: "Overview",
+        attendance: "Attendance",
+        schedule: "Schedule",
+        performance: "Performance",
+        leave: "Annual Leave",
+        profile: "My Profile"
+      };
+
+
+      pageTitle.textContent =
+        titles[viewName] ||
+        "Staff Portal";
+
+
+      if (
+        window.innerWidth <= 800
+      ) {
+
+        sidebar.classList.remove(
+          "open"
+        );
+
+      }
+
+    }
+
+
+    navLinks.forEach(
+      function (link) {
+
+        link.addEventListener(
+          "click",
+          function () {
+
+            openView(
+              link.dataset.view
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+    document
+      .querySelectorAll(
+        "[data-open]"
+      )
+      .forEach(
+        function (button) {
+
+          button.addEventListener(
+            "click",
+            function () {
+
+              openView(
+                button.dataset.open
+              );
+
+            }
+          );
+
+        }
+      );
+
+
+    /* =========================
+       MOBILE MENU
+    ========================= */
+
+    menuButton.addEventListener(
+      "click",
+      function () {
+
+        sidebar.classList.toggle(
+          "open"
+        );
+
+      }
+    );
+
+
+    /* =========================
+       LIVE CLOCK
+    ========================= */
+
+    function updateClock() {
+
+      const now = new Date();
+
+
+      liveClock.textContent =
+        now.toLocaleTimeString(
+          [],
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          }
+        );
+
+
+      liveDate.textContent =
+        now.toLocaleDateString(
+          [],
+          {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          }
+        );
+
+    }
+
+
+    updateClock();
+
+    setInterval(
+      updateClock,
+      1000
+    );
+
+
+    /* =========================
+       DEMO ATTENDANCE
+       Backend later.
+    ========================= */
+
+    checkInButton.addEventListener(
+      "click",
+      function () {
+
+        const now =
+          new Date();
+
+
+        if (!checkedIn) {
+
+          checkedIn = true;
+
+          attendanceStatus.innerHTML =
+            '<span class="status-dot"></span>Checked in';
+
+
+          checkInTime.textContent =
+            now.toLocaleTimeString(
+              [],
+              {
+                hour: "2-digit",
+                minute: "2-digit"
+              }
+            );
+
+
+          checkInButton.textContent =
+            "Check Out";
+
+        } else {
+
+          checkedIn = false;
+          onBreak = false;
+
+
+          attendanceStatus.innerHTML =
+            '<span class="status-dot"></span>Shift complete';
+
+
+          checkInButton.textContent =
+            "Check In";
+
+
+          breakButton.textContent =
+            "Start Break";
+
+
+          breakStatus.textContent =
+            "—";
+
+        }
+
+      }
+    );
+
+
+    breakButton.addEventListener(
+      "click",
+      function () {
+
+        if (!checkedIn) {
+
+          alert(
+            "Please check in before starting a break."
+          );
+
+          return;
+
+        }
+
+
+        onBreak = !onBreak;
+
+
+        if (onBreak) {
+
+          breakButton.textContent =
+            "End Break";
+
+          breakStatus.textContent =
+            "On break";
+
+        } else {
+
+          breakButton.textContent =
+            "Start Break";
+
+          breakStatus.textContent =
+            "Completed";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    logoutButton.addEventListener(
+      "click",
+      function () {
+
+        window.location.href =
+          "index.html";
+
+      }
+    );
+  </script>
+
 </body>
 </html>
