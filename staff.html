@@ -1109,10 +1109,213 @@
 
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbxPcYgFwx7OdSSfrGDJooj23znWjyLJwb-qY4fnRsQrLTdeE8ixPNDVbM2Ut6ITdO1v/exec";
+  const SESSION_KEY = "staffPortalSession";
 
-  // For now this is fixed while we test the live schedule.
-  // Later this will come from the logged-in user's account mapping.
-  const STAFF_NAME = "Suhin Ahmad Rubel";
+  let portalUser = null;
+  let STAFF_NAME = "";
+
+  function readStoredSession() {
+    const values = [
+      sessionStorage.getItem(
+        SESSION_KEY
+      ),
+      localStorage.getItem(
+        SESSION_KEY
+      )
+    ];
+
+    for (const raw of values) {
+      if (!raw) continue;
+
+      try {
+        const data =
+          JSON.parse(raw);
+
+        if (
+          data &&
+          data.username &&
+          String(
+            data.role || ""
+          ).toLowerCase() ===
+            "staff" &&
+          String(
+            data.status || ""
+          ).toLowerCase() ===
+            "active"
+        ) {
+          return data;
+        }
+      } catch (error) {}
+    }
+
+    return null;
+  }
+
+  function clearPortalSession() {
+    sessionStorage.removeItem(
+      SESSION_KEY
+    );
+
+    localStorage.removeItem(
+      SESSION_KEY
+    );
+  }
+
+  async function lookupPortalUser(
+    username
+  ) {
+    const response =
+      await fetch(
+        API_URL +
+        "?action=user&username=" +
+        encodeURIComponent(
+          username
+        ),
+        {
+          method: "GET",
+          cache: "no-store"
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "Could not verify your Staff account."
+      );
+    }
+
+    return response.json();
+  }
+
+  async function resolvePortalUser() {
+    const stored =
+      readStoredSession();
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const username =
+      stored?.username ||
+      String(
+        params.get("user") || ""
+      ).trim();
+
+    if (!username) {
+      throw new Error(
+        "No Staff login session was found."
+      );
+    }
+
+    const data =
+      await lookupPortalUser(
+        username
+      );
+
+    if (
+      !data.ok ||
+      !data.user
+    ) {
+      throw new Error(
+        data.error ||
+        "Staff account could not be verified."
+      );
+    }
+
+    const user =
+      data.user;
+
+    if (
+      String(
+        user.role || ""
+      ).toLowerCase() !==
+        "staff"
+    ) {
+      throw new Error(
+        "This is not a Staff account."
+      );
+    }
+
+    if (
+      String(
+        user.status || ""
+      ).toLowerCase() !==
+        "active"
+    ) {
+      throw new Error(
+        "This Staff account is not active."
+      );
+    }
+
+    if (!user.staffName) {
+      throw new Error(
+        "This account has no Staff Name mapping."
+      );
+    }
+
+    portalUser = user;
+    STAFF_NAME =
+      user.staffName;
+
+    sessionStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify(user)
+    );
+
+    if (
+      localStorage.getItem(
+        SESSION_KEY
+      )
+    ) {
+      localStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify(user)
+      );
+    }
+  }
+
+  function applyPortalUser() {
+    document
+      .getElementById(
+        "sidebarStaffName"
+      )
+      .textContent =
+        STAFF_NAME;
+
+    document
+      .getElementById(
+        "welcomeName"
+      )
+      .textContent =
+        STAFF_NAME;
+
+    const parts =
+      STAFF_NAME
+        .trim()
+        .split(/\s+/);
+
+    const initials =
+      parts.length > 1
+        ? (
+            parts[0][0] +
+            parts[
+              parts.length - 1
+            ][0]
+          ).toUpperCase()
+        : STAFF_NAME
+            .slice(0, 2)
+            .toUpperCase();
+
+    const avatar =
+      document.querySelector(
+        ".staff-mini .avatar"
+      );
+
+    if (avatar) {
+      avatar.textContent =
+        initials;
+    }
+  }
 
   const navLinks = document.querySelectorAll(".nav-link");
   const views = document.querySelectorAll(".view");
@@ -1134,8 +1337,6 @@
   let scheduleCursor = new Date(2026, 9, 1);
   let liveSchedule = [];
 
-  document.getElementById("sidebarStaffName").textContent = STAFF_NAME;
-  document.getElementById("welcomeName").textContent = STAFF_NAME;
 
   function openView(name) {
     views.forEach(v => v.classList.remove("active"));
@@ -1153,7 +1354,7 @@
       profile: "My Profile"
     }[name] || "Staff Portal";
 
-    if (name === "schedule") {
+    if (name === "schedule" && STAFF_NAME) {
       loadScheduleForCursor();
     }
 
@@ -1175,6 +1376,7 @@
   });
 
   document.getElementById("logoutButton").addEventListener("click", () => {
+    clearPortalSession();
     window.location.href = "index.html";
   });
 
@@ -1786,11 +1988,35 @@
   overviewBreakButton.addEventListener("click", toggleBreak);
   fullBreakButton.addEventListener("click", toggleBreak);
 
-  updateClock();
-  syncAttendance();
-  loadCurrentMonthOverview();
+  async function initializePortal() {
+    try {
+      await resolvePortalUser();
+      applyPortalUser();
 
-  setInterval(updateClock, 1000);
+      updateClock();
+      syncAttendance();
+
+      await loadCurrentMonthOverview();
+
+      setInterval(
+        updateClock,
+        1000
+      );
+
+    } catch (error) {
+      clearPortalSession();
+
+      alert(
+        error.message +
+        "\n\nPlease sign in again."
+      );
+
+      window.location.href =
+        "index.html";
+    }
+  }
+
+  initializePortal();
 </script>
 </body>
 </html>
