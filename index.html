@@ -2,66 +2,1284 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b1220">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Staff Performance Portal V3</title>
-  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #050909;
+      --bg-soft: #08100f;
+
+      --panel: #080d0d;
+
+      --text: #f5f7f7;
+      --muted: #9aa5aa;
+
+      --line: #263334;
+
+      --green: #1ee6ae;
+      --green-soft: #13b989;
+      --green-dark: #063c30;
+
+      --white: #ffffff;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* ==============================
+       MAIN LAYOUT
+    ============================== */
+
+    .login-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 46% 54%;
+      background: #030606;
+      overflow: hidden;
+    }
+
+    /* ==============================
+       LEFT SIDE
+    ============================== */
+
+    .login-panel {
+      position: relative;
+      z-index: 10;
+
+      min-height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+
+      padding:
+        38px
+        clamp(35px, 6vw, 105px);
+
+      background:
+        radial-gradient(
+          circle at 20% 10%,
+          rgba(33, 70, 66, 0.14),
+          transparent 30%
+        ),
+        linear-gradient(
+          145deg,
+          #080d0d 0%,
+          #040707 100%
+        );
+
+      border-right: 1px solid #172121;
+    }
+
+    /* BRAND */
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 11px;
+
+      background: white;
+      color: #07100e;
+
+      font-size: 20px;
+      font-weight: 900;
+
+      transform: rotate(-8deg);
+    }
+
+    /* CONTENT */
+
+    .login-content {
+      width: 100%;
+      max-width: 540px;
+
+      margin: auto 0;
+      padding: 55px 0;
+    }
+
+    .eyebrow {
+      margin-bottom: 16px;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+
+      color: #9fb0b4;
+    }
+
+    .hero-title {
+      max-width: 510px;
+
+      font-size: clamp(48px, 5vw, 72px);
+      line-height: 0.92;
+
+      letter-spacing: -0.055em;
+
+      font-weight: 800;
+
+      color: white;
+    }
+
+    .version {
+      font-size: 0.58em;
+      font-weight: 400;
+
+      color: #9aa5aa;
+
+      white-space: nowrap;
+    }
+
+    .description {
+      max-width: 500px;
+
+      margin-top: 26px;
+      margin-bottom: 38px;
+
+      font-size: 17px;
+      line-height: 1.55;
+
+      color: var(--muted);
+    }
+
+    /* FORM */
+
+    .login-form {
+      width: 100%;
+    }
+
+    .field {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .field input {
+      width: 100%;
+      height: 64px;
+
+      padding:
+        0
+        58px
+        0
+        58px;
+
+      border:
+        1px solid
+        #334244;
+
+      border-radius: 17px;
+
+      outline: none;
+
+      background:
+        rgba(9, 15, 15, 0.92);
+
+      color: white;
+
+      font-size: 16px;
+
+      transition: 0.25s ease;
+    }
+
+    .field input::placeholder {
+      color: #889598;
+    }
+
+    .field input:focus {
+      border-color: var(--green);
+
+      box-shadow:
+        0 0 0 3px rgba(30, 230, 174, 0.08),
+        0 0 24px rgba(30, 230, 174, 0.08);
+    }
+
+    .field-icon {
+      position: absolute;
+
+      left: 21px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      width: 22px;
+      height: 22px;
+
+      color: white;
+
+      opacity: 0.92;
+    }
+
+    .password-toggle {
+      position: absolute;
+
+      right: 20px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      border: 0;
+      background: none;
+
+      color: white;
+
+      font-size: 20px;
+      opacity: 0.9;
+    }
+
+    /* SIGN IN */
+
+    .sign-in-button {
+      width: 100%;
+      height: 63px;
+
+      margin-top: 4px;
+
+      border: 0;
+      border-radius: 17px;
+
+      background: white;
+      color: #050707;
+
+      font-size: 18px;
+      font-weight: 800;
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
+    }
+
+    .sign-in-button:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 10px 30px
+        rgba(255, 255, 255, 0.12);
+    }
+
+    /* OPTIONS */
+
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      margin-top: 18px;
+
+      font-size: 14px;
+      color: #9ba7aa;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .remember input {
+      width: 19px;
+      height: 19px;
+    }
+
+    .forgot {
+      color: #b7c1c3;
+      text-decoration: none;
+    }
+
+    .forgot:hover {
+      color: var(--green);
+    }
+
+    /* DIVIDER */
+
+    .divider {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+
+      margin: 35px 0 27px;
+
+      color: #859194;
+    }
+
+    .divider span:first-child,
+    .divider span:last-child {
+      height: 1px;
+      background: #2b3839;
+    }
+
+    /* STAFF / ADMIN */
+
+    .role-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .role-button {
+      min-height: 82px;
+
+      border:
+        1px solid
+        #334244;
+
+      border-radius: 17px;
+
+      background:
+        rgba(8, 13, 13, 0.65);
+
+      color: white;
+
+      font-size: 16px;
+      font-weight: 700;
+
+      transition: 0.25s ease;
+    }
+
+    .role-button:hover {
+      border-color: var(--green);
+
+      background:
+        rgba(19, 185, 137, 0.07);
+
+      box-shadow:
+        0 0 25px
+        rgba(30, 230, 174, 0.08);
+    }
+
+    .role-help {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+
+      margin-top: 11px;
+
+      text-align: center;
+
+      font-size: 13px;
+      color: #889598;
+    }
+
+    /* ==============================
+       RIGHT VISUAL PANEL
+    ============================== */
+
+    .visual-panel {
+      position: relative;
+      min-height: 100vh;
+
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 45% 25%,
+          rgba(0, 105, 78, 0.17),
+          transparent 38%
+        ),
+        radial-gradient(
+          circle at 80% 70%,
+          rgba(0, 71, 55, 0.15),
+          transparent 40%
+        ),
+        #010504;
+    }
+
+    /* NAV */
+
+    .visual-nav {
+      position: absolute;
+      z-index: 20;
+
+      top: 38px;
+      right: 55px;
+
+      display: flex;
+      gap: 34px;
+    }
+
+    .visual-nav a {
+      color: #c2caca;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .visual-nav a:hover {
+      color: var(--green);
+    }
+
+    /* GLOW BACKGROUND */
+
+    .ambient-glow {
+      position: absolute;
+
+      width: 750px;
+      height: 750px;
+
+      top: -330px;
+      left: -150px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(23, 216, 161, 0.16),
+          rgba(0, 75, 57, 0.05) 44%,
+          transparent 68%
+        );
+
+      filter: blur(25px);
+
+      animation:
+        ambientMove 8s ease-in-out
+        infinite alternate;
+    }
+
+    /* LARGE ARC */
+
+    .arc {
+      position: absolute;
+
+      width: 1050px;
+      height: 1050px;
+
+      top: 100px;
+      right: -460px;
+
+      border-radius: 50%;
+
+      border:
+        1px solid
+        rgba(37, 255, 196, 0.55);
+
+      box-shadow:
+        inset
+        0 0 60px
+        rgba(18, 205, 153, 0.09),
+
+        0
+        0
+        18px
+        rgba(21, 240, 177, 0.16);
+    }
+
+    .arc::after {
+      content: "";
+
+      position: absolute;
+
+      inset: -2px;
+
+      border-radius: inherit;
+
+      border:
+        2px solid
+        transparent;
+
+      border-top-color:
+        rgba(81, 255, 211, 0.95);
+
+      border-left-color:
+        rgba(27, 217, 163, 0.16);
+
+      filter:
+        drop-shadow(
+          0 0 8px
+          rgba(25, 255, 190, 0.65)
+        );
+
+      animation:
+        rotateGlow
+        9s linear
+        infinite;
+    }
+
+    /* TOP ARC */
+
+    .top-arc {
+      position: absolute;
+
+      width: 850px;
+      height: 850px;
+
+      top: -520px;
+      left: -170px;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(24, 132, 100, 0.23),
+          rgba(4, 22, 18, 0.02)
+        );
+
+      border:
+        1px solid
+        rgba(19, 186, 137, 0.2);
+    }
+
+    /* SMALL PLANET */
+
+    .planet-small {
+      position: absolute;
+
+      width: 290px;
+      height: 290px;
+
+      top: 20%;
+      left: 8%;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle at 65% 42%,
+          rgba(23, 209, 156, 0.32),
+          rgba(3, 25, 20, 0.93) 48%,
+          #010403 73%
+        );
+
+      border:
+        1px solid
+        rgba(38, 255, 198, 0.42);
+
+      box-shadow:
+        25px 0 70px
+        rgba(11, 214, 156, 0.12);
+
+      animation:
+        planetGlow
+        4.5s ease-in-out
+        infinite alternate;
+    }
+
+    .planet-small::after {
+      content: "";
+
+      position: absolute;
+
+      width: 7px;
+      height: 7px;
+
+      right: 5px;
+      top: 48%;
+
+      border-radius: 50%;
+
+      background: #72ffd9;
+
+      box-shadow:
+        0 0 8px #39ffcb,
+        0 0 18px #16dba5,
+        0 0 40px #08a980;
+
+      animation:
+        pulseDot
+        2s ease-in-out
+        infinite;
+    }
+
+    /* BOTTOM PLANET */
+
+    .planet-bottom {
+      position: absolute;
+
+      width: 530px;
+      height: 530px;
+
+      bottom: -330px;
+      left: 10%;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle at 55% 10%,
+          rgba(25, 215, 161, 0.19),
+          rgba(2, 15, 12, 0.96) 48%,
+          #010403 70%
+        );
+
+      border:
+        1px solid
+        rgba(39, 255, 199, 0.55);
+
+      box-shadow:
+        0 -15px 55px
+        rgba(16, 240, 174, 0.11);
+
+      animation:
+        lowerPlanet
+        5.5s ease-in-out
+        infinite alternate;
+    }
+
+    /* DIAGONAL LIGHT */
+
+    .light-curve {
+      position: absolute;
+
+      width: 1300px;
+      height: 700px;
+
+      left: -260px;
+      top: 36%;
+
+      border-radius: 50%;
+
+      border-top:
+        1px solid
+        rgba(57, 255, 207, 0.75);
+
+      transform:
+        rotate(-28deg);
+
+      filter:
+        drop-shadow(
+          0 0 8px
+          rgba(31, 255, 197, 0.5)
+        );
+
+      animation:
+        lightPulse
+        3s ease-in-out
+        infinite alternate;
+    }
+
+    /* TEXT */
+
+    .visual-copy {
+      position: absolute;
+      z-index: 10;
+
+      left: 45%;
+      top: 48%;
+
+      width: min(430px, 45%);
+
+      transform: translateY(-50%);
+    }
+
+    .visual-label {
+      margin-bottom: 14px;
+
+      color: #adb8bc;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      letter-spacing: 0.22em;
+
+      text-transform: uppercase;
+    }
+
+    .visual-title {
+      font-size: clamp(44px, 4.8vw, 74px);
+      line-height: 0.94;
+
+      letter-spacing: -0.05em;
+
+      font-weight: 800;
+
+      color: white;
+    }
+
+    .visual-title span {
+      color: #aab4bd;
+    }
+
+    .visual-description {
+      margin-top: 28px;
+
+      max-width: 420px;
+
+      color: #9ba6aa;
+
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    /* ==============================
+       LIVE GLOW ANIMATIONS
+    ============================== */
+
+    @keyframes planetGlow {
+      0% {
+        box-shadow:
+          15px 0 40px
+          rgba(18, 220, 164, 0.10);
+
+        filter: brightness(0.9);
+      }
+
+      100% {
+        box-shadow:
+          25px 0 90px
+          rgba(21, 255, 190, 0.28);
+
+        filter: brightness(1.16);
+      }
+    }
+
+    @keyframes lowerPlanet {
+      from {
+        box-shadow:
+          0 -5px 35px
+          rgba(21, 255, 190, 0.08);
+      }
+
+      to {
+        box-shadow:
+          0 -15px 80px
+          rgba(21, 255, 190, 0.24);
+      }
+    }
+
+    @keyframes ambientMove {
+      from {
+        transform:
+          translate(-30px, -20px)
+          scale(0.95);
+      }
+
+      to {
+        transform:
+          translate(80px, 60px)
+          scale(1.1);
+      }
+    }
+
+    @keyframes rotateGlow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes lightPulse {
+      from {
+        opacity: 0.35;
+
+        filter:
+          drop-shadow(
+            0 0 5px
+            rgba(29, 255, 195, 0.25)
+          );
+      }
+
+      to {
+        opacity: 1;
+
+        filter:
+          drop-shadow(
+            0 0 18px
+            rgba(29, 255, 195, 0.75)
+          );
+      }
+    }
+
+    @keyframes pulseDot {
+      0%,
+      100% {
+        transform: scale(0.65);
+        opacity: 0.45;
+      }
+
+      50% {
+        transform: scale(1.35);
+        opacity: 1;
+      }
+    }
+
+    /* ==============================
+       RESPONSIVE
+    ============================== */
+
+    @media (max-width: 1050px) {
+      .login-page {
+        grid-template-columns: 1fr;
+      }
+
+      .login-panel {
+        min-height: auto;
+        padding-bottom: 70px;
+      }
+
+      .visual-panel {
+        min-height: 650px;
+      }
+
+      .visual-copy {
+        left: 50%;
+        width: 42%;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .login-panel {
+        padding:
+          28px
+          22px
+          50px;
+      }
+
+      .login-content {
+        padding-top: 65px;
+      }
+
+      .hero-title {
+        font-size: 48px;
+      }
+
+      .version {
+        display: block;
+        margin-top: 10px;
+      }
+
+      .role-buttons,
+      .role-help {
+        grid-template-columns: 1fr;
+      }
+
+      .role-help {
+        display: none;
+      }
+
+      .visual-panel {
+        min-height: 560px;
+      }
+
+      .visual-nav {
+        top: 25px;
+        right: 25px;
+      }
+
+      .visual-copy {
+        left: 28px;
+        width: calc(100% - 56px);
+      }
+
+      .visual-title {
+        font-size: 52px;
+      }
+
+      .planet-small {
+        left: -80px;
+      }
+    }
+
+    @media (
+      prefers-reduced-motion: reduce
+    ) {
+      *,
+      *::before,
+      *::after {
+        animation-duration:
+          0.01ms !important;
+
+        animation-iteration-count:
+          1 !important;
+      }
+    }
+  </style>
 </head>
-<body class="login-page">
-  <main class="login-shell">
-    <section class="brand-panel">
-      <div class="brand-mark">SP</div>
-      <p class="eyebrow">Staff Operations</p>
-      <h1>Staff Performance Portal</h1>
-      <p class="version-pill">Version 3</p>
-      <p class="lead">A cleaner, faster portal for attendance, schedules, performance, KPI tracking and staff operations.</p>
-      <div class="feature-grid">
-        <article><strong>Attendance</strong><span>Check-in, breaks and daily status</span></article>
-        <article><strong>Schedule</strong><span>Team roster and shift visibility</span></article>
-        <article><strong>Performance</strong><span>KPI, scores and trends</span></article>
-        <article><strong>Admin</strong><span>Management tools and oversight</span></article>
-      </div>
-    </section>
 
-    <section class="login-card" aria-label="Portal sign in">
-      <div class="mode-switch" role="tablist" aria-label="Login type">
-        <button id="staffTab" class="mode-btn active" type="button" role="tab" aria-selected="true">Staff</button>
-        <button id="adminTab" class="mode-btn" type="button" role="tab" aria-selected="false">Admin</button>
-      </div>
+<body>
 
-      <div class="login-copy">
-        <p class="eyebrow">Secure Access</p>
-        <h2 id="loginTitle">Staff Login</h2>
-        <p id="loginDescription">Enter your Staff ID or email to continue.</p>
-      </div>
+  <main class="login-page">
 
-      <form id="loginForm" novalidate>
-        <label class="field">
-          <span id="identityLabel">Staff ID or Email</span>
-          <input id="identity" name="identity" type="text" placeholder="e.g. ST-001 or name@company.com" autocomplete="username" required>
-        </label>
+    <!-- LEFT LOGIN SIDE -->
 
-        <label id="passwordField" class="field hidden">
-          <span>Password</span>
-          <div class="password-wrap">
-            <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password">
-            <button id="togglePassword" class="text-btn" type="button" aria-label="Show password">Show</button>
+    <section class="login-panel">
+
+      <header class="brand">
+        <div class="brand-mark">
+          S
+        </div>
+
+        <span>
+          Staff Performance Portal
+        </span>
+      </header>
+
+
+      <div class="login-content">
+
+        <p class="eyebrow">
+          Welcome Back
+        </p>
+
+        <h1 class="hero-title">
+          Staff<br>
+          Performance<br>
+          Portal
+          <span class="version">
+            Version 3
+          </span>
+        </h1>
+
+        <p class="description">
+          Manage attendance, performance,
+          schedules and more — all in one place.
+        </p>
+
+
+        <form
+          class="login-form"
+          id="loginForm"
+        >
+
+          <div class="field">
+
+            <svg
+              class="field-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle
+                cx="12"
+                cy="8"
+                r="4"
+              ></circle>
+
+              <path
+                d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"
+              ></path>
+            </svg>
+
+            <input
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              autocomplete="username"
+              required
+            >
+
           </div>
-        </label>
 
-        <label class="remember-row">
-          <input id="rememberMe" type="checkbox">
-          <span>Remember me on this device</span>
-        </label>
 
-        <button id="loginButton" class="primary-btn" type="submit">Continue as Staff</button>
-        <p class="demo-note">Starter mode only: no real authentication is connected yet.</p>
-        <div id="loginMessage" class="alert" hidden></div>
-      </form>
+          <div class="field">
+
+            <svg
+              class="field-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <rect
+                x="5"
+                y="10"
+                width="14"
+                height="11"
+                rx="2"
+              ></rect>
+
+              <path
+                d="M8 10V7a4 4 0 0 1 8 0v3"
+              ></path>
+            </svg>
+
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+            <button
+              class="password-toggle"
+              id="passwordToggle"
+              type="button"
+              aria-label="Show password"
+            >
+              ◉
+            </button>
+
+          </div>
+
+
+          <button
+            class="sign-in-button"
+            type="submit"
+          >
+            ⇥ &nbsp; Sign In
+          </button>
+
+
+          <div class="login-options">
+
+            <label class="remember">
+
+              <input
+                type="checkbox"
+                id="rememberMe"
+              >
+
+              <span>
+                Remember me
+              </span>
+
+            </label>
+
+            <a
+              class="forgot"
+              href="#"
+            >
+              Forgot password?
+            </a>
+
+          </div>
+
+
+          <div class="divider">
+            <span></span>
+            <span>or</span>
+            <span></span>
+          </div>
+
+
+          <div class="role-buttons">
+
+            <button
+              class="role-button"
+              type="button"
+              id="staffLogin"
+            >
+              ♙ &nbsp; Staff Login
+            </button>
+
+            <button
+              class="role-button"
+              type="button"
+              id="adminLogin"
+            >
+              ♢ &nbsp; Admin Login
+            </button>
+
+          </div>
+
+
+          <div class="role-help">
+
+            <span>
+              Access your dashboard
+            </span>
+
+            <span>
+              Administrative access
+            </span>
+
+          </div>
+
+        </form>
+
+      </div>
+
     </section>
+
+
+    <!-- RIGHT LIVE GLOW SIDE -->
+
+    <section class="visual-panel">
+
+      <nav class="visual-nav">
+
+        <a href="#">
+          Help
+        </a>
+
+        <a href="#">
+          Contact
+        </a>
+
+      </nav>
+
+
+      <div class="ambient-glow"></div>
+
+      <div class="top-arc"></div>
+
+      <div class="planet-small"></div>
+
+      <div class="arc"></div>
+
+      <div class="light-curve"></div>
+
+      <div class="planet-bottom"></div>
+
+
+      <div class="visual-copy">
+
+        <p class="visual-label">
+          A Better Way To Manage
+        </p>
+
+        <h2 class="visual-title">
+          People.<br>
+          Performance.<br>
+          <span>
+            Progress.
+          </span>
+        </h2>
+
+        <p class="visual-description">
+          Track attendance, manage schedules,
+          monitor performance, and keep your
+          team connected — all in one place.
+        </p>
+
+      </div>
+
+    </section>
+
   </main>
 
-  <footer class="page-footer">Staff Performance Portal V3 · Frontend starter</footer>
-  <script src="js/app.js"></script>
+
+  <script>
+    const password =
+      document.getElementById("password");
+
+    const passwordToggle =
+      document.getElementById(
+        "passwordToggle"
+      );
+
+    const loginForm =
+      document.getElementById(
+        "loginForm"
+      );
+
+    const staffLogin =
+      document.getElementById(
+        "staffLogin"
+      );
+
+    const adminLogin =
+      document.getElementById(
+        "adminLogin"
+      );
+
+
+    passwordToggle.addEventListener(
+      "click",
+      () => {
+
+        if (
+          password.type === "password"
+        ) {
+          password.type = "text";
+          passwordToggle.textContent =
+            "◌";
+        } else {
+          password.type = "password";
+          passwordToggle.textContent =
+            "◉";
+        }
+
+      }
+    );
+
+
+    loginForm.addEventListener(
+      "submit",
+      (event) => {
+
+        event.preventDefault();
+
+        /*
+          Real authentication will
+          be connected later.
+        */
+
+        console.log(
+          "Login submitted"
+        );
+
+      }
+    );
+
+
+    staffLogin.addEventListener(
+      "click",
+      () => {
+
+        window.location.href =
+          "staff.html";
+
+      }
+    );
+
+
+    adminLogin.addEventListener(
+      "click",
+      () => {
+
+        window.location.href =
+          "admin.html";
+
+      }
+    );
+  </script>
+
 </body>
 </html>
