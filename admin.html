@@ -418,7 +418,22 @@
               <div class="schedule-field"><label for="staffEditRole">Role</label><select id="staffEditRole"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
               <div class="schedule-field"><label for="staffEditStatus">Status</label><select id="staffEditStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
             </div>
-            <div class="schedule-builder-actions"><button class="primary-btn compact" id="savePortalUserBtn" type="button">Save User</button></div>
+
+            <div id="staffPasswordArea" style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(148,163,184,.14);">
+              <div class="section-head" style="margin-bottom:12px;">
+                <div><p class="eyebrow">Password Management</p><h3 id="staffPasswordTitle">Set Login Password</h3></div>
+              </div>
+              <div class="staff-user-form-grid">
+                <div class="schedule-field"><label for="staffEditPassword">New Temporary Password</label><input id="staffEditPassword" type="password" autocomplete="new-password" placeholder="Enter temporary password"></div>
+                <div class="schedule-field"><label for="staffEditPasswordConfirm">Confirm Password</label><input id="staffEditPasswordConfirm" type="password" autocomplete="new-password" placeholder="Confirm temporary password"></div>
+              </div>
+              <p class="muted" id="staffPasswordHelp" style="margin:10px 0 0;font-size:11px;">For a new user, set their initial temporary password here.</p>
+            </div>
+
+            <div class="schedule-builder-actions">
+              <button class="primary-btn compact" id="savePortalUserBtn" type="button">Save User</button>
+              <button class="secondary-btn compact" id="resetPortalPasswordBtn" type="button" style="display:none;">Reset Password</button>
+            </div>
           </div>
         </div>
       </section>
@@ -2268,6 +2283,11 @@
       document.getElementById("staffEditName").value = "";
       document.getElementById("staffEditRole").value = "staff";
       document.getElementById("staffEditStatus").value = "active";
+      document.getElementById("staffEditPassword").value = "";
+      document.getElementById("staffEditPasswordConfirm").value = "";
+      document.getElementById("staffPasswordTitle").textContent = "Set Login Password";
+      document.getElementById("staffPasswordHelp").textContent = "For a new user, set their initial temporary password here.";
+      document.getElementById("resetPortalPasswordBtn").style.display = "none";
       document.getElementById("staffUserModal").classList.add("show");
     }
 
@@ -2281,6 +2301,11 @@
       document.getElementById("staffEditName").value = user.staffName || "";
       document.getElementById("staffEditRole").value = String(user.role || "staff").toLowerCase();
       document.getElementById("staffEditStatus").value = String(user.status || "active").toLowerCase();
+      document.getElementById("staffEditPassword").value = "";
+      document.getElementById("staffEditPasswordConfirm").value = "";
+      document.getElementById("staffPasswordTitle").textContent = "Reset Login Password";
+      document.getElementById("staffPasswordHelp").textContent = "Enter a new temporary password only when this user needs a password reset.";
+      document.getElementById("resetPortalPasswordBtn").style.display = "inline-flex";
       document.getElementById("staffUserModal").classList.add("show");
     }
 
@@ -2310,6 +2335,18 @@
         showStaffAdminMessage(error.message || "Could not save user.", "error");
       } finally { button.disabled = false; button.textContent = "Save User"; }
     }
+
+    async function resetPortalUserPassword() {
+      const password = document.getElementById("staffEditPassword").value;
+      const confirmPassword = document.getElementById("staffEditPasswordConfirm").value;
+      if (staffUserMode !== "update") return;
+      if (!password) { showStaffAdminMessage("Enter the new temporary password first.", "error"); return; }
+      if (password.length < 8) { showStaffAdminMessage("Temporary password must be at least 8 characters.", "error"); return; }
+      if (password !== confirmPassword) { showStaffAdminMessage("The password confirmation does not match.", "error"); return; }
+      showStaffAdminMessage("Password fields are ready. Backend password storage/reset must be added before this can be activated securely.", "error");
+    }
+
+    document.getElementById("resetPortalPasswordBtn").addEventListener("click", resetPortalUserPassword);
 
     document.getElementById("addPortalUserBtn").addEventListener("click", openStaffUserCreator);
     document.getElementById("closeStaffUserModal").addEventListener("click", closeStaffUserModal);
