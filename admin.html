@@ -2336,15 +2336,188 @@
       } finally { button.disabled = false; button.textContent = "Save User"; }
     }
 
-    async function resetPortalUserPassword() {
-      const password = document.getElementById("staffEditPassword").value;
-      const confirmPassword = document.getElementById("staffEditPasswordConfirm").value;
-      if (staffUserMode !== "update") return;
-      if (!password) { showStaffAdminMessage("Enter the new temporary password first.", "error"); return; }
-      if (password.length < 8) { showStaffAdminMessage("Temporary password must be at least 8 characters.", "error"); return; }
-      if (password !== confirmPassword) { showStaffAdminMessage("The password confirmation does not match.", "error"); return; }
-      showStaffAdminMessage("Password fields are ready. Backend password storage/reset must be added before this can be activated securely.", "error");
+  async function resetPortalUserPassword() {
+
+  const button =
+    document.getElementById(
+      "resetPortalPasswordBtn"
+    );
+
+  const username =
+    document
+      .getElementById(
+        "staffEditUsername"
+      )
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById(
+        "staffEditPassword"
+      )
+      .value;
+
+  const confirmPassword =
+    document
+      .getElementById(
+        "staffEditPasswordConfirm"
+      )
+      .value;
+
+
+  if (
+    staffUserMode !==
+    "update"
+  ) {
+    return;
+  }
+
+
+  if (!username) {
+    showStaffAdminMessage(
+      "User account was not found.",
+      "error"
+    );
+    return;
+  }
+
+
+  if (!password) {
+    showStaffAdminMessage(
+      "Enter the new temporary password first.",
+      "error"
+    );
+    return;
+  }
+
+
+  if (
+    password.length <
+    8
+  ) {
+    showStaffAdminMessage(
+      "Temporary password must be at least 8 characters.",
+      "error"
+    );
+    return;
+  }
+
+
+  if (
+    password !==
+    confirmPassword
+  ) {
+    showStaffAdminMessage(
+      "The password confirmation does not match.",
+      "error"
+    );
+    return;
+  }
+
+
+  const adminUsername =
+    getAdminUsername();
+
+
+  if (!adminUsername) {
+    showStaffAdminMessage(
+      "Admin login session was not found.",
+      "error"
+    );
+    return;
+  }
+
+
+  try {
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "Resetting...";
+
+
+    const response =
+      await fetch(
+        ADMIN_API_URL,
+        {
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify({
+              action:
+                "user-password-reset",
+
+              adminUsername:
+                adminUsername,
+
+              username:
+                username,
+
+              newPassword:
+                password
+            })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.ok
+    ) {
+      throw new Error(
+        data.error ||
+        "Password reset failed."
+      );
     }
+
+
+    document.getElementById(
+      "staffEditPassword"
+    ).value = "";
+
+    document.getElementById(
+      "staffEditPasswordConfirm"
+    ).value = "";
+
+
+    showStaffAdminMessage(
+      data.message ||
+      "Password updated.",
+      "ok"
+    );
+
+
+  } catch (error) {
+
+    showStaffAdminMessage(
+      error.message ||
+      "Password reset failed.",
+      "error"
+    );
+
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Reset Password";
+
+  }
+}
 
     document.getElementById("resetPortalPasswordBtn").addEventListener("click", resetPortalUserPassword);
 
