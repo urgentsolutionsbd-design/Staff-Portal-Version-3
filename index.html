@@ -2015,25 +2015,47 @@
        Password authentication will be connected later.
     ========================================================= */
 
-    async function lookupUser(username) {
-      const response = await fetch(
-        API_URL +
-        "?action=user&username=" +
-        encodeURIComponent(username),
-        {
-          method: "GET",
-          cache: "no-store"
-        }
-      );
+  async function authenticateUser(
+  username,
+  password
+) {
 
-      if (!response.ok) {
-        throw new Error(
-          "Login service could not be reached."
-        );
+  const response =
+    await fetch(
+      API_URL,
+      {
+        method:
+          "POST",
+
+        headers: {
+          "Content-Type":
+            "text/plain;charset=utf-8"
+        },
+
+        body:
+          JSON.stringify({
+            action:
+              "login",
+
+            username:
+              username,
+
+            password:
+              password
+          })
       }
+    );
 
-      return response.json();
-    }
+
+  if (!response.ok) {
+    throw new Error(
+      "Login service could not be reached."
+    );
+  }
+
+
+  return response.json();
+}
 
     function savePortalSession(user) {
       const session = {
