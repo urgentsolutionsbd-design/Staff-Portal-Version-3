@@ -1868,7 +1868,7 @@
 
   <script>
 
-    const API_URL = "https://script.google.com/macros/s/AKfycbxPcYgFwx7OdSSfrGDJooj23znWjyLJwb-qY4fnRsQrLTdeE8ixPNDVbM2Ut6ITdO1v/exec";
+    const API_URL = "https://staff-portal-v3-api.urgentsolutionsbd.workers.dev/";
     const SESSION_KEY = "staffPortalSession";
 
     /* =========================================================
@@ -2015,7 +2015,7 @@
        Password authentication will be connected later.
     ========================================================= */
 
-  async function authenticateUser(
+async function authenticateUser(
   username,
   password
 ) {
@@ -2024,37 +2024,39 @@
     await fetch(
       API_URL,
       {
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
           "Content-Type":
-            "text/plain;charset=utf-8"
+            "application/json"
         },
 
         body:
           JSON.stringify({
-            action:
-              "login",
-
-            username:
-              username,
-
-            password:
-              password
+            action: "login",
+            username: username,
+            password: password
           })
       }
     );
 
 
-  if (!response.ok) {
+  const data =
+    await response.json();
+
+
+  if (
+    !response.ok ||
+    !data.ok
+  ) {
     throw new Error(
-      "Login service could not be reached."
+      data.error ||
+      "Login failed."
     );
   }
 
 
-  return response.json();
+  return data;
 }
 
     function savePortalSession(user) {
