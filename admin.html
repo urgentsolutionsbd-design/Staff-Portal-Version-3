@@ -274,6 +274,25 @@
       .schedule-week-grid { grid-template-columns:1fr; }
     }
 
+
+    /* LIVE STAFF / USERS MANAGEMENT */
+    .staff-admin-toolbar { display:grid; grid-template-columns:minmax(220px,1fr) 170px 170px auto; gap:12px; align-items:end; margin-bottom:14px; padding:16px; }
+    .staff-admin-toolbar input,.staff-admin-toolbar select,.staff-user-form-grid input,.staff-user-form-grid select { width:100%; min-height:44px; border:1px solid rgba(148,163,184,.18); border-radius:10px; background:rgba(5,12,11,.62); color:#f4f7f6; padding:0 12px; }
+    .staff-admin-message { display:none; margin:0 0 14px; padding:12px 14px; border-radius:10px; font-size:12px; }
+    .staff-admin-message.show { display:block; }
+    .staff-admin-message.ok { border:1px solid rgba(52,211,153,.35); background:rgba(16,185,129,.08); color:#9ff5d5; }
+    .staff-admin-message.error { border:1px solid rgba(248,113,113,.35); background:rgba(239,68,68,.08); color:#ffb4b4; }
+    .staff-admin-table td,.staff-admin-table th { vertical-align:middle; }
+    .staff-role-badge,.staff-status-badge { display:inline-flex; align-items:center; border:1px solid rgba(148,163,184,.18); border-radius:999px; padding:5px 9px; font-size:11px; text-transform:capitalize; }
+    .staff-status-badge.active { border-color:rgba(52,211,153,.35); color:#8ff1cf; }
+    .staff-status-badge.inactive { border-color:rgba(248,113,113,.35); color:#ffb4b4; }
+    .staff-user-modal { position:fixed; inset:0; z-index:1000; display:none; place-items:center; padding:20px; background:rgba(0,0,0,.68); }
+    .staff-user-modal.show { display:grid; }
+    .staff-user-dialog { width:min(720px,100%); padding:20px; }
+    .staff-user-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:800px){ .staff-admin-toolbar{grid-template-columns:1fr 1fr}.staff-user-form-grid{grid-template-columns:1fr} }
+    @media(max-width:560px){ .staff-admin-toolbar{grid-template-columns:1fr} }
+
   </style>
 </head>
 
@@ -368,20 +387,38 @@
 
       <section class="content-section" id="staff">
         <div class="section-head">
-          <div><p class="eyebrow">Staff</p><h2>Staff directory</h2></div>
-          <button class="primary-btn compact">Add staff</button>
+          <div><p class="eyebrow">Staff</p><h2>Staff Management</h2></div>
+          <button class="primary-btn compact" id="addPortalUserBtn" type="button">Add User</button>
         </div>
+
+        <div class="staff-admin-toolbar card">
+          <input id="staffUserSearch" type="search" placeholder="Search username or staff name...">
+          <select id="staffRoleFilter"><option value="all">All roles</option><option value="staff">Staff</option><option value="admin">Admin</option></select>
+          <select id="staffStatusFilter"><option value="all">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
+          <button class="secondary-btn compact" id="refreshPortalUsers" type="button">Refresh</button>
+        </div>
+
+        <div class="staff-admin-message" id="staffAdminMessage"></div>
 
         <div class="card table-card">
           <div class="table-wrap">
-            <table>
-              <thead><tr><th>Name</th><th>ID</th><th>Team</th><th>Status</th><th>KPI</th></tr></thead>
-              <tbody>
-                <tr><td>Sample Staff A</td><td>ST-001</td><td>Operations</td><td><span class="status-badge online">Active</span></td><td>94%</td></tr>
-                <tr><td>Sample Staff B</td><td>ST-002</td><td>Operations</td><td><span class="status-badge">Active</span></td><td>88%</td></tr>
-                <tr><td>Sample Staff C</td><td>ST-003</td><td>Support</td><td><span class="status-badge">Leave</span></td><td>91%</td></tr>
-              </tbody>
+            <table class="staff-admin-table">
+              <thead><tr><th>Staff Name</th><th>Username</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="portalUsersBody"><tr><td colspan="5" class="muted">Open Staff to load users.</td></tr></tbody>
             </table>
+          </div>
+        </div>
+
+        <div class="staff-user-modal" id="staffUserModal" aria-hidden="true">
+          <div class="staff-user-dialog card">
+            <div class="section-head"><div><p class="eyebrow">User account</p><h3 id="staffUserModalTitle">Add User</h3></div><button class="secondary-btn compact" id="closeStaffUserModal" type="button">Close</button></div>
+            <div class="staff-user-form-grid">
+              <div class="schedule-field"><label for="staffEditUsername">Username</label><input id="staffEditUsername" type="text" autocomplete="off"></div>
+              <div class="schedule-field"><label for="staffEditName">Staff Name</label><input id="staffEditName" type="text" autocomplete="off"></div>
+              <div class="schedule-field"><label for="staffEditRole">Role</label><select id="staffEditRole"><option value="staff">Staff</option><option value="admin">Admin</option></select></div>
+              <div class="schedule-field"><label for="staffEditStatus">Status</label><select id="staffEditStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+            </div>
+            <div class="schedule-builder-actions"><button class="primary-btn compact" id="savePortalUserBtn" type="button">Save User</button></div>
           </div>
         </div>
       </section>
@@ -2163,6 +2200,127 @@
             );
           });
       });
+
+
+    /* =========================================================
+       LIVE STAFF / USERS MANAGEMENT
+    ========================================================= */
+    let portalUsers = [];
+    let staffUserMode = "create";
+
+    function showStaffAdminMessage(message, type) {
+      const box = document.getElementById("staffAdminMessage");
+      box.textContent = message || "";
+      box.className = "staff-admin-message show " + (type === "error" ? "error" : "ok");
+    }
+
+    function clearStaffAdminMessage() {
+      const box = document.getElementById("staffAdminMessage");
+      box.textContent = "";
+      box.className = "staff-admin-message";
+    }
+
+    function filteredPortalUsers() {
+      const q = document.getElementById("staffUserSearch").value.trim().toLowerCase();
+      const role = document.getElementById("staffRoleFilter").value;
+      const status = document.getElementById("staffStatusFilter").value;
+      return portalUsers.filter(user => {
+        const text = `${user.username || ""} ${user.staffName || ""}`.toLowerCase();
+        return (!q || text.includes(q)) && (role === "all" || String(user.role).toLowerCase() === role) && (status === "all" || String(user.status).toLowerCase() === status);
+      });
+    }
+
+    function renderPortalUsers() {
+      const body = document.getElementById("portalUsersBody");
+      const users = filteredPortalUsers();
+      if (!users.length) {
+        body.innerHTML = '<tr><td colspan="5" class="muted">No users found.</td></tr>';
+        return;
+      }
+      body.innerHTML = users.map(user => {
+        const username = escapeAdminHtml(user.username);
+        const name = escapeAdminHtml(user.staffName);
+        const role = escapeAdminHtml(String(user.role || "").toLowerCase());
+        const status = escapeAdminHtml(String(user.status || "").toLowerCase());
+        return `<tr><td><strong>${name}</strong></td><td>${username}</td><td><span class="staff-role-badge">${role}</span></td><td><span class="staff-status-badge ${status}">${status}</span></td><td><button class="secondary-btn compact" type="button" data-edit-portal-user="${username}">Edit</button></td></tr>`;
+      }).join("");
+      body.querySelectorAll("[data-edit-portal-user]").forEach(button => button.addEventListener("click", () => openStaffUserEditor(button.dataset.editPortalUser)));
+    }
+
+    async function loadPortalUsers() {
+      clearStaffAdminMessage();
+      const adminUsername = getAdminUsername();
+      if (!adminUsername) throw new Error("Admin login session was not found.");
+      document.getElementById("portalUsersBody").innerHTML = '<tr><td colspan="5" class="muted">Loading users...</td></tr>';
+      const params = new URLSearchParams({ action:"users-admin", adminUsername });
+      const response = await fetch(ADMIN_API_URL + "?" + params.toString(), { method:"GET", cache:"no-store" });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(data.error || "Could not load users.");
+      portalUsers = Array.isArray(data.users) ? data.users : [];
+      renderPortalUsers();
+    }
+
+    function openStaffUserCreator() {
+      staffUserMode = "create";
+      document.getElementById("staffUserModalTitle").textContent = "Add User";
+      document.getElementById("staffEditUsername").value = "";
+      document.getElementById("staffEditUsername").readOnly = false;
+      document.getElementById("staffEditName").value = "";
+      document.getElementById("staffEditRole").value = "staff";
+      document.getElementById("staffEditStatus").value = "active";
+      document.getElementById("staffUserModal").classList.add("show");
+    }
+
+    function openStaffUserEditor(username) {
+      const user = portalUsers.find(item => String(item.username) === String(username));
+      if (!user) return;
+      staffUserMode = "update";
+      document.getElementById("staffUserModalTitle").textContent = "Edit User";
+      document.getElementById("staffEditUsername").value = user.username || "";
+      document.getElementById("staffEditUsername").readOnly = true;
+      document.getElementById("staffEditName").value = user.staffName || "";
+      document.getElementById("staffEditRole").value = String(user.role || "staff").toLowerCase();
+      document.getElementById("staffEditStatus").value = String(user.status || "active").toLowerCase();
+      document.getElementById("staffUserModal").classList.add("show");
+    }
+
+    function closeStaffUserModal() { document.getElementById("staffUserModal").classList.remove("show"); }
+
+    async function savePortalUser() {
+      const button = document.getElementById("savePortalUserBtn");
+      try {
+        const adminUsername = getAdminUsername();
+        const username = document.getElementById("staffEditUsername").value.trim();
+        const staffName = document.getElementById("staffEditName").value.trim();
+        const role = document.getElementById("staffEditRole").value;
+        const status = document.getElementById("staffEditStatus").value;
+        if (!adminUsername) throw new Error("Admin login session was not found.");
+        if (!username) throw new Error("Username is required.");
+        if (!staffName) throw new Error("Staff Name is required.");
+        const params = new URLSearchParams({ action: staffUserMode === "create" ? "user-create" : "user-update", adminUsername, username, staffName, role, status });
+        button.disabled = true; button.textContent = "Saving...";
+        const response = await fetch(ADMIN_API_URL + "?" + params.toString(), { method:"GET", cache:"no-store" });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.error || "Could not save user.");
+        closeStaffUserModal();
+        showStaffAdminMessage(data.message || "User saved.", "ok");
+        await loadPortalUsers();
+        showStaffAdminMessage(data.message || "User saved.", "ok");
+      } catch (error) {
+        showStaffAdminMessage(error.message || "Could not save user.", "error");
+      } finally { button.disabled = false; button.textContent = "Save User"; }
+    }
+
+    document.getElementById("addPortalUserBtn").addEventListener("click", openStaffUserCreator);
+    document.getElementById("closeStaffUserModal").addEventListener("click", closeStaffUserModal);
+    document.getElementById("savePortalUserBtn").addEventListener("click", savePortalUser);
+    document.getElementById("refreshPortalUsers").addEventListener("click", () => loadPortalUsers().catch(error => showStaffAdminMessage(error.message, "error")));
+    document.getElementById("staffUserSearch").addEventListener("input", renderPortalUsers);
+    document.getElementById("staffRoleFilter").addEventListener("change", renderPortalUsers);
+    document.getElementById("staffStatusFilter").addEventListener("change", renderPortalUsers);
+    document.querySelector('[data-section="staff"]')?.addEventListener("click", () => loadPortalUsers().catch(error => showStaffAdminMessage(error.message, "error")));
+    document.getElementById("staffUserModal").addEventListener("click", event => { if (event.target.id === "staffUserModal") closeStaffUserModal(); });
+
 
   </script>
 </body>
