@@ -1727,20 +1727,21 @@
         button.textContent = "Applying...";
         clearAdminScheduleMessage();
 
-        const params = new URLSearchParams({
-          action: "schedule-bulk-update",
-          adminUsername: adminUsername,
-          agent: agent,
-          startDate: startDate,
-          endDate: endDate,
-          sunday: pattern[0],
-          monday: pattern[1],
-          tuesday: pattern[2],
-          wednesday: pattern[3],
-          thursday: pattern[4],
-          friday: pattern[5],
-          saturday: pattern[6]
-        });
+      const params = new URLSearchParams({
+  action: "schedule-bulk-update",
+  adminUsername: adminUsername,
+  agent: agent,
+  startDate: startDate,
+  endDate: endDate,
+
+  sun: pattern[0],
+  mon: pattern[1],
+  tue: pattern[2],
+  wed: pattern[3],
+  thu: pattern[4],
+  fri: pattern[5],
+  sat: pattern[6]
+});
 
         const response = await fetch(
           ADMIN_API_URL + "?" + params.toString(),
