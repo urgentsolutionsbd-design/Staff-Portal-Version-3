@@ -256,7 +256,7 @@
 
     .schedule-builder { display:none; margin-bottom:16px; }
     .schedule-builder.show { display:block; }
-    .schedule-builder-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .schedule-builder-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
     .schedule-week-grid { display:grid; grid-template-columns:repeat(7,minmax(100px,1fr)); gap:8px; margin-top:14px; }
     .schedule-day-card { padding:10px; border:1px solid rgba(148,163,184,.14); border-radius:10px; background:rgba(5,12,11,.35); }
     .schedule-day-card label { display:block; color:#8fa1a0; font-size:10px; font-weight:800; margin-bottom:7px; }
@@ -418,9 +418,22 @@
         <article class="card schedule-builder" id="scheduleBuilder">
           <div class="section-head"><div><p class="eyebrow">Bulk Schedule Builder</p><h3>Create a schedule pattern</h3></div><button class="secondary-btn compact" id="closeScheduleBuilder" type="button">Close</button></div>
           <div class="schedule-builder-grid">
-            <div class="schedule-field"><label for="scheduleBuildStart">From</label><input id="scheduleBuildStart" type="date"></div>
-            <div class="schedule-field"><label for="scheduleBuildEnd">To</label><input id="scheduleBuildEnd" type="date"></div>
-            <div class="schedule-field"><label>Staff</label><input id="scheduleBuildStaff" type="text" readonly placeholder="Choose staff above"></div>
+            <div class="schedule-field">
+              <label for="scheduleBuildMonth">Schedule Month</label>
+              <select id="scheduleBuildMonth"></select>
+            </div>
+            <div class="schedule-field">
+              <label for="scheduleBuildStart">From</label>
+              <input id="scheduleBuildStart" type="date" readonly>
+            </div>
+            <div class="schedule-field">
+              <label for="scheduleBuildEnd">To</label>
+              <input id="scheduleBuildEnd" type="date" readonly>
+            </div>
+            <div class="schedule-field">
+              <label>Staff</label>
+              <input id="scheduleBuildStaff" type="text" readonly placeholder="Choose staff above">
+            </div>
           </div>
           <div class="schedule-week-grid" id="scheduleWeekPattern"></div>
           <div class="schedule-builder-actions">
@@ -1647,6 +1660,140 @@
     const SCHEDULE_SHIFTS = ["AM","AM1","PM","PM1","OFF","AL","OT","ON CALL"];
     const SCHEDULE_DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
+
+    function buildScheduleMonthOptions() {
+      const select =
+        document.getElementById("scheduleBuildMonth");
+
+      const topMonthValue =
+        document.getElementById("adminScheduleMonth").value;
+
+      const base =
+        topMonthValue &&
+        /^\d{4}-\d{2}$/.test(topMonthValue)
+          ? topMonthValue
+          : "2026-10";
+
+      const parts =
+        base.split("-");
+
+      const baseYear =
+        Number(parts[0]);
+
+      const baseMonth =
+        Number(parts[1]);
+
+      select.innerHTML = "";
+
+      for (let offset = -3; offset <= 12; offset++) {
+        const date =
+          new Date(
+            baseYear,
+            baseMonth - 1 + offset,
+            1
+          );
+
+        const year =
+          date.getFullYear();
+
+        const month =
+          String(
+            date.getMonth() + 1
+          ).padStart(2, "0");
+
+        const value =
+          year + "-" + month;
+
+        const option =
+          document.createElement("option");
+
+        option.value = value;
+
+        option.textContent =
+          date.toLocaleDateString(
+            "en-US",
+            {
+              month: "long",
+              year: "numeric"
+            }
+          );
+
+        if (value === base) {
+          option.selected = true;
+        }
+
+        select.appendChild(option);
+      }
+
+      syncScheduleBuilderDates();
+    }
+
+    function syncScheduleBuilderDates() {
+      const monthValue =
+        document.getElementById(
+          "scheduleBuildMonth"
+        ).value;
+
+      if (
+        !monthValue ||
+        !/^\d{4}-\d{2}$/.test(monthValue)
+      ) {
+        return;
+      }
+
+      const parts =
+        monthValue.split("-");
+
+      const year =
+        Number(parts[0]);
+
+      const month =
+        Number(parts[1]);
+
+      const lastDay =
+        new Date(
+          year,
+          month,
+          0
+        ).getDate();
+
+      document.getElementById(
+        "scheduleBuildStart"
+      ).value =
+        monthValue + "-01";
+
+      document.getElementById(
+        "scheduleBuildEnd"
+      ).value =
+        monthValue +
+        "-" +
+        String(lastDay)
+          .padStart(2, "0");
+
+      document.getElementById(
+        "scheduleBuildPreview"
+      ).textContent =
+        "Month selected. Review the weekly pattern, then Preview.";
+    }
+
+    function getScheduleBuildPattern() {
+      const pattern = {};
+
+      for (let day = 0; day < 7; day++) {
+        const select =
+          document.querySelector(
+            `[data-build-day="${day}"]`
+          );
+
+        pattern[day] =
+          select
+            ? select.value
+            : "";
+      }
+
+      return pattern;
+    }
+
     function initScheduleWeekPattern() {
       const wrap = document.getElementById("scheduleWeekPattern");
       wrap.innerHTML = SCHEDULE_DAYS.map(function(day, index) {
@@ -1690,110 +1837,208 @@
     }
 
     async function applyScheduleBuild() {
-      const button = document.getElementById("applyScheduleBuild");
-
-      try {
-        const agent = document.getElementById("adminScheduleAgent").value;
-        const adminUsername = getAdminUsername();
-        const startDate = document.getElementById("scheduleBuildStart").value;
-        const endDate = document.getElementById("scheduleBuildEnd").value;
-
-        if (!agent) {
-          throw new Error("Choose a staff member first.");
-        }
-
-        if (!adminUsername) {
-          throw new Error("Admin login session was not found.");
-        }
-
-        if (!startDate || !endDate) {
-          throw new Error("Choose both From and To dates.");
-        }
-
-        const items = getScheduleBuildItems();
-
-        if (!window.confirm(`Apply ${items.length} schedule changes for ${agent}?`)) {
-          return;
-        }
-
-        const pattern = {};
-
-        SCHEDULE_DAYS.forEach(function (day, index) {
-          const select = document.querySelector(`[data-build-day="${index}"]`);
-          pattern[index] = select ? select.value : "OFF";
-        });
-
-        button.disabled = true;
-        button.textContent = "Applying...";
-        clearAdminScheduleMessage();
-
-      const params = new URLSearchParams({
-  action: "schedule-bulk-update",
-  adminUsername: adminUsername,
-  agent: agent,
-  startDate: startDate,
-  endDate: endDate,
-
-  sun: pattern[0],
-  mon: pattern[1],
-  tue: pattern[2],
-  wed: pattern[3],
-  thu: pattern[4],
-  fri: pattern[5],
-  sat: pattern[6]
-});
-
-        const response = await fetch(
-          ADMIN_API_URL + "?" + params.toString(),
-          { method: "GET", cache: "no-store" }
+      const button =
+        document.getElementById(
+          "applyScheduleBuild"
         );
 
-        const data = await response.json();
+      try {
+        const agent =
+          document.getElementById(
+            "adminScheduleAgent"
+          ).value;
 
-        if (!response.ok || !data.ok) {
+        const adminUsername =
+          getAdminUsername();
+
+        const startDate =
+          document.getElementById(
+            "scheduleBuildStart"
+          ).value;
+
+        const endDate =
+          document.getElementById(
+            "scheduleBuildEnd"
+          ).value;
+
+        if (!agent) {
           throw new Error(
-            data.error ||
-            data.message ||
-            "Bulk schedule could not be updated."
+            "Choose a staff member first."
           );
         }
 
-        const result = data.result || {};
-        const updatedDays = result.updatedDays ?? items.length;
+        if (!adminUsername) {
+          throw new Error(
+            "Admin login session was not found."
+          );
+        }
+
+        if (!startDate || !endDate) {
+          throw new Error(
+            "Choose a schedule month first."
+          );
+        }
+
+        const pattern =
+          getScheduleBuildPattern();
+
+        const items =
+          getScheduleBuildItems();
+
+        if (
+          !window.confirm(
+            `Apply ${items.length} schedule changes for ${agent}?`
+          )
+        ) {
+          return;
+        }
+
+        button.disabled = true;
+        button.textContent =
+          "Applying...";
+
+        clearAdminScheduleMessage();
+
+        const params =
+          new URLSearchParams({
+            action:
+              "schedule-bulk-update",
+
+            adminUsername:
+              adminUsername,
+
+            agent:
+              agent,
+
+            startDate:
+              startDate,
+
+            endDate:
+              endDate,
+
+            sun:
+              pattern[0],
+
+            mon:
+              pattern[1],
+
+            tue:
+              pattern[2],
+
+            wed:
+              pattern[3],
+
+            thu:
+              pattern[4],
+
+            fri:
+              pattern[5],
+
+            sat:
+              pattern[6]
+          });
+
+        const response =
+          await fetch(
+            ADMIN_API_URL +
+            "?" +
+            params.toString(),
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if (
+          !response.ok ||
+          !data.ok
+        ) {
+          throw new Error(
+            data.error ||
+            "Could not create schedule."
+          );
+        }
+
+        const result =
+          data.result || {};
+
+        const counts =
+          result.counts || {};
+
+        const summary =
+          Object.entries(counts)
+            .map(
+              ([shift, count]) =>
+                `${shift}: ${count}`
+            )
+            .join(" · ");
 
         showAdminScheduleMessage(
-          data.message ||
-          `Schedule created successfully for ${agent}: ${updatedDays} days updated.`,
+          `Schedule created for ${agent}: ${result.updatedDays || items.length} days updated.` +
+          (summary ? ` ${summary}` : ""),
           "ok"
         );
 
-        const monthValue = startDate.slice(0, 7);
+        const monthValue =
+          document.getElementById(
+            "scheduleBuildMonth"
+          ).value;
+
         if (monthValue) {
-          document.getElementById("adminScheduleMonth").value = monthValue;
+          document.getElementById(
+            "adminScheduleMonth"
+          ).value =
+            monthValue;
         }
 
         await loadAdminSchedule();
 
       } catch (error) {
         showAdminScheduleMessage(
-          error.message || "Could not create schedule.",
+          error.message ||
+          "Could not create schedule.",
           "error"
         );
 
       } finally {
         button.disabled = false;
-        button.textContent = "Apply Schedule";
+        button.textContent =
+          "Apply Schedule";
       }
     }
 
     initScheduleWeekPattern();
     document.getElementById("toggleScheduleBuilder").addEventListener("click", function(){
-      const agent = document.getElementById("adminScheduleAgent").value;
-      document.getElementById("scheduleBuildStaff").value = agent || "";
-      document.getElementById("scheduleBuilder").classList.add("show");
+      const agent =
+        document.getElementById(
+          "adminScheduleAgent"
+        ).value;
+
+      document.getElementById(
+        "scheduleBuildStaff"
+      ).value =
+        agent || "";
+
+      buildScheduleMonthOptions();
+
+      document.getElementById(
+        "scheduleBuilder"
+      ).classList.add("show");
     });
     document.getElementById("closeScheduleBuilder").addEventListener("click", function(){ document.getElementById("scheduleBuilder").classList.remove("show"); });
     document.getElementById("previewScheduleBuild").addEventListener("click", previewScheduleBuild);
+    document.getElementById("scheduleBuildMonth").addEventListener("change", syncScheduleBuilderDates);
+    document.getElementById("adminScheduleMonth").addEventListener("change", function(){
+      if (
+        document.getElementById("scheduleBuilder")
+          .classList.contains("show")
+      ) {
+        buildScheduleMonthOptions();
+      }
+    });
     document.getElementById("applyScheduleBuild").addEventListener("click", applyScheduleBuild);
     document.getElementById("adminScheduleAgent").addEventListener("change", function(){ document.getElementById("scheduleBuildStaff").value = this.value; });
 
