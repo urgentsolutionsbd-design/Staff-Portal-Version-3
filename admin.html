@@ -408,7 +408,7 @@
 
         <article class="card schedule-toolbar-card">
           <div class="schedule-field"><label for="adminScheduleAgent">Staff Member</label><select id="adminScheduleAgent"><option value="">Loading staff...</option></select></div>
-          <div class="schedule-field"><label for="adminScheduleMonth">Month</label><input id="adminScheduleMonth" type="month" value="2026-10"></div>
+          <div class="schedule-field"><label for="adminScheduleMonth">Month</label><select id="adminScheduleMonth"></select></div>
           <button class="primary-btn compact" id="loadAdminSchedule" type="button">Load Schedule</button>
           <button class="secondary-btn compact" id="toggleScheduleBuilder" type="button">Create Schedule</button>
         </article>
@@ -1413,6 +1413,105 @@
       });
     }
 
+
+    function populateAdminScheduleMonths() {
+      const select =
+        document.getElementById("adminScheduleMonth");
+
+      const currentValue =
+        select.dataset.current ||
+        select.value ||
+        "2026-10";
+
+      select.innerHTML = "";
+
+      const base =
+        /^\d{4}-\d{2}$/.test(currentValue)
+          ? currentValue
+          : "2026-10";
+
+      const parts =
+        base.split("-");
+
+      const baseYear =
+        Number(parts[0]);
+
+      const baseMonth =
+        Number(parts[1]);
+
+      for (let offset = -6; offset <= 18; offset++) {
+        const date =
+          new Date(
+            baseYear,
+            baseMonth - 1 + offset,
+            1
+          );
+
+        const year =
+          date.getFullYear();
+
+        const month =
+          String(
+            date.getMonth() + 1
+          ).padStart(2, "0");
+
+        const value =
+          year + "-" + month;
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          value;
+
+        option.textContent =
+          date.toLocaleDateString(
+            "en-US",
+            {
+              month: "long",
+              year: "numeric"
+            }
+          );
+
+        if (value === base) {
+          option.selected = true;
+        }
+
+        select.appendChild(
+          option
+        );
+      }
+
+      select.dataset.current =
+        select.value;
+    }
+
+    function syncScheduleBuilderMonthFromTop() {
+      const topMonth =
+        document.getElementById(
+          "adminScheduleMonth"
+        ).value;
+
+      const builderMonth =
+        document.getElementById(
+          "scheduleBuildMonth"
+        );
+
+      if (
+        !builderMonth ||
+        !topMonth
+      ) {
+        return;
+      }
+
+      buildScheduleMonthOptions();
+
+      builderMonth.value =
+        topMonth;
+
+      syncScheduleBuilderDates();
+    }
+
     async function fetchAdminSchedule(agent, year, month) {
       const url =
         ADMIN_API_URL +
@@ -2010,6 +2109,7 @@
       }
     }
 
+    populateAdminScheduleMonths();
     initScheduleWeekPattern();
     document.getElementById("toggleScheduleBuilder").addEventListener("click", function(){
       const agent =
@@ -2022,7 +2122,7 @@
       ).value =
         agent || "";
 
-      buildScheduleMonthOptions();
+      syncScheduleBuilderMonthFromTop();
 
       document.getElementById(
         "scheduleBuilder"
@@ -2039,6 +2139,17 @@
         buildScheduleMonthOptions();
       }
     });
+    document.getElementById("adminScheduleMonth").addEventListener("change", function(){
+      this.dataset.current = this.value;
+
+      if (
+        document.getElementById("scheduleBuilder")
+          .classList.contains("show")
+      ) {
+        syncScheduleBuilderMonthFromTop();
+      }
+    });
+
     document.getElementById("applyScheduleBuild").addEventListener("click", applyScheduleBuild);
     document.getElementById("adminScheduleAgent").addEventListener("change", function(){ document.getElementById("scheduleBuildStaff").value = this.value; });
 
