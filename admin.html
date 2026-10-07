@@ -1691,26 +1691,98 @@
 
     async function applyScheduleBuild() {
       const button = document.getElementById("applyScheduleBuild");
+
       try {
         const agent = document.getElementById("adminScheduleAgent").value;
         const adminUsername = getAdminUsername();
-        if (!agent) throw new Error("Choose a staff member first.");
-        if (!adminUsername) throw new Error("Admin login session was not found.");
-        const items = getScheduleBuildItems();
-        if (!window.confirm(`Apply ${items.length} schedule changes for ${agent}?`)) return;
-        button.disabled = true; button.textContent = "Applying...";
-        for (let i = 0; i < items.length; i++) {
-          button.textContent = `Applying ${i+1}/${items.length}...`;
-          const params = new URLSearchParams({ action:"schedule-update", adminUsername, agent, date:items[i].date, shift:items[i].shift });
-          const response = await fetch(ADMIN_API_URL + "?" + params.toString(), { method:"GET", cache:"no-store" });
-          const data = await response.json();
-          if (!response.ok || !data.ok) throw new Error(data.error || `Could not update ${items[i].date}.`);
+        const startDate = document.getElementById("scheduleBuildStart").value;
+        const endDate = document.getElementById("scheduleBuildEnd").value;
+
+        if (!agent) {
+          throw new Error("Choose a staff member first.");
         }
-        showAdminScheduleMessage(`Schedule created successfully for ${agent}: ${items.length} days updated.`, "ok");
+
+        if (!adminUsername) {
+          throw new Error("Admin login session was not found.");
+        }
+
+        if (!startDate || !endDate) {
+          throw new Error("Choose both From and To dates.");
+        }
+
+        const items = getScheduleBuildItems();
+
+        if (!window.confirm(`Apply ${items.length} schedule changes for ${agent}?`)) {
+          return;
+        }
+
+        const pattern = {};
+
+        SCHEDULE_DAYS.forEach(function (day, index) {
+          const select = document.querySelector(`[data-build-day="${index}"]`);
+          pattern[index] = select ? select.value : "OFF";
+        });
+
+        button.disabled = true;
+        button.textContent = "Applying...";
+        clearAdminScheduleMessage();
+
+        const params = new URLSearchParams({
+          action: "schedule-bulk-update",
+          adminUsername: adminUsername,
+          agent: agent,
+          startDate: startDate,
+          endDate: endDate,
+          sunday: pattern[0],
+          monday: pattern[1],
+          tuesday: pattern[2],
+          wednesday: pattern[3],
+          thursday: pattern[4],
+          friday: pattern[5],
+          saturday: pattern[6]
+        });
+
+        const response = await fetch(
+          ADMIN_API_URL + "?" + params.toString(),
+          { method: "GET", cache: "no-store" }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(
+            data.error ||
+            data.message ||
+            "Bulk schedule could not be updated."
+          );
+        }
+
+        const result = data.result || {};
+        const updatedDays = result.updatedDays ?? items.length;
+
+        showAdminScheduleMessage(
+          data.message ||
+          `Schedule created successfully for ${agent}: ${updatedDays} days updated.`,
+          "ok"
+        );
+
+        const monthValue = startDate.slice(0, 7);
+        if (monthValue) {
+          document.getElementById("adminScheduleMonth").value = monthValue;
+        }
+
         await loadAdminSchedule();
+
       } catch (error) {
-        showAdminScheduleMessage(error.message || "Could not create schedule.", "error");
-      } finally { button.disabled = false; button.textContent = "Apply Schedule"; }
+        showAdminScheduleMessage(
+          error.message || "Could not create schedule.",
+          "error"
+        );
+
+      } finally {
+        button.disabled = false;
+        button.textContent = "Apply Schedule";
+      }
     }
 
     initScheduleWeekPattern();
