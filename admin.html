@@ -220,6 +220,149 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* =========================================================
+       ADMIN SCHEDULE MANAGEMENT
+    ========================================================= */
+
+    .schedule-admin-grid {
+      display:grid;
+      grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);
+      gap:16px;
+    }
+
+    .schedule-control-card {
+      display:grid;
+      gap:14px;
+    }
+
+    .schedule-field {
+      display:grid;
+      gap:7px;
+    }
+
+    .schedule-field label {
+      color:#8fa1a0;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .schedule-field select,
+    .schedule-field input {
+      width:100%;
+      min-height:42px;
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:10px;
+      background:rgba(5,12,11,.62);
+      color:#f4f7f6;
+      padding:0 12px;
+      font:inherit;
+      font-size:12px;
+      outline:none;
+    }
+
+    .schedule-actions {
+      display:flex;
+      gap:9px;
+      flex-wrap:wrap;
+    }
+
+    .schedule-message {
+      display:none;
+      padding:11px 12px;
+      border-radius:10px;
+      font-size:11px;
+      line-height:1.5;
+    }
+
+    .schedule-message.show { display:block; }
+    .schedule-message.ok {
+      color:#baf8e5;
+      border:1px solid rgba(39,240,181,.18);
+      background:rgba(39,240,181,.04);
+    }
+    .schedule-message.error {
+      color:#ffb8bf;
+      border:1px solid rgba(255,102,116,.20);
+      background:rgba(255,102,116,.04);
+    }
+
+    .schedule-table-wrap { overflow-x:auto; }
+
+    .schedule-admin-table {
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    .schedule-admin-table th,
+    .schedule-admin-table td {
+      padding:12px 14px;
+      border-bottom:1px solid rgba(148,163,184,.12);
+      text-align:left;
+      white-space:nowrap;
+      font-size:11px;
+    }
+
+    .schedule-admin-table th {
+      color:#7f9190;
+      font-size:9px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .schedule-shift-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:54px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,.16);
+      font-weight:800;
+      font-size:10px;
+    }
+
+    .schedule-row-edit {
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .schedule-row-edit select {
+      min-height:34px;
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:8px;
+      background:rgba(5,12,11,.62);
+      color:#f4f7f6;
+      padding:0 8px;
+      font:inherit;
+      font-size:11px;
+    }
+
+    .schedule-save-btn {
+      min-height:34px;
+      padding:0 11px;
+      border:1px solid rgba(39,240,181,.22);
+      border-radius:8px;
+      background:rgba(39,240,181,.05);
+      color:#baf8e5;
+      font:inherit;
+      font-size:11px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .schedule-save-btn:disabled {
+      opacity:.45;
+      cursor:not-allowed;
+    }
+
+    @media (max-width: 900px) {
+      .schedule-admin-grid {
+        grid-template-columns:1fr;
+      }
+    }
+
   </style>
 </head>
 
@@ -348,15 +491,78 @@
 
       <section class="content-section" id="schedule">
         <div class="section-head">
-          <div><p class="eyebrow">Schedules</p><h2>Team roster</h2></div>
-          <div class="action-row">
-            <button class="secondary-btn compact">Import CSV</button>
-            <button class="primary-btn compact">New schedule</button>
+          <div>
+            <p class="eyebrow">Schedules</p>
+            <h2>Schedule Management</h2>
           </div>
+
+          <button class="secondary-btn compact" id="refreshAdminSchedule" type="button">
+            Refresh
+          </button>
         </div>
 
-        <div class="card">
-          <p class="muted">The live schedule editor and Google Sheet connection will be added in the backend phase.</p>
+        <div class="schedule-admin-grid">
+          <article class="card schedule-control-card">
+            <div>
+              <p class="eyebrow">Roster Controls</p>
+              <h3>Choose staff and month</h3>
+            </div>
+
+            <div class="schedule-field">
+              <label for="adminScheduleAgent">Staff Member</label>
+              <select id="adminScheduleAgent">
+                <option value="">Loading staff...</option>
+              </select>
+            </div>
+
+            <div class="schedule-field">
+              <label for="adminScheduleMonth">Month</label>
+              <input id="adminScheduleMonth" type="month" value="2026-10">
+            </div>
+
+            <div class="schedule-actions">
+              <button class="primary-btn compact" id="loadAdminSchedule" type="button">
+                Load Schedule
+              </button>
+            </div>
+
+            <div class="schedule-message" id="adminScheduleMessage"></div>
+          </article>
+
+          <article class="card">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Live Roster</p>
+                <h3 id="adminScheduleTitle">Select a staff member</h3>
+              </div>
+
+              <div class="muted" id="adminScheduleSummary">
+                No schedule loaded
+              </div>
+            </div>
+
+            <div class="schedule-table-wrap">
+              <table class="schedule-admin-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Current Shift</th>
+                    <th>Shift Time</th>
+                    <th>Change To</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+
+                <tbody id="adminScheduleBody">
+                  <tr>
+                    <td colspan="5" class="muted">
+                      Choose a staff member and month, then load the schedule.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -1257,6 +1463,323 @@
             });
         }
       );
+
+    /* =========================================================
+       LIVE ADMIN SCHEDULE MANAGEMENT
+    ========================================================= */
+
+    let adminScheduleData = [];
+    let adminScheduleBusy = false;
+
+    function showAdminScheduleMessage(message, type) {
+      const box = document.getElementById("adminScheduleMessage");
+      if (!box) return;
+      box.textContent = message || "";
+      box.className = "schedule-message show " + (type === "ok" ? "ok" : "error");
+    }
+
+    function clearAdminScheduleMessage() {
+      const box = document.getElementById("adminScheduleMessage");
+      if (!box) return;
+      box.textContent = "";
+      box.className = "schedule-message";
+    }
+
+    async function fetchRosterAgentsForAdmin() {
+      const response = await fetch(
+        ADMIN_API_URL + "?action=agents",
+        { method: "GET", cache: "no-store" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Staff list service could not be reached.");
+      }
+
+      const data = await response.json();
+
+      if (!data.ok) {
+        throw new Error(data.error || "Could not load roster staff.");
+      }
+
+      return Array.isArray(data.agents) ? data.agents : [];
+    }
+
+    async function loadAdminScheduleAgents() {
+      const select = document.getElementById("adminScheduleAgent");
+      const agents = await fetchRosterAgentsForAdmin();
+
+      select.innerHTML = '<option value="">Select staff...</option>';
+
+      agents.forEach(function (item) {
+        const name =
+          typeof item === "string"
+            ? item
+            : (item.name || item.agent || item.staffName || "");
+
+        if (!name) return;
+
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+      });
+    }
+
+    async function fetchAdminSchedule(agent, year, month) {
+      const url =
+        ADMIN_API_URL +
+        "?action=schedule" +
+        "&agent=" + encodeURIComponent(agent) +
+        "&year=" + encodeURIComponent(year) +
+        "&month=" + encodeURIComponent(month);
+
+      const response = await fetch(url, {
+        method: "GET",
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error("Schedule service could not be reached.");
+      }
+
+      const data = await response.json();
+
+      if (!data.ok) {
+        throw new Error(data.error || "Could not load schedule.");
+      }
+
+      return data;
+    }
+
+    function buildShiftOptions(currentShift) {
+      const shifts = [
+        "AM",
+        "AM1",
+        "PM",
+        "PM1",
+        "OFF",
+        "AL",
+        "OT",
+        "ON CALL"
+      ];
+
+      return shifts.map(function (shift) {
+        return `
+          <option value="${escapeAdminHtml(shift)}" ${shift === currentShift ? "selected" : ""}>
+            ${escapeAdminHtml(shift)}
+          </option>
+        `;
+      }).join("");
+    }
+
+    function renderAdminSchedule(data) {
+      const body = document.getElementById("adminScheduleBody");
+
+      adminScheduleData =
+        Array.isArray(data.schedule)
+          ? data.schedule
+          : [];
+
+      document.getElementById("adminScheduleTitle").textContent =
+        data.agent || "Schedule";
+
+      document.getElementById("adminScheduleSummary").textContent =
+        adminScheduleData.length + " roster days";
+
+      if (!adminScheduleData.length) {
+        body.innerHTML =
+          '<tr><td colspan="5" class="muted">No schedule found for this month.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = adminScheduleData.map(function (item) {
+        const currentShift =
+          String(item.shift || "").trim().toUpperCase();
+
+        return `
+          <tr>
+            <td>
+              <strong>${escapeAdminHtml(item.displayDate || item.date || "—")}</strong><br>
+              <small class="muted">${escapeAdminHtml(item.date || "")}</small>
+            </td>
+
+            <td>
+              <span class="schedule-shift-pill">
+                ${escapeAdminHtml(currentShift || "—")}
+              </span>
+            </td>
+
+            <td>${escapeAdminHtml(item.shiftTime || "—")}</td>
+
+            <td>
+              <div class="schedule-row-edit">
+                <select data-schedule-shift="${escapeAdminHtml(item.date)}">
+                  ${buildShiftOptions(currentShift)}
+                </select>
+              </div>
+            </td>
+
+            <td>
+              <button
+                type="button"
+                class="schedule-save-btn"
+                data-save-schedule="${escapeAdminHtml(item.date)}"
+              >
+                Save
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function loadAdminSchedule() {
+      clearAdminScheduleMessage();
+
+      const agent = document.getElementById("adminScheduleAgent").value;
+      const monthValue = document.getElementById("adminScheduleMonth").value;
+
+      if (!agent) {
+        showAdminScheduleMessage("Please choose a staff member.", "error");
+        return;
+      }
+
+      if (!monthValue) {
+        showAdminScheduleMessage("Please choose a month.", "error");
+        return;
+      }
+
+      const parts = monthValue.split("-");
+      const year = Number(parts[0]);
+      const month = Number(parts[1]);
+
+      const body = document.getElementById("adminScheduleBody");
+      body.innerHTML =
+        '<tr><td colspan="5" class="muted">Loading schedule...</td></tr>';
+
+      try {
+        const data = await fetchAdminSchedule(agent, year, month);
+        renderAdminSchedule(data);
+        showAdminScheduleMessage("Live schedule loaded.", "ok");
+      } catch (error) {
+        body.innerHTML =
+          '<tr><td colspan="5" class="muted">' +
+          escapeAdminHtml(error.message) +
+          '</td></tr>';
+
+        showAdminScheduleMessage(
+          error.message || "Could not load schedule.",
+          "error"
+        );
+      }
+    }
+
+    async function saveAdminScheduleRow(dateKey, button) {
+      if (adminScheduleBusy) return;
+
+      const agent =
+        document.getElementById("adminScheduleAgent").value;
+
+      const adminUsername =
+        getAdminUsername();
+
+      const shiftSelect =
+        document.querySelector(
+          '[data-schedule-shift="' + dateKey + '"]'
+        );
+
+      const shift =
+        shiftSelect
+          ? shiftSelect.value
+          : "";
+
+      if (!agent || !adminUsername || !dateKey || !shift) {
+        showAdminScheduleMessage(
+          "Missing schedule update information.",
+          "error"
+        );
+        return;
+      }
+
+      adminScheduleBusy = true;
+      button.disabled = true;
+      button.textContent = "Saving...";
+      clearAdminScheduleMessage();
+
+      try {
+        const params = new URLSearchParams({
+          action: "schedule-update",
+          adminUsername: adminUsername,
+          agent: agent,
+          date: dateKey,
+          shift: shift
+        });
+
+        const response = await fetch(
+          ADMIN_API_URL + "?" + params.toString(),
+          { method: "GET", cache: "no-store" }
+        );
+
+        if (!response.ok) {
+          throw new Error("Schedule update service could not be reached.");
+        }
+
+        const data = await response.json();
+
+        if (!data.ok) {
+          throw new Error(data.error || "Schedule could not be updated.");
+        }
+
+        showAdminScheduleMessage(
+          "Shift updated: " + dateKey + " → " + shift,
+          "ok"
+        );
+
+        await loadAdminSchedule();
+      } catch (error) {
+        showAdminScheduleMessage(
+          error.message || "Schedule update failed.",
+          "error"
+        );
+      } finally {
+        adminScheduleBusy = false;
+        button.disabled = false;
+        button.textContent = "Save";
+      }
+    }
+
+    document.getElementById("loadAdminSchedule")
+      .addEventListener("click", loadAdminSchedule);
+
+    document.getElementById("refreshAdminSchedule")
+      .addEventListener("click", function () {
+        loadAdminSchedule();
+      });
+
+    document.getElementById("adminScheduleBody")
+      .addEventListener("click", function (event) {
+        const button =
+          event.target.closest("[data-save-schedule]");
+
+        if (!button) return;
+
+        saveAdminScheduleRow(
+          button.getAttribute("data-save-schedule"),
+          button
+        );
+      });
+
+    document.querySelector('[data-section="schedule"]')
+      ?.addEventListener("click", function () {
+        loadAdminScheduleAgents()
+          .catch(function (error) {
+            showAdminScheduleMessage(
+              error.message || "Could not load staff list.",
+              "error"
+            );
+          });
+      });
+
   </script>
 </body>
 </html>
