@@ -222,145 +222,56 @@
     }
 
     /* =========================================================
-       ADMIN SCHEDULE MANAGEMENT
+       ADMIN SCHEDULE MANAGEMENT — CLEAN FULL-WIDTH LAYOUT
     ========================================================= */
 
-    .schedule-admin-grid {
+    .schedule-toolbar-card {
       display:grid;
-      grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);
-      gap:16px;
+      grid-template-columns:minmax(220px,1.2fr) minmax(180px,.7fr) auto auto;
+      gap:12px;
+      align-items:end;
+      margin-bottom:16px;
     }
 
-    .schedule-control-card {
-      display:grid;
-      gap:14px;
+    .schedule-field { display:grid; gap:7px; }
+    .schedule-field label { color:#8fa1a0; font-size:11px; font-weight:700; }
+    .schedule-field select, .schedule-field input {
+      width:100%; min-height:42px; border:1px solid rgba(148,163,184,.18);
+      border-radius:10px; background:rgba(5,12,11,.62); color:#f4f7f6;
+      padding:0 12px; font:inherit; font-size:12px; outline:none;
     }
-
-    .schedule-field {
-      display:grid;
-      gap:7px;
-    }
-
-    .schedule-field label {
-      color:#8fa1a0;
-      font-size:11px;
-      font-weight:700;
-    }
-
-    .schedule-field select,
-    .schedule-field input {
-      width:100%;
-      min-height:42px;
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:10px;
-      background:rgba(5,12,11,.62);
-      color:#f4f7f6;
-      padding:0 12px;
-      font:inherit;
-      font-size:12px;
-      outline:none;
-    }
-
-    .schedule-actions {
-      display:flex;
-      gap:9px;
-      flex-wrap:wrap;
-    }
-
-    .schedule-message {
-      display:none;
-      padding:11px 12px;
-      border-radius:10px;
-      font-size:11px;
-      line-height:1.5;
-    }
-
+    .schedule-message { display:none; margin-bottom:16px; padding:11px 12px; border-radius:10px; font-size:11px; line-height:1.5; }
     .schedule-message.show { display:block; }
-    .schedule-message.ok {
-      color:#baf8e5;
-      border:1px solid rgba(39,240,181,.18);
-      background:rgba(39,240,181,.04);
-    }
-    .schedule-message.error {
-      color:#ffb8bf;
-      border:1px solid rgba(255,102,116,.20);
-      background:rgba(255,102,116,.04);
-    }
-
+    .schedule-message.ok { color:#baf8e5; border:1px solid rgba(39,240,181,.18); background:rgba(39,240,181,.04); }
+    .schedule-message.error { color:#ffb8bf; border:1px solid rgba(255,102,116,.20); background:rgba(255,102,116,.04); }
     .schedule-table-wrap { overflow-x:auto; }
+    .schedule-admin-table { width:100%; border-collapse:collapse; }
+    .schedule-admin-table th,.schedule-admin-table td { padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.12); text-align:left; white-space:nowrap; font-size:11px; }
+    .schedule-admin-table th { color:#7f9190; font-size:9px; text-transform:uppercase; letter-spacing:.04em; }
+    .schedule-shift-pill { display:inline-flex; align-items:center; justify-content:center; min-width:54px; padding:6px 8px; border-radius:999px; border:1px solid rgba(148,163,184,.16); font-weight:800; font-size:10px; }
+    .schedule-row-edit { display:flex; gap:8px; align-items:center; }
+    .schedule-row-edit select { min-height:34px; border:1px solid rgba(148,163,184,.18); border-radius:8px; background:rgba(5,12,11,.62); color:#f4f7f6; padding:0 8px; font:inherit; font-size:11px; }
+    .schedule-save-btn { min-height:34px; padding:0 11px; border:1px solid rgba(39,240,181,.22); border-radius:8px; background:rgba(39,240,181,.05); color:#baf8e5; font:inherit; font-size:11px; font-weight:800; cursor:pointer; }
+    .schedule-save-btn:disabled { opacity:.45; cursor:not-allowed; }
 
-    .schedule-admin-table {
-      width:100%;
-      border-collapse:collapse;
+    .schedule-builder { display:none; margin-bottom:16px; }
+    .schedule-builder.show { display:block; }
+    .schedule-builder-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .schedule-week-grid { display:grid; grid-template-columns:repeat(7,minmax(100px,1fr)); gap:8px; margin-top:14px; }
+    .schedule-day-card { padding:10px; border:1px solid rgba(148,163,184,.14); border-radius:10px; background:rgba(5,12,11,.35); }
+    .schedule-day-card label { display:block; color:#8fa1a0; font-size:10px; font-weight:800; margin-bottom:7px; }
+    .schedule-day-card select { width:100%; min-height:36px; border:1px solid rgba(148,163,184,.18); border-radius:8px; background:rgba(5,12,11,.62); color:#f4f7f6; padding:0 8px; }
+    .schedule-builder-actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+    .schedule-preview { margin-top:14px; padding:12px; border:1px solid rgba(148,163,184,.12); border-radius:10px; color:#aeb9b7; font-size:11px; line-height:1.6; }
+
+    @media (max-width:900px) {
+      .schedule-toolbar-card { grid-template-columns:1fr 1fr; }
+      .schedule-builder-grid { grid-template-columns:1fr; }
+      .schedule-week-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
-
-    .schedule-admin-table th,
-    .schedule-admin-table td {
-      padding:12px 14px;
-      border-bottom:1px solid rgba(148,163,184,.12);
-      text-align:left;
-      white-space:nowrap;
-      font-size:11px;
-    }
-
-    .schedule-admin-table th {
-      color:#7f9190;
-      font-size:9px;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
-
-    .schedule-shift-pill {
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-width:54px;
-      padding:6px 8px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,.16);
-      font-weight:800;
-      font-size:10px;
-    }
-
-    .schedule-row-edit {
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-
-    .schedule-row-edit select {
-      min-height:34px;
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:8px;
-      background:rgba(5,12,11,.62);
-      color:#f4f7f6;
-      padding:0 8px;
-      font:inherit;
-      font-size:11px;
-    }
-
-    .schedule-save-btn {
-      min-height:34px;
-      padding:0 11px;
-      border:1px solid rgba(39,240,181,.22);
-      border-radius:8px;
-      background:rgba(39,240,181,.05);
-      color:#baf8e5;
-      font:inherit;
-      font-size:11px;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .schedule-save-btn:disabled {
-      opacity:.45;
-      cursor:not-allowed;
-    }
-
-    @media (max-width: 900px) {
-      .schedule-admin-grid {
-        grid-template-columns:1fr;
-      }
+    @media (max-width:600px) {
+      .schedule-toolbar-card { grid-template-columns:1fr; }
+      .schedule-week-grid { grid-template-columns:1fr; }
     }
 
   </style>
@@ -491,79 +402,43 @@
 
       <section class="content-section" id="schedule">
         <div class="section-head">
-          <div>
-            <p class="eyebrow">Schedules</p>
-            <h2>Schedule Management</h2>
+          <div><p class="eyebrow">Schedules</p><h2>Schedule Management</h2></div>
+          <button class="secondary-btn compact" id="refreshAdminSchedule" type="button">Refresh</button>
+        </div>
+
+        <article class="card schedule-toolbar-card">
+          <div class="schedule-field"><label for="adminScheduleAgent">Staff Member</label><select id="adminScheduleAgent"><option value="">Loading staff...</option></select></div>
+          <div class="schedule-field"><label for="adminScheduleMonth">Month</label><input id="adminScheduleMonth" type="month" value="2026-10"></div>
+          <button class="primary-btn compact" id="loadAdminSchedule" type="button">Load Schedule</button>
+          <button class="secondary-btn compact" id="toggleScheduleBuilder" type="button">Create Schedule</button>
+        </article>
+
+        <div class="schedule-message" id="adminScheduleMessage"></div>
+
+        <article class="card schedule-builder" id="scheduleBuilder">
+          <div class="section-head"><div><p class="eyebrow">Bulk Schedule Builder</p><h3>Create a schedule pattern</h3></div><button class="secondary-btn compact" id="closeScheduleBuilder" type="button">Close</button></div>
+          <div class="schedule-builder-grid">
+            <div class="schedule-field"><label for="scheduleBuildStart">From</label><input id="scheduleBuildStart" type="date"></div>
+            <div class="schedule-field"><label for="scheduleBuildEnd">To</label><input id="scheduleBuildEnd" type="date"></div>
+            <div class="schedule-field"><label>Staff</label><input id="scheduleBuildStaff" type="text" readonly placeholder="Choose staff above"></div>
           </div>
+          <div class="schedule-week-grid" id="scheduleWeekPattern"></div>
+          <div class="schedule-builder-actions">
+            <button class="secondary-btn compact" id="previewScheduleBuild" type="button">Preview</button>
+            <button class="primary-btn compact" id="applyScheduleBuild" type="button">Apply Schedule</button>
+          </div>
+          <div class="schedule-preview" id="scheduleBuildPreview">Choose a date range and weekly shift pattern, then Preview.</div>
+        </article>
 
-          <button class="secondary-btn compact" id="refreshAdminSchedule" type="button">
-            Refresh
-          </button>
-        </div>
-
-        <div class="schedule-admin-grid">
-          <article class="card schedule-control-card">
-            <div>
-              <p class="eyebrow">Roster Controls</p>
-              <h3>Choose staff and month</h3>
-            </div>
-
-            <div class="schedule-field">
-              <label for="adminScheduleAgent">Staff Member</label>
-              <select id="adminScheduleAgent">
-                <option value="">Loading staff...</option>
-              </select>
-            </div>
-
-            <div class="schedule-field">
-              <label for="adminScheduleMonth">Month</label>
-              <input id="adminScheduleMonth" type="month" value="2026-10">
-            </div>
-
-            <div class="schedule-actions">
-              <button class="primary-btn compact" id="loadAdminSchedule" type="button">
-                Load Schedule
-              </button>
-            </div>
-
-            <div class="schedule-message" id="adminScheduleMessage"></div>
-          </article>
-
-          <article class="card">
-            <div class="section-head">
-              <div>
-                <p class="eyebrow">Live Roster</p>
-                <h3 id="adminScheduleTitle">Select a staff member</h3>
-              </div>
-
-              <div class="muted" id="adminScheduleSummary">
-                No schedule loaded
-              </div>
-            </div>
-
-            <div class="schedule-table-wrap">
-              <table class="schedule-admin-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Current Shift</th>
-                    <th>Shift Time</th>
-                    <th>Change To</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody id="adminScheduleBody">
-                  <tr>
-                    <td colspan="5" class="muted">
-                      Choose a staff member and month, then load the schedule.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </div>
+        <article class="card">
+          <div class="section-head"><div><p class="eyebrow">Live Roster</p><h3 id="adminScheduleTitle">Select a staff member</h3></div><div class="muted" id="adminScheduleSummary">No schedule loaded</div></div>
+          <div class="schedule-table-wrap">
+            <table class="schedule-admin-table">
+              <thead><tr><th>Date</th><th>Current Shift</th><th>Shift Time</th><th>Change To</th><th>Action</th></tr></thead>
+              <tbody id="adminScheduleBody"><tr><td colspan="5" class="muted">Choose a staff member and month, then load the schedule.</td></tr></tbody>
+            </table>
+          </div>
+        </article>
       </section>
 
       <section class="content-section" id="performance">
@@ -1768,6 +1643,86 @@
           button
         );
       });
+
+    const SCHEDULE_SHIFTS = ["AM","AM1","PM","PM1","OFF","AL","OT","ON CALL"];
+    const SCHEDULE_DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+    function initScheduleWeekPattern() {
+      const wrap = document.getElementById("scheduleWeekPattern");
+      wrap.innerHTML = SCHEDULE_DAYS.map(function(day, index) {
+        const defaultShift = (index === 0 || index === 6) ? "OFF" : "PM1";
+        return `<div class="schedule-day-card"><label>${day}</label><select data-build-day="${index}">${SCHEDULE_SHIFTS.map(s => `<option value="${s}" ${s === defaultShift ? "selected" : ""}>${s}</option>`).join("")}</select></div>`;
+      }).join("");
+    }
+
+    function getScheduleBuildItems() {
+      const startValue = document.getElementById("scheduleBuildStart").value;
+      const endValue = document.getElementById("scheduleBuildEnd").value;
+      if (!startValue || !endValue) throw new Error("Choose both From and To dates.");
+      const start = new Date(startValue + "T00:00:00");
+      const end = new Date(endValue + "T00:00:00");
+      if (end < start) throw new Error("To date cannot be before From date.");
+      const items = [];
+      const cursor = new Date(start);
+      while (cursor <= end) {
+        const day = cursor.getDay();
+        const select = document.querySelector(`[data-build-day="${day}"]`);
+        const y = cursor.getFullYear();
+        const m = String(cursor.getMonth()+1).padStart(2,"0");
+        const d = String(cursor.getDate()).padStart(2,"0");
+        items.push({ date:`${y}-${m}-${d}`, shift:select.value });
+        cursor.setDate(cursor.getDate()+1);
+      }
+      return items;
+    }
+
+    function previewScheduleBuild() {
+      try {
+        const agent = document.getElementById("adminScheduleAgent").value;
+        if (!agent) throw new Error("Choose a staff member first.");
+        const items = getScheduleBuildItems();
+        const counts = {};
+        items.forEach(i => counts[i.shift] = (counts[i.shift] || 0) + 1);
+        document.getElementById("scheduleBuildPreview").textContent = `${agent}: ${items.length} days will be updated. ` + Object.entries(counts).map(([k,v]) => `${k}: ${v}`).join(" · ");
+      } catch (error) {
+        document.getElementById("scheduleBuildPreview").textContent = error.message;
+      }
+    }
+
+    async function applyScheduleBuild() {
+      const button = document.getElementById("applyScheduleBuild");
+      try {
+        const agent = document.getElementById("adminScheduleAgent").value;
+        const adminUsername = getAdminUsername();
+        if (!agent) throw new Error("Choose a staff member first.");
+        if (!adminUsername) throw new Error("Admin login session was not found.");
+        const items = getScheduleBuildItems();
+        if (!window.confirm(`Apply ${items.length} schedule changes for ${agent}?`)) return;
+        button.disabled = true; button.textContent = "Applying...";
+        for (let i = 0; i < items.length; i++) {
+          button.textContent = `Applying ${i+1}/${items.length}...`;
+          const params = new URLSearchParams({ action:"schedule-update", adminUsername, agent, date:items[i].date, shift:items[i].shift });
+          const response = await fetch(ADMIN_API_URL + "?" + params.toString(), { method:"GET", cache:"no-store" });
+          const data = await response.json();
+          if (!response.ok || !data.ok) throw new Error(data.error || `Could not update ${items[i].date}.`);
+        }
+        showAdminScheduleMessage(`Schedule created successfully for ${agent}: ${items.length} days updated.`, "ok");
+        await loadAdminSchedule();
+      } catch (error) {
+        showAdminScheduleMessage(error.message || "Could not create schedule.", "error");
+      } finally { button.disabled = false; button.textContent = "Apply Schedule"; }
+    }
+
+    initScheduleWeekPattern();
+    document.getElementById("toggleScheduleBuilder").addEventListener("click", function(){
+      const agent = document.getElementById("adminScheduleAgent").value;
+      document.getElementById("scheduleBuildStaff").value = agent || "";
+      document.getElementById("scheduleBuilder").classList.add("show");
+    });
+    document.getElementById("closeScheduleBuilder").addEventListener("click", function(){ document.getElementById("scheduleBuilder").classList.remove("show"); });
+    document.getElementById("previewScheduleBuild").addEventListener("click", previewScheduleBuild);
+    document.getElementById("applyScheduleBuild").addEventListener("click", applyScheduleBuild);
+    document.getElementById("adminScheduleAgent").addEventListener("change", function(){ document.getElementById("scheduleBuildStaff").value = this.value; });
 
     document.querySelector('[data-section="schedule"]')
       ?.addEventListener("click", function () {
