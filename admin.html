@@ -6,46 +6,1257 @@
   <meta name="theme-color" content="#0b1220">
   <title>Admin Dashboard · Portal V3</title>
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* =========================================================
+       ADMIN LEAVE MANAGEMENT
+       Scoped additions only — existing site CSS remains intact.
+    ========================================================= */
+
+    .leave-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .leave-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .leave-filter {
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid rgba(148,163,184,.18);
+      border-radius: 10px;
+      color: #aeb9b7;
+      background: transparent;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .leave-filter.active {
+      color: #06110e;
+      background: #fff;
+      border-color: #fff;
+    }
+
+    .admin-leave-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .admin-leave-table td,
+    .admin-leave-table th {
+      vertical-align: middle;
+    }
+
+    .leave-admin-status {
+      display: inline-flex;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      border: 1px solid rgba(148,163,184,.18);
+    }
+
+    .leave-admin-status.pending {
+      color: #ffd794;
+      background: rgba(242,186,85,.06);
+      border-color: rgba(242,186,85,.20);
+    }
+
+    .leave-admin-status.approved {
+      color: #baf8e5;
+      background: rgba(39,240,181,.06);
+      border-color: rgba(39,240,181,.18);
+    }
+
+    .leave-admin-status.rejected {
+      color: #ffb8bf;
+      background: rgba(255,102,116,.06);
+      border-color: rgba(255,102,116,.20);
+    }
+
+    .leave-action-group {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .leave-action-btn {
+      min-height: 34px;
+      padding: 0 11px;
+      border-radius: 9px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .leave-action-btn.approve {
+      border: 1px solid rgba(39,240,181,.25);
+      color: #baf8e5;
+      background: rgba(39,240,181,.05);
+    }
+
+    .leave-action-btn.reject {
+      border: 1px solid rgba(255,102,116,.25);
+      color: #ffb8bf;
+      background: rgba(255,102,116,.05);
+    }
+
+    .leave-action-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .leave-review-panel {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .leave-review-panel.show {
+      display: block;
+    }
+
+    .leave-review-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(280px,.65fr);
+      gap: 16px;
+    }
+
+    .leave-request-detail {
+      display: grid;
+      gap: 10px;
+    }
+
+    .leave-detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(148,163,184,.12);
+    }
+
+    .leave-detail-row span {
+      color: #889694;
+      font-size: 11px;
+    }
+
+    .leave-detail-row strong {
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .leave-note-box {
+      width: 100%;
+      min-height: 112px;
+      padding: 12px;
+      border: 1px solid rgba(148,163,184,.18);
+      border-radius: 11px;
+      outline: none;
+      resize: vertical;
+      background: rgba(5,12,11,.65);
+      color: #f4f7f6;
+      font: inherit;
+      font-size: 12px;
+    }
+
+    .leave-review-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .leave-admin-message {
+      display: none;
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .leave-admin-message.show {
+      display: block;
+    }
+
+    .leave-admin-message.ok {
+      color: #baf8e5;
+      border: 1px solid rgba(39,240,181,.18);
+      background: rgba(39,240,181,.04);
+    }
+
+    .leave-admin-message.error {
+      color: #ffb8bf;
+      border: 1px solid rgba(255,102,116,.20);
+      background: rgba(255,102,116,.04);
+    }
+
+    @media (max-width: 900px) {
+      .admin-leave-stats {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .leave-review-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .admin-leave-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .leave-review-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
+
 <body class="app-page" data-page="admin">
   <div class="app-shell">
+
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-brand"><div class="brand-mark small">SP</div><div><strong>Admin Portal</strong><span>Version 3</span></div></div>
+      <div class="sidebar-brand">
+        <div class="brand-mark small">SP</div>
+        <div>
+          <strong>Admin Portal</strong>
+          <span>Version 3</span>
+        </div>
+      </div>
+
       <nav class="side-nav" aria-label="Admin navigation">
         <button class="nav-item active" data-section="overview">Overview</button>
         <button class="nav-item" data-section="staff">Staff</button>
         <button class="nav-item" data-section="attendance">Attendance</button>
         <button class="nav-item" data-section="schedule">Schedules</button>
         <button class="nav-item" data-section="performance">Performance</button>
+        <button class="nav-item" data-section="leave">Annual Leave</button>
         <button class="nav-item" data-section="settings">Settings</button>
       </nav>
-      <div class="sidebar-footer"><button class="nav-item danger" id="logoutBtn">Sign out</button></div>
+
+      <div class="sidebar-footer">
+        <button class="nav-item danger" id="logoutBtn">Sign out</button>
+      </div>
     </aside>
 
     <main class="app-main">
+
       <header class="topbar">
         <button class="icon-btn mobile-only" id="menuBtn" type="button" aria-label="Open menu">☰</button>
-        <div><p class="eyebrow">Admin Dashboard</p><h1 id="pageTitle">Overview</h1></div>
-        <div class="user-chip"><div class="avatar">A</div><div><strong id="displayName">Administrator</strong><span>Portal admin</span></div></div>
+
+        <div>
+          <p class="eyebrow">Admin Dashboard</p>
+          <h1 id="pageTitle">Overview</h1>
+        </div>
+
+        <div class="user-chip">
+          <div class="avatar">A</div>
+          <div>
+            <strong id="displayName">Administrator</strong>
+            <span>Portal admin</span>
+          </div>
+        </div>
       </header>
 
       <section class="content-section active" id="overview">
-        <div class="welcome-card card"><div><p class="eyebrow">Operations overview</p><h2>Staff Performance Portal V3</h2><p>Monitor attendance, schedules, staff records and performance from one workspace.</p></div><div class="status-badge online">Starter</div></div>
-        <div class="stats-grid"><article class="stat-card"><span>Total Staff</span><strong>48</strong><small>Sample data</small></article><article class="stat-card"><span>Checked In</span><strong>39</strong><small>Today</small></article><article class="stat-card"><span>On Break</span><strong>4</strong><small>Current</small></article><article class="stat-card"><span>Avg. KPI</span><strong>89%</strong><small>Current month</small></article></div>
-        <div class="two-col"><article class="card"><div class="section-head"><div><p class="eyebrow">Attention</p><h3>Today's exceptions</h3></div></div><div class="list"><div><strong>Late arrivals</strong><span>3 staff</span></div><div><strong>Missing check-ins</strong><span>2 staff</span></div><div><strong>Schedule conflicts</strong><span>1 item</span></div></div></article><article class="card"><div class="section-head"><div><p class="eyebrow">Quick actions</p><h3>Admin tools</h3></div></div><div class="action-row wrap"><button class="secondary-btn compact">Add staff</button><button class="secondary-btn compact">Upload schedule</button><button class="secondary-btn compact">Review KPI</button><button class="secondary-btn compact">Export report</button></div></article></div>
+        <div class="welcome-card card">
+          <div>
+            <p class="eyebrow">Operations overview</p>
+            <h2>Staff Performance Portal V3</h2>
+            <p>Monitor attendance, schedules, staff records and performance from one workspace.</p>
+          </div>
+          <div class="status-badge online">Starter</div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total Staff</span><strong>48</strong><small>Sample data</small></article>
+          <article class="stat-card"><span>Checked In</span><strong>39</strong><small>Today</small></article>
+          <article class="stat-card"><span>On Break</span><strong>4</strong><small>Current</small></article>
+          <article class="stat-card"><span>Avg. KPI</span><strong>89%</strong><small>Current month</small></article>
+        </div>
+
+        <div class="two-col">
+          <article class="card">
+            <div class="section-head">
+              <div><p class="eyebrow">Attention</p><h3>Today's exceptions</h3></div>
+            </div>
+            <div class="list">
+              <div><strong>Late arrivals</strong><span>3 staff</span></div>
+              <div><strong>Missing check-ins</strong><span>2 staff</span></div>
+              <div><strong>Schedule conflicts</strong><span>1 item</span></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="section-head">
+              <div><p class="eyebrow">Quick actions</p><h3>Admin tools</h3></div>
+            </div>
+            <div class="action-row wrap">
+              <button class="secondary-btn compact">Add staff</button>
+              <button class="secondary-btn compact">Upload schedule</button>
+              <button class="secondary-btn compact">Review KPI</button>
+              <button class="secondary-btn compact" data-open-admin-section="leave">Review leave</button>
+            </div>
+          </article>
+        </div>
       </section>
 
-      <section class="content-section" id="staff"><div class="section-head"><div><p class="eyebrow">Staff</p><h2>Staff directory</h2></div><button class="primary-btn compact">Add staff</button></div><div class="card table-card"><div class="table-wrap"><table><thead><tr><th>Name</th><th>ID</th><th>Team</th><th>Status</th><th>KPI</th></tr></thead><tbody><tr><td>Sample Staff A</td><td>ST-001</td><td>Operations</td><td><span class="status-badge online">Active</span></td><td>94%</td></tr><tr><td>Sample Staff B</td><td>ST-002</td><td>Operations</td><td><span class="status-badge">Active</span></td><td>88%</td></tr><tr><td>Sample Staff C</td><td>ST-003</td><td>Support</td><td><span class="status-badge">Leave</span></td><td>91%</td></tr></tbody></table></div></div></section>
+      <section class="content-section" id="staff">
+        <div class="section-head">
+          <div><p class="eyebrow">Staff</p><h2>Staff directory</h2></div>
+          <button class="primary-btn compact">Add staff</button>
+        </div>
 
-      <section class="content-section" id="attendance"><div class="section-head"><div><p class="eyebrow">Attendance</p><h2>Live attendance</h2></div><button class="secondary-btn compact">Export</button></div><div class="stats-grid"><article class="stat-card"><span>On time</span><strong>36</strong><small>Today</small></article><article class="stat-card"><span>Late</span><strong>3</strong><small>Today</small></article><article class="stat-card"><span>Absent</span><strong>2</strong><small>Today</small></article><article class="stat-card"><span>On break</span><strong>4</strong><small>Now</small></article></div></section>
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>ID</th><th>Team</th><th>Status</th><th>KPI</th></tr></thead>
+              <tbody>
+                <tr><td>Sample Staff A</td><td>ST-001</td><td>Operations</td><td><span class="status-badge online">Active</span></td><td>94%</td></tr>
+                <tr><td>Sample Staff B</td><td>ST-002</td><td>Operations</td><td><span class="status-badge">Active</span></td><td>88%</td></tr>
+                <tr><td>Sample Staff C</td><td>ST-003</td><td>Support</td><td><span class="status-badge">Leave</span></td><td>91%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-      <section class="content-section" id="schedule"><div class="section-head"><div><p class="eyebrow">Schedules</p><h2>Team roster</h2></div><div class="action-row"><button class="secondary-btn compact">Import CSV</button><button class="primary-btn compact">New schedule</button></div></div><div class="card"><p class="muted">The live schedule editor and Google Sheet connection will be added in the backend phase.</p></div></section>
+      <section class="content-section" id="attendance">
+        <div class="section-head">
+          <div><p class="eyebrow">Attendance</p><h2>Live attendance</h2></div>
+          <button class="secondary-btn compact">Export</button>
+        </div>
 
-      <section class="content-section" id="performance"><div class="section-head"><div><p class="eyebrow">Performance</p><h2>KPI management</h2></div><button class="primary-btn compact">Update KPI</button></div><div class="stats-grid"><article class="stat-card"><span>Team Average</span><strong>89%</strong><small>This month</small></article><article class="stat-card"><span>Top Score</span><strong>97%</strong><small>This month</small></article><article class="stat-card"><span>Below Target</span><strong>5</strong><small>Staff</small></article><article class="stat-card"><span>Reviews Due</span><strong>7</strong><small>This week</small></article></div></section>
+        <div class="stats-grid">
+          <article class="stat-card"><span>On time</span><strong>36</strong><small>Today</small></article>
+          <article class="stat-card"><span>Late</span><strong>3</strong><small>Today</small></article>
+          <article class="stat-card"><span>Absent</span><strong>2</strong><small>Today</small></article>
+          <article class="stat-card"><span>On break</span><strong>4</strong><small>Now</small></article>
+        </div>
+      </section>
 
-      <section class="content-section" id="settings"><div class="section-head"><div><p class="eyebrow">Settings</p><h2>Portal configuration</h2></div></div><div class="two-col"><article class="card"><h3>Backend connection</h3><p class="muted">Not connected yet. We will add the secure API/Google Sheet layer later.</p></article><article class="card"><h3>Security</h3><p class="muted">Real authentication, roles and secrets will live outside the public frontend code.</p></article></div></section>
+      <section class="content-section" id="schedule">
+        <div class="section-head">
+          <div><p class="eyebrow">Schedules</p><h2>Team roster</h2></div>
+          <div class="action-row">
+            <button class="secondary-btn compact">Import CSV</button>
+            <button class="primary-btn compact">New schedule</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <p class="muted">The live schedule editor and Google Sheet connection will be added in the backend phase.</p>
+        </div>
+      </section>
+
+      <section class="content-section" id="performance">
+        <div class="section-head">
+          <div><p class="eyebrow">Performance</p><h2>KPI management</h2></div>
+          <button class="primary-btn compact">Update KPI</button>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><span>Team Average</span><strong>89%</strong><small>This month</small></article>
+          <article class="stat-card"><span>Top Score</span><strong>97%</strong><small>This month</small></article>
+          <article class="stat-card"><span>Below Target</span><strong>5</strong><small>Staff</small></article>
+          <article class="stat-card"><span>Reviews Due</span><strong>7</strong><small>This week</small></article>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           ADMIN ANNUAL LEAVE
+      ====================================================== -->
+
+      <section class="content-section" id="leave">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Annual Leave</p>
+            <h2>Leave Management</h2>
+          </div>
+          <button class="secondary-btn compact" id="refreshAdminLeave">Refresh</button>
+        </div>
+
+        <div class="admin-leave-stats">
+          <article class="stat-card">
+            <span>Pending</span>
+            <strong id="adminLeavePending">0</strong>
+            <small>Needs review</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Approved</span>
+            <strong id="adminLeaveApproved">0</strong>
+            <small>All requests</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Rejected</span>
+            <strong id="adminLeaveRejected">0</strong>
+            <small>All requests</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Total</span>
+            <strong id="adminLeaveTotal">0</strong>
+            <small>All requests</small>
+          </article>
+        </div>
+
+        <div class="leave-toolbar">
+          <div class="leave-filters">
+            <button class="leave-filter active" data-leave-filter="all">All</button>
+            <button class="leave-filter" data-leave-filter="pending">Pending</button>
+            <button class="leave-filter" data-leave-filter="approved">Approved</button>
+            <button class="leave-filter" data-leave-filter="rejected">Rejected</button>
+          </div>
+
+          <div class="muted" id="adminLeaveSessionStatus">
+            Loading admin session...
+          </div>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table class="admin-leave-table">
+              <thead>
+                <tr>
+                  <th>Staff</th>
+                  <th>Requested</th>
+                  <th>Leave Dates</th>
+                  <th>Days</th>
+                  <th>Type</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Reviewed By</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody id="adminLeaveBody">
+                <tr>
+                  <td colspan="9" class="muted">Loading leave requests...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <article class="card leave-review-panel" id="leaveReviewPanel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Review Request</p>
+              <h3 id="reviewLeaveTitle">Leave request</h3>
+            </div>
+            <button class="secondary-btn compact" id="closeLeaveReview" type="button">Close</button>
+          </div>
+
+          <div class="leave-review-grid">
+            <div class="leave-request-detail">
+              <div class="leave-detail-row"><span>Leave ID</span><strong id="reviewLeaveId">—</strong></div>
+              <div class="leave-detail-row"><span>Staff</span><strong id="reviewLeaveStaff">—</strong></div>
+              <div class="leave-detail-row"><span>Dates</span><strong id="reviewLeaveDates">—</strong></div>
+              <div class="leave-detail-row"><span>Days</span><strong id="reviewLeaveDays">—</strong></div>
+              <div class="leave-detail-row"><span>Reason</span><strong id="reviewLeaveReason">—</strong></div>
+              <div class="leave-detail-row"><span>Status</span><strong id="reviewLeaveStatus">—</strong></div>
+            </div>
+
+            <div>
+              <label class="muted" for="adminLeaveNotes">Admin Notes</label>
+              <textarea
+                class="leave-note-box"
+                id="adminLeaveNotes"
+                placeholder="Optional note for the staff member..."
+              ></textarea>
+
+              <div class="leave-review-actions">
+                <button class="leave-action-btn approve" id="approveLeaveButton" type="button">
+                  Approve
+                </button>
+
+                <button class="leave-action-btn reject" id="rejectLeaveButton" type="button">
+                  Reject
+                </button>
+              </div>
+
+              <div class="leave-admin-message" id="adminLeaveMessage"></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-section" id="settings">
+        <div class="section-head">
+          <div><p class="eyebrow">Settings</p><h2>Portal configuration</h2></div>
+        </div>
+
+        <div class="two-col">
+          <article class="card">
+            <h3>Backend connection</h3>
+            <p class="muted">The Staff Portal V3 Apps Script backend is being connected module by module.</p>
+          </article>
+
+          <article class="card">
+            <h3>Security</h3>
+            <p class="muted">Admin actions are validated by the backend role before leave requests can be approved or rejected.</p>
+          </article>
+        </div>
+      </section>
+
     </main>
   </div>
+
   <script src="js/admin.js"></script>
+
+  <script>
+    /* =========================================================
+       LIVE ADMIN LEAVE MANAGEMENT
+    ========================================================= */
+
+    const ADMIN_API_URL =
+      "https://script.google.com/macros/s/AKfycbxPcYgFwx7OdSSfrGDJooj23znWjyLJwb-qY4fnRsQrLTdeE8ixPNDVbM2Ut6ITdO1v/exec";
+
+    const ADMIN_SESSION_KEY =
+      "staffPortalSession";
+
+    let adminLeaveRequests = [];
+    let adminLeaveFilter = "all";
+    let selectedLeaveRequest = null;
+    let leaveReviewBusy = false;
+
+    function safeJsonParse(value) {
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function resolveAdminUserFromStorage() {
+      const candidates = [
+        sessionStorage.getItem(ADMIN_SESSION_KEY),
+        localStorage.getItem(ADMIN_SESSION_KEY),
+        sessionStorage.getItem("adminPortalSession"),
+        localStorage.getItem("adminPortalSession"),
+        sessionStorage.getItem("portalUser"),
+        localStorage.getItem("portalUser")
+      ];
+
+      for (const raw of candidates) {
+        if (!raw) continue;
+
+        const user = safeJsonParse(raw);
+
+        if (
+          user &&
+          user.username &&
+          String(user.role || "")
+            .trim()
+            .toLowerCase() === "admin"
+        ) {
+          return user;
+        }
+      }
+
+      return null;
+    }
+
+    function getAdminUsername() {
+      const user =
+        resolveAdminUserFromStorage();
+
+      if (user?.username) {
+        return String(
+          user.username
+        ).trim();
+      }
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      return String(
+        params.get("user") ||
+        params.get("username") ||
+        ""
+      ).trim();
+    }
+
+    function escapeAdminHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function adminLeaveStatusClass(status) {
+      const value =
+        String(status || "")
+          .trim()
+          .toLowerCase();
+
+      if (value === "approved") {
+        return "approved";
+      }
+
+      if (value === "rejected") {
+        return "rejected";
+      }
+
+      return "pending";
+    }
+
+    function showAdminLeaveMessage(
+      message,
+      type
+    ) {
+      const box =
+        document.getElementById(
+          "adminLeaveMessage"
+        );
+
+      box.textContent =
+        message || "";
+
+      box.className =
+        "leave-admin-message show " +
+        (
+          type === "ok"
+            ? "ok"
+            : "error"
+        );
+    }
+
+    function clearAdminLeaveMessage() {
+      const box =
+        document.getElementById(
+          "adminLeaveMessage"
+        );
+
+      box.textContent = "";
+      box.className =
+        "leave-admin-message";
+    }
+
+    async function fetchAdminLeaveRequests() {
+      const adminUsername =
+        getAdminUsername();
+
+      if (!adminUsername) {
+        throw new Error(
+          "Admin login session was not found. Please sign in again as Admin."
+        );
+      }
+
+      document.getElementById(
+        "adminLeaveSessionStatus"
+      ).textContent =
+        "Signed in as " +
+        adminUsername;
+
+      const url =
+        ADMIN_API_URL +
+        "?action=leaveRequests" +
+        "&adminUsername=" +
+        encodeURIComponent(
+          adminUsername
+        );
+
+      const response =
+        await fetch(
+          url,
+          {
+            method: "GET",
+            cache: "no-store"
+          }
+        );
+
+      if (!response.ok) {
+        throw new Error(
+          "Leave request service could not be reached."
+        );
+      }
+
+      const data =
+        await response.json();
+
+      if (!data.ok) {
+        throw new Error(
+          data.error ||
+          "Could not load leave requests."
+        );
+      }
+
+      return Array.isArray(
+        data.requests
+      )
+        ? data.requests
+        : [];
+    }
+
+    function updateAdminLeaveStats() {
+      const pending =
+        adminLeaveRequests.filter(
+          item =>
+            String(item.status)
+              .toLowerCase() ===
+            "pending"
+        ).length;
+
+      const approved =
+        adminLeaveRequests.filter(
+          item =>
+            String(item.status)
+              .toLowerCase() ===
+            "approved"
+        ).length;
+
+      const rejected =
+        adminLeaveRequests.filter(
+          item =>
+            String(item.status)
+              .toLowerCase() ===
+            "rejected"
+        ).length;
+
+      document.getElementById(
+        "adminLeavePending"
+      ).textContent =
+        String(pending);
+
+      document.getElementById(
+        "adminLeaveApproved"
+      ).textContent =
+        String(approved);
+
+      document.getElementById(
+        "adminLeaveRejected"
+      ).textContent =
+        String(rejected);
+
+      document.getElementById(
+        "adminLeaveTotal"
+      ).textContent =
+        String(
+          adminLeaveRequests.length
+        );
+    }
+
+    function filteredAdminLeaveRequests() {
+      if (
+        adminLeaveFilter ===
+        "all"
+      ) {
+        return adminLeaveRequests;
+      }
+
+      return adminLeaveRequests.filter(
+        item =>
+          String(item.status || "")
+            .trim()
+            .toLowerCase() ===
+          adminLeaveFilter
+      );
+    }
+
+    function renderAdminLeaveRequests() {
+      const body =
+        document.getElementById(
+          "adminLeaveBody"
+        );
+
+      const requests =
+        filteredAdminLeaveRequests();
+
+      if (!requests.length) {
+        body.innerHTML = `
+          <tr>
+            <td colspan="9" class="muted">
+              No ${escapeAdminHtml(adminLeaveFilter === "all" ? "" : adminLeaveFilter + " ")}leave requests found.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      body.innerHTML =
+        requests.map(function (item) {
+          const status =
+            item.status || "Pending";
+
+          const statusClass =
+            adminLeaveStatusClass(
+              status
+            );
+
+          const isPending =
+            String(status)
+              .trim()
+              .toLowerCase() ===
+            "pending";
+
+          return `
+            <tr>
+              <td>
+                <strong>${escapeAdminHtml(item.staffName || item.username || "—")}</strong><br>
+                <small class="muted">${escapeAdminHtml(item.username || "")}</small>
+              </td>
+
+              <td>${escapeAdminHtml(item.requestDate || "—")}</td>
+
+              <td>
+                ${escapeAdminHtml(item.leaveStart || "—")}
+                →
+                ${escapeAdminHtml(item.leaveEnd || "—")}
+              </td>
+
+              <td>${escapeAdminHtml(item.leaveDays ?? "—")}</td>
+              <td>${escapeAdminHtml(item.leaveType || "—")}</td>
+              <td>${escapeAdminHtml(item.reason || "—")}</td>
+
+              <td>
+                <span class="leave-admin-status ${statusClass}">
+                  ${escapeAdminHtml(status)}
+                </span>
+              </td>
+
+              <td>${escapeAdminHtml(item.approvedBy || "—")}</td>
+
+              <td>
+                ${
+                  isPending
+                    ? `
+                      <div class="leave-action-group">
+                        <button
+                          class="leave-action-btn approve"
+                          type="button"
+                          data-review-leave="${escapeAdminHtml(item.leaveId)}"
+                        >
+                          Review
+                        </button>
+                      </div>
+                    `
+                    : "Reviewed"
+                }
+              </td>
+            </tr>
+          `;
+        }).join("");
+    }
+
+    async function loadAdminLeaveRequests() {
+      const body =
+        document.getElementById(
+          "adminLeaveBody"
+        );
+
+      body.innerHTML =
+        '<tr><td colspan="9" class="muted">Loading leave requests...</td></tr>';
+
+      adminLeaveRequests =
+        await fetchAdminLeaveRequests();
+
+      updateAdminLeaveStats();
+      renderAdminLeaveRequests();
+    }
+
+    function openLeaveReview(
+      leaveId
+    ) {
+      selectedLeaveRequest =
+        adminLeaveRequests.find(
+          item =>
+            String(item.leaveId) ===
+            String(leaveId)
+        ) || null;
+
+      if (!selectedLeaveRequest) {
+        return;
+      }
+
+      clearAdminLeaveMessage();
+
+      document.getElementById(
+        "reviewLeaveTitle"
+      ).textContent =
+        selectedLeaveRequest.staffName ||
+        selectedLeaveRequest.username ||
+        "Leave request";
+
+      document.getElementById(
+        "reviewLeaveId"
+      ).textContent =
+        selectedLeaveRequest.leaveId ||
+        "—";
+
+      document.getElementById(
+        "reviewLeaveStaff"
+      ).textContent =
+        selectedLeaveRequest.staffName ||
+        selectedLeaveRequest.username ||
+        "—";
+
+      document.getElementById(
+        "reviewLeaveDates"
+      ).textContent =
+        (
+          selectedLeaveRequest.leaveStart ||
+          "—"
+        ) +
+        " → " +
+        (
+          selectedLeaveRequest.leaveEnd ||
+          "—"
+        );
+
+      document.getElementById(
+        "reviewLeaveDays"
+      ).textContent =
+        selectedLeaveRequest.leaveDays ??
+        "—";
+
+      document.getElementById(
+        "reviewLeaveReason"
+      ).textContent =
+        selectedLeaveRequest.reason ||
+        "—";
+
+      document.getElementById(
+        "reviewLeaveStatus"
+      ).textContent =
+        selectedLeaveRequest.status ||
+        "Pending";
+
+      document.getElementById(
+        "adminLeaveNotes"
+      ).value =
+        selectedLeaveRequest.notes ||
+        "";
+
+      document.getElementById(
+        "leaveReviewPanel"
+      ).classList.add(
+        "show"
+      );
+
+      document.getElementById(
+        "leaveReviewPanel"
+      ).scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+    function closeLeaveReview() {
+      selectedLeaveRequest = null;
+
+      document.getElementById(
+        "leaveReviewPanel"
+      ).classList.remove(
+        "show"
+      );
+
+      clearAdminLeaveMessage();
+    }
+
+    async function reviewSelectedLeave(
+      decision
+    ) {
+      if (
+        !selectedLeaveRequest ||
+        leaveReviewBusy
+      ) {
+        return;
+      }
+
+      const adminUsername =
+        getAdminUsername();
+
+      if (!adminUsername) {
+        showAdminLeaveMessage(
+          "Admin login session was not found.",
+          "error"
+        );
+        return;
+      }
+
+      leaveReviewBusy = true;
+
+      const approveButton =
+        document.getElementById(
+          "approveLeaveButton"
+        );
+
+      const rejectButton =
+        document.getElementById(
+          "rejectLeaveButton"
+        );
+
+      approveButton.disabled = true;
+      rejectButton.disabled = true;
+
+      try {
+        const notes =
+          document.getElementById(
+            "adminLeaveNotes"
+          ).value.trim();
+
+        const params =
+          new URLSearchParams({
+            action:
+              "reviewLeave",
+
+            leaveId:
+              selectedLeaveRequest.leaveId,
+
+            adminUsername:
+              adminUsername,
+
+            decision:
+              decision,
+
+            notes:
+              notes
+          });
+
+        const response =
+          await fetch(
+            ADMIN_API_URL +
+            "?" +
+            params.toString(),
+            {
+              method: "GET",
+              cache: "no-store"
+            }
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            "Leave review service could not be reached."
+          );
+        }
+
+        const data =
+          await response.json();
+
+        if (!data.ok) {
+          throw new Error(
+            data.error ||
+            "Leave request could not be reviewed."
+          );
+        }
+
+        showAdminLeaveMessage(
+          data.message ||
+          (
+            "Leave request " +
+            decision.toLowerCase() +
+            "."
+          ),
+          "ok"
+        );
+
+        await loadAdminLeaveRequests();
+
+        setTimeout(
+          closeLeaveReview,
+          700
+        );
+
+      } catch (error) {
+        showAdminLeaveMessage(
+          error.message ||
+          "Leave review failed.",
+          "error"
+        );
+
+      } finally {
+        leaveReviewBusy = false;
+        approveButton.disabled = false;
+        rejectButton.disabled = false;
+      }
+    }
+
+    document
+      .getElementById(
+        "adminLeaveBody"
+      )
+      .addEventListener(
+        "click",
+        function (event) {
+          const button =
+            event.target.closest(
+              "[data-review-leave]"
+            );
+
+          if (!button) {
+            return;
+          }
+
+          openLeaveReview(
+            button.getAttribute(
+              "data-review-leave"
+            )
+          );
+        }
+      );
+
+    document
+      .querySelectorAll(
+        "[data-leave-filter]"
+      )
+      .forEach(function (button) {
+        button.addEventListener(
+          "click",
+          function () {
+            adminLeaveFilter =
+              button.dataset.leaveFilter;
+
+            document
+              .querySelectorAll(
+                "[data-leave-filter]"
+              )
+              .forEach(
+                item =>
+                  item.classList.remove(
+                    "active"
+                  )
+              );
+
+            button.classList.add(
+              "active"
+            );
+
+            renderAdminLeaveRequests();
+          }
+        );
+      });
+
+    document
+      .getElementById(
+        "refreshAdminLeave"
+      )
+      .addEventListener(
+        "click",
+        function () {
+          loadAdminLeaveRequests()
+            .catch(function (error) {
+              document.getElementById(
+                "adminLeaveBody"
+              ).innerHTML =
+                '<tr><td colspan="9" class="muted">' +
+                escapeAdminHtml(
+                  error.message
+                ) +
+                '</td></tr>';
+            });
+        }
+      );
+
+    document
+      .getElementById(
+        "closeLeaveReview"
+      )
+      .addEventListener(
+        "click",
+        closeLeaveReview
+      );
+
+    document
+      .getElementById(
+        "approveLeaveButton"
+      )
+      .addEventListener(
+        "click",
+        function () {
+          reviewSelectedLeave(
+            "Approved"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "rejectLeaveButton"
+      )
+      .addEventListener(
+        "click",
+        function () {
+          reviewSelectedLeave(
+            "Rejected"
+          );
+        }
+      );
+
+    document
+      .querySelectorAll(
+        "[data-open-admin-section]"
+      )
+      .forEach(function (button) {
+        button.addEventListener(
+          "click",
+          function () {
+            const sectionName =
+              button.dataset
+                .openAdminSection;
+
+            const navButton =
+              document.querySelector(
+                '[data-section="' +
+                sectionName +
+                '"]'
+              );
+
+            if (navButton) {
+              navButton.click();
+            }
+          }
+        );
+      });
+
+    /*
+     * Load requests on first visit to the Annual Leave section.
+     * Existing js/admin.js still controls the normal Admin navigation.
+     */
+    document
+      .querySelector(
+        '[data-section="leave"]'
+      )
+      ?.addEventListener(
+        "click",
+        function () {
+          loadAdminLeaveRequests()
+            .catch(function (error) {
+              document.getElementById(
+                "adminLeaveBody"
+              ).innerHTML =
+                '<tr><td colspan="9" class="muted">' +
+                escapeAdminHtml(
+                  error.message
+                ) +
+                '</td></tr>';
+
+              document.getElementById(
+                "adminLeaveSessionStatus"
+              ).textContent =
+                "Admin session required";
+            });
+        }
+      );
+  </script>
 </body>
 </html>
