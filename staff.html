@@ -2852,48 +2852,200 @@
           });
       }
     );
+async function initializePortal() {
 
+  /*
+   * STEP 1:
+   * A real local login session must exist.
+   * Only missing/invalid session should log the user out.
+   */
+  const stored =
+    readStoredSession();
 
-  async function initializePortal() {
-    try {
-      await resolvePortalUser();
-      applyPortalUser();
+  if (
+    !stored ||
+    !stored.username ||
+    String(stored.role || "").toLowerCase() !== "staff" ||
+    String(stored.status || "").toLowerCase() !== "active"
+  ) {
 
-      const leaveUserLabel =
-        document.getElementById(
-          "leaveUserLabel"
-        );
+    clearPortalSession();
 
-      if (leaveUserLabel) {
-        leaveUserLabel.textContent =
-          STAFF_NAME;
-      }
+    alert(
+      "No valid Staff login session was found.\n\nPlease sign in again."
+    );
 
-      updateClock();
+    window.location.href =
+      "index.html";
 
-      await loadCurrentMonthOverview();
-      await loadAttendanceStatus();
-      await loadMonthlyAttendance();
-
-      setInterval(
-        updateClock,
-        1000
-      );
-
-    } catch (error) {
-      clearPortalSession();
-
-      alert(
-        error.message +
-        "\n\nPlease sign in again."
-      );
-
-      window.location.href =
-        "index.html";
-    }
+    return;
   }
 
-  initializePortal();
+
+  /*
+   * STEP 2:
+   * Use the authenticated session immediately.
+   *
+   * A network/API failure must NOT destroy
+   * a perfectly good login session.
+   */
+  portalUser =
+    stored;
+
+  STAFF_NAME =
+    String(
+      stored.staffName || ""
+    ).trim();
+
+  applyPortalUser();
+
+  updateClock();
+
+  setInterval(
+    updateClock,
+    1000
+  );
+
+
+  /*
+   * STEP 3:
+   * Load portal data independently.
+   *
+   * If one service fails, keep the user logged in.
+   */
+  try {
+
+    await loadCurrentMonthOverview();
+
+  } catch (error) {
+
+    console.error(
+      "Overview load failed:",
+      error
+    );
+  }
+
+
+  try {
+
+    await loadAttendanceStatus();
+
+  } catch (error) {
+
+    console.error(
+      "Attendance status load failed:",
+      error
+    );
+  }
+
+
+  try {
+
+    await loadMonthlyAttendance();
+
+  } catch (error) {
+
+    console.error(
+      "Monthly attendance load failed:",
+      error
+    );
+  }
+
+
+  /*
+   * Optional account refresh.
+   *
+   * Failure here does NOT log the user out.
+   */
+  try {
+
+    const data =
+      await lookupPortalUser(
+        stored.username
+      );
+
+    if (
+      data &&
+      data.ok &&
+      data.user
+    ) {
+
+      const user =
+        data.user;
+
+      const role =
+        String(
+          user.role || ""
+        ).toLowerCase();
+
+      const status =
+        String(
+          user.status || ""
+        ).toLowerCase();
+
+
+      /*
+       * Only an explicit backend response saying
+       * this account is no longer valid logs out.
+       */
+      if (
+        role !== "staff" ||
+        status !== "active"
+      ) {
+
+        clearPortalSession();
+
+        alert(
+          "Your Staff account is no longer active.\n\nPlease contact an administrator."
+        );
+
+        window.location.href =
+          "index.html";
+
+        return;
+      }
+
+
+      /*
+       * Refresh displayed user details.
+       */
+      portalUser = {
+        ...stored,
+        username:
+          user.username,
+        staffName:
+          user.staffName,
+        role:
+          user.role,
+        status:
+          user.status
+      };
+
+      STAFF_NAME =
+        String(
+          user.staffName || ""
+        ).trim();
+
+      sessionStorage.setItem(
+        SESSION_KEY,
+        JSON.stringify(
+          portalUser
+        )
+      );
+
+      applyPortalUser();
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Account refresh unavailable:",
+      error
+    );
+  }
+}
+
+    initializePortal();
 </script>
 </body>
 </html>
